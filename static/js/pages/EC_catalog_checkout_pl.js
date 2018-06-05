@@ -4,7 +4,7 @@ var curBdg,
     contract_no,
     contract_H,
     base_url = $("#base-url").val();
- 
+
 function chk23() {
     $("#goods").append('<div class="row"><div class="col-md-2"></div><div class="col-md-10">Please wait loading data....</div></div>')
     $.ajax({
@@ -55,7 +55,7 @@ function chk23() {
 
             qty = '<div class="row"><div class="input-group col-md-11">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="minqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>'
-            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" class="form-control text-center qtyy">'
+            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" max="' + data.data[i].STOK + '" onkeydown="return false" class="form-control text-center qtyy">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             qty += '<span class="input-group-addon">' + data.data[i].MEINS + '</span>'
             qty += '</div></div><br>'
@@ -121,27 +121,28 @@ function chk23() {
         // $("#myModalLabel").text('Tiap nomer PO terbit berdasarkan nomer kontrak barang yang sama')
         $("#btnCofirmmm").show();
         jml = 0,
-        vndor = 0;
+            vndor = 0;
         vndor_no = "-";
         for (var i = 0; i < data.data.length; i++) {
-            if (data.data[i].BUYONE == '0' && data.data[i].STATUS_CHART ==0) {                                                
-                jml++;                                                          
-                if (vndor_no != data.data[i].VENDOR_NO) {                                        
-                    vndor++;                    
+            if (data.data[i].BUYONE == '0' && data.data[i].STATUS_CHART == 0) {
+                jml++;
+                if (vndor_no != data.data[i].VENDOR_NO) {
+                    vndor++;
                     vndor_no = data.data[i].VENDOR_NO;
                     console.log('minus')
                     // $('#btn_confirm').toggleClass("btn-danger btn-success").addClass("disabled");
                     // $("#myModalLabel").text('Tiap nomer PO terbit berdasarkan vendor yang sama');
                     // $("#btnCofirmmm").hide();
                 }
-                console.log("barang :"+data.data[i].STATUS_CHART);
+                console.log("barang :" + data.data[i].STATUS_CHART);
             }//status            
-        }        
-        
+        }
+
         $("#jmlPO").text(vndor);
         $("#jmlBrg").text(jml);
         if (countSameCon == 0)
             $('#btn_confirm').removeClass("btn-success").addClass("btn-danger").addClass("disabled");
+        $('#btn_confirm').attr('data-target', '#');
     }).fail(function () {
         console.log("error");
     }).always(function (data) {
@@ -229,11 +230,11 @@ function confirm(elm, id) {
     $.ajax({
         url: $("#base-url").val() + 'EC_Ecatalog/confirm_pl/',
         type: 'POST',
-        data : {
-            "company" : $("#selComp").val(),
-            "costcenter" : $("#costcenter-yu").val(),
-            'korin':$('#korin_name').val(),
-            'gudang':$('input[name="gudang"]:checked').val()
+        data: {
+            "company": $("#selComp").val(),
+            "costcenter": $("#costcenter-yu").val(),
+            'korin': $('#korin_name').val(),
+            'gudang': $('input[name="gudang"]:checked').val()
         },
         dataType: 'json'
     }).done(function (data) {
@@ -251,7 +252,7 @@ function confirm(elm, id) {
             sukses = 1;
             $('#tbodyPO').append('<tr><td>Sukses: </td></tr>')
             for (var i = 0; i < data.suksesReturn.length; i++) {
-                for(var j=0; j< data.suksesReturn[i].length;j++){                                    
+                for (var j = 0; j < data.suksesReturn[i].length; j++) {
                     $('#tbodyPO').append('<tr></tr>')
                     $('#tbodyPO tr:eq(' + (i + j + 1) + ')').append('<td>PO: ' + data.suksesReturn[i][j].PO + '</td>')
                     $('#tbodyPO tr:eq(' + (i + j + 1) + ')').append('<td>' + data.suksesReturn[i][j].MAKTX + " &mdash; " + data.suksesReturn[i][j].MATNO + '</td>')
@@ -487,27 +488,30 @@ $(document).ready(function () {
         chk23();
     });
 
-    $('#btn_confirm').click(function () {
-        console.log('Klik Show');
-        itemPlant = [];
-        $(".chkPlant").each(function () {
-            // var plant = $(this).data("plant")
-            if ($(this).is(":checked")) {
-                itemPlant.push(String($(this).data("plant")));
-            }
-        });
-        itemQty = []
-        $(".qtyy").each(function () {
-            // var plant = $(this).data("plant")
-            // if ($(this).is(":checked")){
-            itemQty.push(String($(this).val()));
-            // }
-        });
-        // dataitems = JSON.stringify(itemPlant);
-        console.log(itemQty);
-        console.log(CekHomogenous(itemQty));
-        if (isHomogenous(itemPlant)) {
-            if (CekHomogenous(itemQty)) {
+    $('#btn_confirm').click(function (event) {
+        if ($(this).hasClass("disabled")) {
+            event.stopPropagation();
+        } else {
+            console.log('Klik Show');
+            itemPlant = [];
+            $(".chkPlant").each(function () {
+                // var plant = $(this).data("plant")
+                if ($(this).is(":checked")) {
+                    itemPlant.push(String($(this).data("plant")));
+                }
+            });
+            itemQty = []
+            $(".qtyy").each(function () {
+                // var plant = $(this).data("plant")
+                // if ($(this).is(":checked")){
+                itemQty.push(String($(this).val()));
+                // }
+            });
+            // dataitems = JSON.stringify(itemPlant);
+            console.log(itemQty);
+            console.log(CekHomogenous(itemQty));
+            if (isHomogenous(itemPlant)) {
+                if (CekHomogenous(itemQty)) {
 //                    console.log('itemPlant' + itemPlant);
 //                    var valPlant = '';
 //                    if(itemPlant[0].substring(0, 1)=='2'){
@@ -524,16 +528,17 @@ $(document).ready(function () {
 //        		valPlant = '7000';
 //                    }
 //                    $("#selComp").val(valPlant);
-                $('#cnfrm').modal('show');
+                    $('#cnfrm').modal('show');
+                } else {
+                    alert('QTY masih 0');
+                }
             } else {
-                alert('QTY masih 0');
+                alert('Plant harus sama');
             }
-        } else {
-            alert('Plant harus sama');
         }
     });
 
-    $("#korin").on('change',(function(e) {
+    $("#korin").on('change', (function (e) {
         e.preventDefault();
         // alert('tesUpload');
         $.ajax({
@@ -542,19 +547,19 @@ $(document).ready(function () {
             data: new FormData($("#uploadimage")[0]), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
             contentType: false,       // The content type used when sending data to the server.
             cache: false,             // To unable request pages to be cached
-            processData:false,        // To send DOMDocument or non processed data file it is set to false
-            success: function(data)   // A function to be called if request succeeds
+            processData: false,        // To send DOMDocument or non processed data file it is set to false
+            success: function (data)   // A function to be called if request succeeds
             {
                 var result = JSON.parse(data);
-                if(result['file_name']!=''){
+                if (result['file_name'] != '') {
                     $("#korin_name").val(result['file_name']);
                     $("#messagesUpload").show();
-                    $("#messagesUpload").attr('style','color: green;');
+                    $("#messagesUpload").attr('style', 'color: green;');
                     $("#messagesUpload").text('Upload Sukses..!!');
 
-                }else{
+                } else {
                     $("#messagesUpload").show();
-                    $("#messagesUpload").attr('style','color: red;');
+                    $("#messagesUpload").attr('style', 'color: red;');
                     $("#messagesUpload").text('Upload Gagal..!!');
                 }
                 // console.log(result);
@@ -584,7 +589,7 @@ $(document).ready(function () {
             var option = '';
             $('#funcloc').empty()
             for (var i = 0; i < data.length; i++) {
-                option += '<option value='+data[i].STRNO+':'+data[i].KOSTL+'>'+data[i].STRNO+' &mdash; '+data[i].PLTXT+'</option>'
+                option += '<option value=' + data[i].STRNO + ':' + data[i].KOSTL + '>' + data[i].STRNO + ' &mdash; ' + data[i].PLTXT + '</option>'
             }
             $('#funcloc').html(option);
             $('#funcloc').selectpicker('refresh');
@@ -600,9 +605,7 @@ $(document).ready(function () {
         $.ajax({
             url: $("#base-url").val() + 'EC_Ecatalog_Marketplace/COSTCENTER_GETLIST1',
             type: 'POST',
-            data: {
-
-            },
+            data: {},
             dataType: 'json'
         }).done(function (data) {
             // $("#funcloc-search").val('')
@@ -612,7 +615,7 @@ $(document).ready(function () {
             var option = '';
             $('#CCopt').empty()
             for (var i = 0; i < data.length; i++) {
-                option += '<option value='+data[i].COSTCENTER+'>'+data[i].COSTCENTER+' &mdash; '+data[i].NAME+'</option>'
+                option += '<option value=' + data[i].COSTCENTER + '>' + data[i].COSTCENTER + ' &mdash; ' + data[i].NAME + '</option>'
             }
             $('#CCopt').html(option);
             $('#CCopt').selectpicker('refresh');
