@@ -1,0 +1,8 @@
+
+.hiddenelement{
+	display: none !important;
+}
+
+input[type=checkbox] {
+	display: none !important;
+}

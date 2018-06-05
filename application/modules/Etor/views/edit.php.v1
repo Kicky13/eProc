@@ -1,0 +1,295 @@
+<?php 
+// print_r($tor_data[0]);
+?>
+<style>
+    button.accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+
+    button.accordion.active, button.accordion:hover {
+        background-color: #ccc; 
+    }
+
+    div.panel {
+        padding: 0 18px;
+        display: none;
+        background-color: white;
+    }
+</style>
+<section class="content_section">
+    <div class="content_spacer">
+        <div class="content">
+            <?php
+            $disabled = ""; 
+            if($tor_data[0]['IS_SUBMIT']==0 || $tor_data[0]['IS_SUBMIT']=="0"){
+            } else {
+                $disabled = "disabled=disabled";
+            }
+            ?>
+
+            <div class="main_title centered upper">
+                <h2><span class="line"><i class="ico-users"></i></span><?php echo $title ?></h2>
+            </div>
+            <form enctype="multipart/form-data" method="post" action="<?php echo base_url()?>Etor/doUpdateMain">
+                <div class="row">
+                    <div class="col-md-4">
+                        JUDUL :
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="JENIS_TOR" value="<?php echo $tor_data[0]['JENIS_TOR']; ?>">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" name="loaddt" id="loaddt" value="edit">
+
+                        <input type="hidden" name="ID_TOR" id="ID_TOR" value="<?php echo $tor_data[0]['ID_TOR']; ?>">
+                        <button type="button" class="accordion">LATAR BELAKANG</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="LATAR_BELAKANG" name="LATAR_BELAKANG"><?php echo $tor_data[0]['LATAR_BELAKANG']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">MAKSUD DAN TUJUAN</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="MAKSUD_TUJUAN" name="MAKSUD_TUJUAN"><?php echo $tor_data[0]['MAKSUD_TUJUAN']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">PENJELASAN SINGKAT APPLIKASI</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="PENJELASAN_APP" name="PENJELASAN_APP"><?php echo $tor_data[0]['PENJELASAN_APP']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">RUANG LINGKUP PEKERJAAN</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="RUANG_LINGKUP" name="RUANG_LINGKUP"><?php echo $tor_data[0]['RUANG_LINGKUP']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">PRODUK YANG DISERAHKAN</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="PRODUK" name="PRODUK"><?php echo $tor_data[0]['PRODUK']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">KUALIFIKASI PESERTA</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="KUALIFIKASI" name="KUALIFIKASI"><?php echo $tor_data[0]['KUALIFIKASI']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">TIME FRAME</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="TIME_FRAME" name="TIME_FRAME"><?php echo $tor_data[0]['TIME_FRAME']; ?></textarea>
+                        </div>
+
+                        <button type="button" class="accordion">PROSES PEMBAYARAN</button>
+                        <div class="panel">
+                            <textarea class="form-control" rows="4" id="PROSES_BAYAR" name="PROSES_BAYAR"><?php echo $tor_data[0]['PROSES_BAYAR']; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
+                        PIC :
+                    </div>
+                    <div class="col-md-8">
+                        <select name="PIC" value="" class="form-control select2" <?php echo $disabled; ?>>
+                            <option disabled value>Pilih PIC</option>
+                            <?php foreach ($emp_data as $emp ) :?>
+                                <?php
+                                $selected = "";
+                                if($emp['ID']==$tor_data[0]['PIC']){
+                                    $selected = "selected=selected";
+                                }
+                                ?>
+                                <option <?php echo $selected; ?> value="<?php echo $emp['ID'];?>"><?php echo $emp['FULLNAME'];?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <br>
+
+                <?php
+                if($tor_data[0]['IS_SUBMIT']==0 || $tor_data[0]['IS_SUBMIT']=="0"){
+                    ?>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Approval :
+                        </div>
+                        <div class="col-md-4">
+                            <select id="vendor" name="vendor" value="" class="form-control select2 vnd">
+                                <option disabled selected value>Pilih Approval</option>
+                                <?php foreach ($emp_data as $emp ) :?>
+                                    <option value="<?php echo $emp['ID'];?>"><?php echo $emp['FULLNAME'];?></option>
+                                <?php endforeach ?>
+                            </select>
+                            <input type="hidden" name="kd_vnd" id="kd_vnd" value="">
+                            <input type="hidden" name="nama_vnd" id="nama_vnd" value="">  
+                        </div>
+                        <div class="col-md-4">
+                            <button class="tambah_approval" type="button">TAMBAH APPROVAL</button>
+                        </div>
+                    </div>
+
+                    <?php
+                }
+                ?>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        LIST APPROVAL
+                        <div class="listpeg"></div>
+                        <table id="tbl_group_akses" class="table table-striped" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-2">Pegawai</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                <tr>
+                                    <th><input type="text" class="col-xs-12"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <?php
+                if($tor_data[0]['IS_SUBMIT']==0 || $tor_data[0]['IS_SUBMIT']=="0"){
+                    ?>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            ECE/HPS :
+                        </div>
+                        <div class="col-md-4">
+                            <input name="ECE" id="ECE" onchange="return ValidateFileUploadECE()" accept="application/msword, application/pdf" type="file">
+                            <br>
+                        </div>
+                        <div class="col-md-4">
+                            <?php if($tor_data[0]['ECE']!=""){
+                                ?>
+                                <a href="<?php echo base_url()?>upload/etor/<?php echo $tor_data[0]['ECE'];?>">ATTACHMENT DOC ECE/HPS</a>
+                                <?php
+                            } ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            LAIN-LAIN :
+                        </div>
+                        <div class="col-md-4">
+                            <br>
+                            <input name="LAIN" id="LAIN" onchange="return ValidateFileUploadLAIN()" accept="application/msword, application/pdf" type="file">
+                        </div>
+                        <div class="col-md-4">
+                            <?php if($tor_data[0]['LAIN']!=""){
+                                ?>
+                                <a href="<?php echo base_url()?>upload/etor/<?php echo $tor_data[0]['LAIN'];?>">ATTACHMENT DOC LAIN-LAIN</a>
+                                <?php
+                            } ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Komentar :
+                        </div>
+                        <div class="col-md-8">
+                            <textarea class="form-control" rows="4" id="KOMEN" name="KOMEN" <?php echo $disabled; ?>><?php echo $tor_data[0]['KOMEN'];?></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <center>
+                                <select name="type">
+                                    <option value="0">draft</option>
+                                    <option value="1">submit</option>
+                                </select>
+                                <br>
+
+                                <button>PROSES</button>
+                            </center>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php if($tor_data[0]['ECE']!=""){
+                                ?>
+                                <a href="<?php echo base_url()?>upload/etor/<?php echo $tor_data[0]['ECE'];?>">ATTACHMENT DOC ECE/HPS</a>
+                                <?php
+                            } ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php if($tor_data[0]['LAIN']!=""){
+                                ?>
+                                <a href="<?php echo base_url()?>upload/etor/<?php echo $tor_data[0]['LAIN'];?>">ATTACHMENT DOC LAIN-LAIN</a>
+                                <?php
+                            } ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Komentar :
+                        </div>
+                        <div class="col-md-8">
+                            <textarea class="form-control" rows="4" id="KOMEN" name="KOMEN" <?php echo $disabled; ?>><?php echo $tor_data[0]['KOMEN'];?></textarea>
+                        </div>
+                    </div>
+
+                    <?php
+                }
+                ?>
+
+                <br>
+                <br>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].onclick = function(){
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        }
+    }
+</script>

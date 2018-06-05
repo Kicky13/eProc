@@ -1,0 +1,54 @@
+.zoom {
+	-webkit-transition: all 0.35s ease-in-out;
+	-moz-transition: all 0.35s ease-in-out;
+	transition: all 0.35s ease-in-out;
+	cursor: -webkit-zoom-in;
+	cursor: -moz-zoom-in;
+	cursor: zoom-in;
+}
+
+.zoom:hover, .zoom:active, .zoom:focus {
+	/**adjust scale to desired size,
+	 add browser prefixes**/
+	-ms-transform: scale(2);
+	-moz-transform: scale(2.5);
+	-webkit-transform: scale(2);
+	-o-transform: scale(2);
+	transform: scale(2);
+	position: relative;
+	z-index: 100;
+}
+img {
+	height: 100%;
+	max-height: 350px;
+	width: 100%;
+	max-width: 350px;
+}
+.skrol {
+	overflow-x: auto;
+}
+.skrolY {
+	overflow-y: auto;
+}
+.sorting, .sorting_asc, .sorting_desc {
+	background: none;
+}
+table.dataTable thead .sorting {
+	background: none;
+}
+table.dataTable thead .sorting_asc {
+	background: none;
+}
+table.dataTable thead .sorting_desc {
+	background: none;
+}
+body .modal-guwede {
+	/* new custom width */
+	width: 80vw;
+	/* must be half of the width, minus scrollbar on the left (30px) */
+	/*margin-left: -375px;*/
+} 
+.fixed {
+        position: fixed;
+        width: 25%;
+}

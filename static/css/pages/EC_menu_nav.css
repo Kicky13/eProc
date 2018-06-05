@@ -1,0 +1,468 @@
+.zoom {
+    -webkit-transition: all 0.35s ease-in-out;
+    -moz-transition: all 0.35s ease-in-out;
+    transition: all 0.35s ease-in-out;
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in;
+    cursor: zoom-in;
+}
+
+.zoom:hover, .zoom:active, .zoom:focus {
+    /**adjust scale to desired size,
+     add browser prefixes**/
+    -ms-transform: scale(2);
+    -moz-transform: scale(2.5);
+    -webkit-transform: scale(2);
+    -o-transform: scale(2);
+    transform: scale(2);
+    position: relative;
+    z-index: 100;
+}
+
+img {
+    height: 100%;
+    max-height: 350px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.skrol {
+    overflow-x: auto;
+}
+
+.sorting, .sorting_asc, .sorting_desc {
+    background: none;
+}
+
+table.dataTable thead .sorting {
+    background: none;
+}
+
+table.dataTable thead .sorting_asc {
+    background: none;
+}
+
+table.dataTable thead .sorting_desc {
+    background: none;
+}
+
+body .modal-guwede {
+    /* new custom width */
+    width: 80vw;
+    must be half of the width, minus scrollbar on the left (30px)
+    /*margin-left: -375px;*/
+}
+
+.fixed {
+    position: fixed;
+    width: 25%;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu > a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #cccccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover > a:after {
+    border-left-color: #ffffff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+.skuattributes {
+    width: 150px;
+    border: 1px solid #ccc;
+    margin: 5px;
+}
+
+.selected {
+    background-color: #999;
+}
+
+.button {
+    margin: 5px;
+    color: #fff;
+    background-color: #B81237;
+    border: 1px solid #B81237;
+    text-align: center;
+}
+
+.button2 {
+    margin: 5px;
+    color: #B81237;
+    border: 1px solid #B81237;
+    text-align: center;
+}
+
+.button2-disable {
+    margin: 5px;
+    color: #3b3d35;
+    background-color: #6c7060;
+    border: 1px solid #6c7060;
+    text-align: center;
+}
+
+.product-spec-icons li {
+    display: inline;
+    padding-right: 10px;
+    padding-bottom: 5px;
+}
+
+.list-group.panel > .list-group-item {
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px
+}
+
+.list-group-submenu {
+    margin-left: 20px;
+}
+
+.size-list-item {
+    padding: 0px 3px 3px 10px;
+}
+
+.bodyPerbandingan {
+    position: relative;
+}
+
+.affix {
+    top: 20px;
+}
+
+div.col-sm-9 div {
+    height: 250px;
+    font-size: 28px;
+}
+
+#section1 {
+    color: #fff;
+    background-color: #1E88E5;
+}
+
+#section2 {
+    color: #fff;
+    background-color: #673ab7;
+}
+
+#section3 {
+    color: #fff;
+    background-color: #ff9800;
+}
+
+#section41 {
+    color: #fff;
+    background-color: #00bcd4;
+}
+
+#section42 {
+    color: #fff;
+    background-color: #009688;
+}
+
+@media screen and (max-width: 810px) {
+    #section1, #section2, #section3, #section41, #section42 {
+        margin-left: 150px;
+    }
+}
+
+/*
+ A Bootstrap 3.1 affix sidebar template
+ from http://bootply.com
+
+ This CSS code should follow the 'bootstrap.css'
+ in your HTML file.
+
+ license: MIT
+ author: bootply.com
+ */
+
+#masthead {
+    min-height: 250px;
+}
+
+#masthead h1 {
+    font-size: 30px;
+    line-height: 1;
+    padding-top: 20px;
+}
+
+#masthead .well {
+    margin-top: 8%;
+}
+
+@media screen and (min-width: 768px) {
+    #masthead h1 {
+        font-size: 50px;
+    }
+}
+
+.navbar-bright {
+    background-color: #111155;
+    color: #fff;
+}
+
+.affix-top, .affix {
+    position: static;
+}
+
+@media (min-width: 979px) {
+    #sidebar.affix-top {
+        position: static;
+        margin-top: 30px;
+        width: 228px;
+    }
+
+    #sidebar.affix {
+        position: fixed;
+        top: 70px;
+        width: 228px;
+    }
+}
+
+#sidebar li.active {
+    border: 0 #eee solid;
+    border-right-width: 5px;
+}
+
+/*body {
+ padding-top:200px;
+ }*/
+
+@media (min-width: 979px) {
+
+    #midCol.affix-top {
+        position: fixed;
+        width: 265px;
+        margin-right: 10px;
+    }
+
+    #midCol.affix {
+        position: static;
+        width: 100%;
+    }
+
+}
+
+@media (min-width: 767px) {
+    .affix, .affix-top {
+        position: fixed;
+    }
+}
+
+.compare-fixed-top {
+    border-width: 0 0 1px;
+    top: 100;
+}
+
+/*body {
+ padding-top:50px;
+ }*/
+
+#masthead {
+    min-height: 270px;
+    background-color: #000044;
+    color: #aaaacc;
+}
+
+#masthead h1 {
+    font-size: 55px;
+    line-height: 1;
+}
+
+#masthead .well {
+    margin-top: 13%;
+    background-color: #111155;
+    border-color: #000033;
+}
+
+.icon-bar {
+    background-color: #fff;
+}
+
+@media screen and (min-width: 768px) {
+    #masthead h1 {
+        font-size: 100px;
+    }
+}
+
+.navbar-bright {
+    background-color: #111155;
+    color: #fff;
+}
+
+.navbar-bright a, #masthead a, #masthead .lead {
+    color: #aaaacc;
+}
+
+.navbar-bright li > a:hover {
+    background-color: #000033;
+}
+
+.affix-top, .affix {
+    position: static;
+}
+
+@media (min-width: 979px) {
+    #sidebar.affix-top {
+        position: static;
+        margin-top: 30px;
+        width: 228px;
+    }
+
+    #sidebar.affix {
+        position: fixed;
+        top: 70px;
+        width: 228px;
+    }
+}
+
+#sidebar li.active {
+    border: 0 #eee solid;
+    border-right-width: 4px;
+}
+
+#mainCol h2 {
+    padding-top: 55px;
+    margin-top: -55px;
+}
+
+.DocumentList {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    height: auto;
+    width: 100%;
+    padding: 0 15px;
+    max-height: 100vh;
+}
+
+.DocumentItem {
+    border: 1px solid black;
+    padding: 0;
+    height: 200px;
+}
+
+.imgsize {
+    width: 150px;
+    height: 150px;
+    white-space: normal;
+    text-align: center;
+}
+
+.list-inline2 {
+    white-space: nowrap;
+    width: auto;
+}
+
+.tesfix {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    top: 0;
+    transform: translate(50%, 50%);
+}
+
+/* Absolute positioned wrapper for the element you want to fix position */
+.content {
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    transform: none;
+}
+
+.fixed-wrapper {
+    width: 220px;
+    position: absolute;
+    top: 50px;
+    left: 500px; /* Move this out to the left of the site body, leaving a 20px gutter */
+}
+
+/* The element you want to fix the position of */
+.fixed {
+    top: 31px;
+    padding-top: 10px;
+    width: 100%;
+    white-space: nowrap;
+    /*border-bottom: 2px solid #ccc;*/
+    position: fixed;
+    -webkit-transform: translateZ(0);
+    background-color: #ffffff;
+    z-index: 1;
+    /* Do not set top / left! */
+}
+
+.fixed2 {
+    top: 40px;
+    padding-top: 10px;
+    width: 100%;
+    /*white-space: nowrap;*/
+    /*border-bottom: 2px solid #ccc;*/
+    border-top: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-left: 2px solid #ccc;
+    box-shadow: 1px #c0c0c0 ;
+    position: fixed;
+    -webkit-transform: translateZ(0);
+    background-color: #ffffff;
+    z-index: 2;
+    /* Do not set top / left! */
+}
+
+.fixed-gbr {
+    top: 80px;
+    padding-top: 5px;
+    padding-left: 0px;
+    /*width: 75vw;*/
+    width: 100%;
+    white-space: nowrap;
+    /*border-bottom: 2px solid #ccc;*/
+    position: fixed;
+    -webkit-transform: translateZ(0);
+    background-color: #ffffff;
+    z-index: 1;
+}
+
+.fixed-title {
+    border-bottom: 2px solid #ccc;
+    position: absolute;
+    top: 0px;
+    left: 50px; /* Move this out to the left of the site body, leaving a 20px gutter */
+}
+

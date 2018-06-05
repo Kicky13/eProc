@@ -1,0 +1,181 @@
+$(document).ready(function(){
+    var table_new_vendor = $('#new_vendor').DataTable( {
+        "info": false,
+        "lengthMenu": [ 5, 10, 25, 50 ],
+        "ajax": {
+            url: "get_new_vendor_need_approval",
+            type: 'POST'
+        },
+        "columnDefs": [{
+            "targets": 0
+        }],
+        "columns":[
+            {"data" : null},
+            {"data" : "VENDOR_ID"},
+            {"data" : "VENDOR_NAME"},
+            {"data" : "NEXT_PAGE"},
+            {"data" : "MODIFIED_DATE"},
+            {
+                mRender : function(data,type,full){
+                    console.log(full);
+                    var status = full.STATUS;
+                    var next_url = '';
+                    if (status == "1") {
+                        next_url = 'approve_regisration';
+                    }
+                    else if (status =="3") {
+                        next_url = 'approve_update_profile';
+                    };
+                return '<a class="btn btn-default" href="'+next_url+'/'+full.VENDOR_ID+'">Process</a>'
+            }},
+        ],
+    } );
+
+    table_new_vendor.on( 'order.dt search.dt', function () {
+        table_new_vendor.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+    table_new_vendor.on('draw', function () {
+        table_new_vendor.column(0, {search:'applied', order:'applied', page:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+            console.log(cell);
+        } );
+    } ).draw();
+
+    $('#saveChecklistDocument').click(function(){
+        var form_data = $('.save_checklist_document').serialize();
+        console.log(form_data);
+        $.ajax({
+            url : '../save_checklist_document',
+            method : 'post',
+            data : form_data,
+            dataType : "json",
+            success : function(result)
+            {
+                alert("Success Saving Data!");
+                console.log(result);
+                // location.reload();
+            }
+        })  
+    });
+
+    $('#approve-staff').click(function() {
+        if (confirm('Are you sure want to approve?')) {
+            var form_data = $('#comment').serialize();
+            console.log(form_data);
+            $.ajax({
+                url : '../update_approve_staff',
+                method : 'post',
+                data : form_data,
+                dataType : "json",
+                success : function(result) {
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    window.location = url.join('/') + '/job_list';
+                },
+                error: function(result) {
+                    console.log(result);
+                    // var url = window.location.href;
+                    // if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    // url = url.split('/');
+                    // url.pop();
+                    // url.pop();
+                    // window.location = url.join('/') + '/job_list';
+                }
+            })
+        }
+    });
+
+    $('#reject').click(function() {
+        if (confirm('Are you sure want to reject?')) {
+            var form_data = $('#comment').serialize();
+            console.log(form_data);
+            $.ajax({
+                url : '../reject_vendor',
+                method : 'post',
+                data : form_data,
+                dataType : "json",
+                success : function(result) {
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    window.location = url.join('/') + '/job_list';
+                },
+                error: function(result) {
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    window.location = url.join('/') + '/job_list';
+                }
+            })
+        }
+    });
+
+    $('#route-to-vendor').click(function() {
+        if (confirm('Are you sure want to route to vendor?')) {
+            var form_data = $('#comment').serialize();
+            console.log(form_data);
+            $.ajax({
+                url : '../route_to_vendor',
+                method : 'post',
+                data : form_data,
+                dataType : "json",
+                success : function(result) {
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    window.location = url.join('/') + '/job_list';
+                },
+                error: function(result) {
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    window.location = url.join('/') + '/job_list';
+                }
+            })
+        }
+    });
+
+    $('#approve-vendor-update').click(function() {
+        if (confirm('Are you sure want to approve vendor Update?')) {
+            var form_data = $('#comment').serialize();
+            console.log(form_data);
+            $.ajax({
+                url : '../accept_vendor_update',
+                method : 'post',
+                data : form_data,
+                dataType : "json",
+                success : function(result) {
+                    console.log('ok');
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    // window.location = url.join('/') + '/job_list';
+                },
+                error: function(result) {
+                    console.log('error');
+                    var url = window.location.href;
+                    if (url.substr(-1) == '/') url = url.substr(0, url.length - 2);
+                    url = url.split('/');
+                    url.pop();
+                    url.pop();
+                    // window.location = url.join('/') + '/job_list';
+                }
+            })
+        }
+    });
+})

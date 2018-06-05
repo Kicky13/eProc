@@ -1,0 +1,10 @@
+.disableddiv {
+	pointer-events: none;
+	opacity: 0.4;
+}
+.tangan {
+	cursor: pointer;
+	cursor: hand;
+	font-size: 10px;
+	padding: 8px;
+}

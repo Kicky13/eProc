@@ -1,0 +1,286 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class EC_Shipment extends CI_Controller
+{
+
+    private $user;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('Authorization');
+        $this->load->helper('url');
+        $this->load->library('Layout');
+        $this->load->helper("security");
+        $this->user = $this->session->userdata('FULLNAME');
+    }
+
+    public function index($brhasil = false)
+    {
+        $data['title'] = "Pembelian Langsung";
+        $data['brhasil'] = $brhasil;
+//        $data['cheat'] = $cheat;
+        $this->layout->set_table_js();
+        $this->layout->set_table_cs();
+        $this->layout->set_validate_css();
+        $this->layout->set_validate_js();
+
+        $this->layout->add_js('pages/EC_bootstrap-switch.min.js');
+        $this->layout->add_css('pages/EC_strategic_material.css');
+        $this->layout->add_css('pages/EC_bootstrap-switch.min.css');
+        $this->layout->add_css('pages/EC_miniTable.css');
+        $this->layout->add_css('pages/EC_jasny-bootstrap.min.css');
+
+        $this->layout->add_css('plugins/bootstrap-datepicker/datepicker.css');
+        $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
+        $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
+        $this->layout->add_js('bootbox.js');
+        $this->layout->add_js('pages/EC_shipment.js');
+
+        $this->layout->render('list', $data);
+    }
+
+    public function tesgetPORelease($cheat = false)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        $result = $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO']);
+        var_dump(count($result));
+        //echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));
+    }
+
+    public function getPORelease($cheat = false)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));
+    }
+
+    public function getPOorder($cheat = false)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode(array('data' => $this->ec_shipment_m->getPOorder($this->session->userdata['VENDOR_NO'])));
+    }
+
+    public function getPODetail($po)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        $data1 = $this->ec_shipment_m->getPODetail($po);
+
+        for ($j = 0; $j < sizeof($data1); $j++) {
+            $qtyIntransit = $this->ec_shipment_m->getQtyIntransit($data1[$j]['ID_CHART']);
+            $qtyReject = $this->ec_shipment_m->getQtyReject($data1[$j]['ID_CHART']);
+
+            $dataAll[$j]["KODE_SHIPMENT"] = $data1[$j]["KODE_SHIPMENT"];
+            $dataAll[$j]["PO_NO"] = $data1[$j]["PO_NO"];
+            $dataAll[$j]["VENDORNO"] = $data1[$j]["VENDORNO"];
+            $dataAll[$j]["STATUS"] = $data1[$j]["STATUS"];
+            $dataAll[$j]["STOCK_COMMIT"] = $data1[$j]["STOCK_COMMIT"];
+            $dataAll[$j]["QTY"] = $data1[$j]["QTY"];
+            $dataAll[$j]["LINE_ITEM"] = $data1[$j]["LINE_ITEM"];
+            $dataAll[$j]["MAKTX"] = $data1[$j]["MAKTX"];
+            $dataAll[$j]["ID_CHART"] = $data1[$j]["ID_CHART"];
+            $dataAll[$j]["MEINS"] = $data1[$j]["MEINS"];
+            $dataAll[$j]["PLANT"] = $data1[$j]["PLANT"];
+            $dataAll[$j]["PLANT_NAME"] = $data1[$j]["PLANT_NAME"];
+            $dataAll[$j]["PRICE"] = $data1[$j]["PRICE"];
+            $dataAll[$j]["DELIVERY_TIME"] = $data1[$j]["DELIVERY_TIME"];
+            $dataAll[$j]["CURRENCY"] = $data1[$j]["CURRENCY"];
+            $dataAll[$j]["EXPIRED_DATE"] = $data1[$j]["EXPIRED_DATE"];
+            $dataAll[$j]["TOTAL"] = $data1[$j]["TOTAL"];
+            $dataAll[$j]["QTY_RECEIPT"] = $data1[$j]["QTY_RECEIPT"];
+            $dataAll[$j]["QTY_INTRANSIT"] = ($qtyIntransit["QTY_INTRANSIT"]==null?'0':$qtyIntransit["QTY_INTRANSIT"]);
+            $dataAll[$j]["QTY_REJECT"] = ($qtyReject["QTY_REJECT"]==null?'0':$qtyReject["QTY_REJECT"]);
+
+        }
+        echo json_encode($dataAll);
+        // echo json_encode($this->ec_shipment_m->getPODetail($po));
+    }
+
+    public function detailHistory($po)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode($this->ec_shipment_m->detailHistory($po));
+    }
+
+    public function getDescItem($MATNR)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('EC_strategic_material_m');
+        $data['MATNR'] = $this->EC_strategic_material_m->getDetail($MATNR);
+        //substr($MATNR, 1));
+        echo json_encode($data);
+    }
+    
+    public function detailIntransit()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode(array('data' => $this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO'])));
+        // echo json_encode($this->ec_shipment_m->detailIntransit());
+    }
+
+    public function send($kode_shipment)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        $this->ec_shipment_m->updateStatus($kode_shipment);
+        //echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));;
+        redirect('EC_Shipment/index/');
+    }
+	
+	public function simpan_shipment()
+    {
+        //header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+		$qtyShipment=$this->input->post('qtyShipment');
+		$tglShipment=$this->input->post('tglShipment');
+		$kodeShipment=$this->input->post('kodeShipment');
+		
+        $this->ec_shipment_m->updateStatus_qty($qtyShipment,$tglShipment,$kodeShipment);
+        //echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));;
+       // redirect('EC_Shipment/index/');
+    }
+	
+    public function cekQty($kode_shipment)
+    {
+        //header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        // $qtyShipment=$this->input->post('qtyShipment');
+        // $tglShipment=$this->input->post('tglShipment');
+        // $kodeShipment=$this->input->post('kodeShipment');
+        
+        echo json_encode($this->ec_shipment_m->cekQty($kode_shipment));
+        //return $this->ec_shipment_m->cekQty($kode_shipment);
+        //echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));;
+       // redirect('EC_Shipment/index/');
+    }
+
+    //public function approve($PO = '4500000452')
+    public function approve($PO)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_po_pl_approval_m');
+        $data2=0;
+        if ($this->ec_po_pl_approval_m->approve($PO)) {
+            $this->load->library('sap_handler');
+            $data = $this->ec_po_pl_approval_m->detailCart($PO);
+            var_dump($data);die();
+            $data2 = $this->sap_handler->PO_CHANGE($PO, $data, false);            
+            //var_dump($data);
+            if($data2==1){
+                $this->ec_po_pl_approval_m->insertToShipment($data, $PO);
+            }
+            redirect('EC_PO_PL_Approval/index/'.$data2.'/'.$PO);
+        }
+        redirect('EC_PO_PL_Approval/index/'.$data2);
+    }
+
+    public function approveTes($PO = '4500000496')
+    {
+//        header('Content-Type: application/json');
+        $this->load->model('ec_po_pl_approval_m');
+//        if (!$this->ec_po_pl_approval_m->approve($PO)) {
+        $this->load->library('sap_handler');
+        $data = $this->ec_po_pl_approval_m->detailCart($PO);
+//        $data2 = $this->sap_handler->PO_CHANGE($PO, $data,true);
+//        echo json_encode($data);
+//        echo json_encode($data2);
+//        }
+//        redirect('EC_PO_PL_Approval');
+    }
+
+    public function reject($PO = '4500000452')
+    {
+        $data2=0;
+//        header('Content-Type: application/json');
+        $this->load->model('ec_po_pl_approval_m');
+        $this->ec_po_pl_approval_m->reject($PO);
+        $this->load->library('sap_handler');
+        $data = $this->ec_po_pl_approval_m->detailCart($PO);
+        $data2 = $this->sap_handler->PO_CHANGE_REJECT($PO, $data, false);
+//        var_dump($data2);
+        redirect('EC_PO_PL_Approval/index/'.$data2.'/'.$PO);
+    }
+
+    public function detail($kdshipment = '4500000452')
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode($this->ec_shipment_m->detail($kdshipment));
+    }
+
+    public function history($PO = '4500000452')
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_po_pl_approval_m');
+        echo json_encode($this->ec_po_pl_approval_m->history($PO));
+    }
+
+    public function save()
+    {
+    	header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+    	$itms = json_decode($this->input->post('dataall'));
+    	$noShip = ($this->input->post('nomor'));
+        $tglShipment = ($this->input->post('tanggal'));
+        $today = date("YmdHi");
+        // var_dump($today);
+        
+        for ($i=0; $i < sizeof($itms); $i++) { 
+        	$tes = explode("_", $itms[$i]);
+        	$hasil = $this->ec_shipment_m->insertDetailShipment($today, $tglShipment, $tes[3], $tes[4], $tes[2]);
+        }
+
+        if($hasil>0){
+            for ($i=0; $i < sizeof($itms); $i++) { 
+                $tes = explode("_", $itms[$i]);
+                $this->ec_shipment_m->updateGRmaterial($tes[2]);
+            }
+        	echo json_encode(array('sukses' => '1', 'nomor' => $today));
+        }
+        //var_dump('tesss: '.$tes);
+        // echo "<script>window.location.href = 'EC_Shipment/index/".$sukses."/".$noShip."</script>";
+
+//        echo '<script>window.location.href = $("#base-url").val() + 'EC_Shipment/index/'+$sukses</script>';
+       // redirect('EC_Shipment/index/'.$sukses.'/'.$noShip);
+    	//var_dump($tes);
+    }
+
+    public function deleteShipment()
+    {
+    	header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+    	$itms = json_decode($this->input->post('dataship'));
+
+        for ($i=0; $i < sizeof($itms); $i++) { 
+        	$this->ec_shipment_m->deleteShipment($itms[$i]);
+        }
+
+        
+    	//var_dump($tes);
+    }
+    
+    public function CetakPO(){                    
+        $this->load->model('ec_shipment_m');
+        $this->load->config('ec');
+        $this->load->library('M_pdf');
+        $company_data = $this->config->item('company_data');        
+        $data['vendor']=$this->ec_shipment_m->get_vendor_detail($this->input->post('vendor'));
+        $data['po']=$this->ec_shipment_m->get_shipment_detail($this->input->post('po_no'),$this->input->post('shipment'),$this->input->post('vendor'));
+        $data['detail']=$this->ec_shipment_m->get_order($this->input->post('po_no'),$this->input->post('shipment'));
+        $data['company']=$company_data[$data['detail'][0]['EM_COMPANY']];
+        $mpdf = new M_pdf();
+        $html = $this->load->view('EC_Shipment/cetakPO', $data, TRUE);
+
+        $mpdf->pdf->writeHTML($html);
+        $footer_rr = $this->load->view('EC_Shipment/cetakPOFooter', $data['po'], TRUE);
+        $mpdf->pdf->SetHTMLFooter($footer_rr);        
+        $mpdf->pdf->output('Cetak PO Pembelian Langsung ' . $data['detail'][0]['PO_NO'] . '.pdf', 'I');
+    }
+}

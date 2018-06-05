@@ -1,0 +1,56 @@
+/*
+    0 => "Waiting Approval", // Normal
+                1 => "Approved", // Tahap_Negosiasi             
+                2 => "Rejected",
+                3 => "Renego", // Tahap_Negosiasi
+                4 => "Retender", // Auction
+                5 => "Canceled", // Auction
+*/
+
+.waiting,.waiting a{
+    background-color: #0A91FF;
+    color:#ffffff;
+}
+
+.approved,.approved a{
+    background-color: #02F604;
+    color:#ffffff;
+}
+
+.rejected,.rejected a{
+    background-color: #FFA896;
+    color:#ffffff;
+}
+
+.renego,.renego a{
+    background-color: #B853A3;
+    color:#ffffff;
+}
+
+.retender,.retender a{
+    background-color: #5F52B7;
+    color:#ffffff;
+}
+
+.canceled,.canceled a{
+    background-color: #D10707;
+    color:#ffffff;
+}
+
+
+table {
+    width: 100%; /* Optional */
+}
+
+/*tbody td, thead th {*/
+    /* width: 20%; */ /*  Optional */
+/*}*/
+
+/*thead, tbody { display: block; }*/
+
+tbody {
+    height: 350px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x:hidden;
+}
+
