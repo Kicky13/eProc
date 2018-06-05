@@ -1337,9 +1337,67 @@ class ec_ecatalog_m extends CI_Model
         INNER JOIN VND_HEADER VEN ON TW.VENDORNO=VEN.VENDOR_NO
         WHERE TW.MATNR = '" . $matno . "' AND TW.PLANT='" . $plant . "'
         ORDER BY TW.HARGA ASC";
-        
+
         $result = $this->db->query($SQL);
         return (array)$result->result_array();
+    }
+
+    public function getStokPL($vendor, $matno, $plant, $comp = '2000')
+    {
+        $SQL = "SELECT VEN.VENDOR_NAME,TW.*
+        FROM (SELECT DT.VENDORNO,DT.KODE_DETAIL_PENAWARAN,DT.PRICE HARGA,DT.PLANT,DT.DELIVERY_TIME,DT.NAMA_PLANT
+        ,TB3.STOK,TB3.DESKRIPSI_ITEM, TO_CHAR (
+                            TB1.START_DATE,
+                            'DD/MM/YYYY'
+                        ) AS STARTDATE,
+                        TO_CHAR (TB1.END_DATE, 'DD/MM/YYYY') AS ENDDATE,
+                        SM.MATNR,SM.PICTURE,SM.MAKTX,SM.MEINS,SM.ID_CAT, CAT.\"DESC\",TB1.*
+                        FROM (SELECT ASS.MATNO, ASS.START_DATE,CURRENCY, ASS.END_DATE, ASS.KODE_PENAWARAN FROM EC_PL_ASSIGN
+         ASS
+                        GROUP BY ASS.MATNO, ASS.START_DATE, ASS.END_DATE, ASS.KODE_PENAWARAN,CURRENCY) TB1
+                        INNER JOIN EC_M_STRATEGIC_MATERIAL SM ON TB1.MATNO=SM.MATNR
+                        INNER JOIN EC_M_CATEGORY CAT ON SM.ID_CAT=CAT.ID_CAT
+                        INNER JOIN (SELECT T1.*,PL.\"DESC\" NAMA_PLANT FROM EC_T_DETAIL_PENAWARAN T1
+                            INNER JOIN
+                            (SELECT  T1.PRICE HARGA,T1.* FROM EC_T_DETAIL_PENAWARAN
+         T1 
+                            INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE) INDATE FROM EC_T_DETAIL_PENAWARAN
+        
+                                                    GROUP BY MATNO,PLANT,VENDORNO ORDER BY PLANT,MATNO,VENDORNO
+        ) T2 
+                                                    ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND
+         T1.PLANT = T2.PLANT AND T1.INDATE = T2.INDATE 
+                             WHERE T1.PRICE>0
+                             ) T2 ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT
+         AND T1.INDATE = T2.INDATE AND T1.PRICE=T2.HARGA
+                            INNER JOIN EC_M_PLANT PL ON PL.PLANT=T1.PLANT 
+                            WHERE T1.PLANT IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY='" . $comp . "')) DT
+                        ON SM.MATNR = DT.MATNO  
+                        INNER JOIN (SELECT TB2.* FROM
+                            (
+                                SELECT
+                                    PEN.VENDORNO,
+                                    PEN.MATNO,
+                                    MAX (PEN.INDATE) AS DATE1
+                                FROM
+                                    EC_PL_PENAWARAN PEN 
+                                GROUP BY
+                                    PEN.VENDORNO,
+                                    PEN.MATNO
+                            ) TB1
+                        INNER JOIN EC_PL_PENAWARAN TB2 ON TB1.VENDORNO = TB2.VENDORNO
+                        AND TB1.MATNO = TB2.MATNO
+                        AND TB1.DATE1 = TB2.INDATE ) TB3 ON TB3.VENDORNO=DT.VENDORNO AND TB3.MATNO=DT.MATNO
+        
+                        WHERE SM.PUBLISHED_LANGSUNG = '1'  
+        ORDER BY ROWNUM ASC, SM.MATNR ASC)TW
+        INNER JOIN VND_HEADER VEN ON TW.VENDORNO=VEN.VENDOR_NO
+        WHERE TW.MATNR = '" . $matno . "' AND TW.PLANT = '" . $plant . "' AND TW.VENDORNO = '" . $vendor . "'
+        ORDER BY TW.HARGA ASC";
+
+        $result = $this->db->query($SQL);
+        return (array)$result->result_array();
+//        return $this->db->last_query();
     }
 
     public function get_count_pembelian_lgsg($search = '-', $kategori = '-', $harga_min = '-', $harga_max = '-',
