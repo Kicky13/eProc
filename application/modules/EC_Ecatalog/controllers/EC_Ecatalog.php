@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class EC_Ecatalog extends CI_Controller
+class EC_Ecatalog extends MX_Controller
 {
     public function __construct()
     {
@@ -468,8 +468,6 @@ class EC_Ecatalog extends CI_Controller
 //            }
 //        }
 //        die();
-        
-        
         $now = date("d-m-Y H:i:s");
         $this->load->model('ec_ecatalog_m');
         $this->load->model('EC_catalog_produk');
@@ -477,6 +475,7 @@ class EC_Ecatalog extends CI_Controller
         $user=$this->session->userdata['ID'];
         $korin=$this->input->post('korin');
         $gudang=$this->input->post('gudang');
+        $onCC = $this->ec_ecatalog_m->getEmailNotif($this->input->post('costcenter'), 1);
         $suksesReturn = array();
         $gagalReturn = array();
         $data=array();
@@ -513,7 +512,11 @@ class EC_Ecatalog extends CI_Controller
                     $po_no[$i]=$value['MESSAGE_V2'];
                     $sukses[$i] = true;
                 }
-            }           
+            }
+            $dest = 'yuwaka33@gmail.com';
+            $message = 'Email Tujuannya adalah '.$onCC['EMAIL'];
+            $subject = 'PO No. '.$po_no[$i].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $dest, $message, $subject);
 //            var_dump($SAP);
             $sk=1;
             if ($sukses[$i]) {

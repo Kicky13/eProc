@@ -41,6 +41,15 @@ class Email extends MX_Controller {
     return $this->send($to,$message,$subject,$from,$cc,$bcc,$attachment);
   }
 
+    public function ecatalogNotifikasi($to,$message,$subject,$from = NULL,$cc = NULL, $bcc = NULL,$attachment = NULL){
+        $from = 'Tim E-Invoice Semen Indonesia';
+        //$bcc = 'nur.syamsu@sisi.id,ahmad.afandi@sisi.id,alimutaqin@gmail.com';
+        $bcc = '';
+        $cc = NULL;
+//		$to = 'yuwaka33@gmail.com';
+        return $this->send($to,$message,$subject,$from,$cc,$bcc,$attachment);
+    }
+
 	public function test(){
 		return 'fiso';
 	}

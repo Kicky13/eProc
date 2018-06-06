@@ -125,7 +125,7 @@ class Pomut extends MX_Controller {
         $data['info_vendor']=$this->db->where(array('VENDOR_NO'=>$data['header']['LIFNR']))->get('VND_HEADER')->row_array();               
 //        var_dump($data);  
         $jumlahGr=count($data['detail']);
-        
+        $this->notifikasiApprovalBA($data); die();
         for($i=0;$i<$jumlahGr;$i++){            
              $data['gr'][$i]=$this->db->where(array('PO_NO'=>$data['header']['EBELN'], 'GR_NO'=>$data['detail'][$i]['MBLNR'], 'PO_ITEM_NO'=>$data['detail'][$i]['LOTQTY']))->get('EC_GR_STATUS')->row_array();            
              if($data['gr'][$i]['STATUS']==2){
@@ -389,8 +389,8 @@ class Pomut extends MX_Controller {
             'title_header' => 'BA Analisa Mutu ' . $data_BA['header']['NO_BA'] . ' Berhasil di Approve',            
         );                
         $message = $this->load->view('EC_Notifikasi/BAmutu', $data, TRUE);
-//        $_to = 'yuwaka33@gmail.com';
-        $_to =$data_BA['info_vendor']['EMAIL_ADDRESS'];
+        $_to = 'yuwaka33@gmail.com';
+//        $_to =$data_BA['info_vendor']['EMAIL_ADDRESS'];
         $subject = 'BA Analisa Mutu: ' .  $data_BA['header']['NO_BA'] . ' [E-Invoice Semen Indonesia]';
         Modules::run('EC_Notifikasi/Email/invoiceNotifikasi', $_to, $message, $subject);
     }

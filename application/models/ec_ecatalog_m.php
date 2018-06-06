@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_ecatalog_m extends CI_Model
 {
-    protected $table = 'EC_T_CONTRACT', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tablegr = 'EC_GR_MATERIAL', $ccPl = 'EC_PL_BUY_COSTCENTER';
+    protected $table = 'EC_T_CONTRACT', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tablegr = 'EC_GR_MATERIAL', $ccPl = 'EC_PL_BUY_COSTCENTER', $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE';
 
     public function __construct()
     {
@@ -684,6 +684,16 @@ class ec_ecatalog_m extends CI_Model
         $this->db->set('QTY', 'QTY+(-1)', FALSE);
         $this->db->where("ID_CHART", $data, TRUE);
         $this->db->update($this->tableCart);
+    }
+
+    public function getEmailNotif($CC, $CNF)
+    {
+        $this->db->from($this->tableMaster);
+        $this->db->join($this->employee, $this->tableMaster.'.USERID = '.$this->employee.'.ID');
+        $this->db->where('UK_CODE', $CC);
+        $this->db->where('PROGRESS_CNF', $CNF);
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 
     function updQtyCart($id, $qty)
