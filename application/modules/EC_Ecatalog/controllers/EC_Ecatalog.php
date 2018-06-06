@@ -436,38 +436,6 @@ class EC_Ecatalog extends MX_Controller
 
     public function confirm_pl($cheat = false)
     {           
-//        var_dump($this->input->post('gudang'));die();
-//        $this->load->library('sap_handler');
-//        $test=$this->sap_handler->getDetailPO('4500001006');
-//        var_dump($test);die();        
-//        $this->db->from('EC_PL_APPROVAL');
-//        $cek=$this->db->where('PO_NO','4500001019')->get()->num_rows();
-//        var_dump($cek);die();
-        
-//        $po_number[0]="4500001023";
-//        $po_number[1]="4500001024";
-//        var_dump($po_number);
-//        $return=array();
-////        for ($d = 0; $d < sizeof($po_number); $d++) {
-////            $return = $this->sap_handler->getDetailPO($po_number[$d]);                        
-////            for ($e = 0; $e < sizeof($return); $e++) {
-////                $itempo = $this->ec_ecatalog_m->getItemforLinePO($po_number[$d]);                
-////                for ($f = 0; $f < sizeof($itempo); $f++) {
-////                    if($return[$e]['MATERIAL']==$itempo[$f]['MATNO'] && $return[$e]['PO_NUMBER']==$itempo[$f]['PO_NO']){
-////                        $this->ec_ecatalog_m->updateLineItemPO($itempo[$f]['ID_CHART'], $return[$e]['PO_ITEM']);
-////                    }
-////                }
-////            }
-////        }             
-////        //INSERT FOR HEADER GR
-//        for ($d = 0; $d < sizeof($po_number); $d++) {
-//            $itempo = $this->ec_ecatalog_m->getItemforLinePO($po_number[$d]);
-//            print_r($itempo);
-//            for ($f = 0; $f < sizeof($itempo); $f++) {
-//                $this->ec_ecatalog_m->insertHeaderGR($itempo[$f]['PO_NO'], $itempo[$f]['MATNO'], $itempo[$f]['LINE_ITEM'], $itempo[$f]['QTY'], $now, $itempo[$f]['ID_CHART']);
-//            }
-//        }
-//        die();
         $now = date("d-m-Y H:i:s");
         $this->load->model('ec_ecatalog_m');
         $this->load->model('EC_catalog_produk');
@@ -492,16 +460,8 @@ class EC_Ecatalog extends MX_Controller
             $qty[$i]=$tambah[$i];                        
             $total[$i]+=$tambahH[$i];                        
         }     
-//        var_dump($data);die();
-//        var_dump($qty);
-//        var_dump($total);        
-//        die();
         $SAP=array();           
-//        var_dump($qty);
-//        var_dump($total);die();
-//        $gudang='1';//jika perlu approval gudang 1 dan jika tidak status =0
         for ($i=0;$i < sizeof($data);$i++) {            
-//            var_dump($data[$i]);die();  
             $SAP[$i] = $this->sap_handler->createPOLangsungCart($this->input->post('company'), $user, $data[$i], $this->input->post('costcenter'),
                     false); 
             $kmbl = "";
@@ -513,31 +473,16 @@ class EC_Ecatalog extends MX_Controller
                     $sukses[$i] = true;
                 }
             }
-            $dest = 'yuwaka33@gmail.com';
-            $data = array(
-                'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA ANALISA MUTU</h2>'.$table.'<br/>'
-                    . '<h2 style="text-align:center;">STATUS GR</h2>'.$tableGr.'<hr>',
-                'title' => 'BA Analisa Mutu ' . $data_BA['header']['NO_BA'] . ' Menunggu Approval Anda',
-                'title_header' => 'BA Analisa Mutu ' . $data_BA['header']['NO_BA'] . ' Berhasil di Approve',
-            );
-            $message = 'Email Tujuannya adalah '.$onCC['EMAIL'];
-            $subject = 'PO No. '.$po_no[$i].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
-            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $dest, $message, $subject);
-//            var_dump($SAP);
+            $this->notifToEmployee('kicky120@gmail.com', $po_no[$i]);
+            $this->notifToVendor($vendor[$i]['EMAIL_ADDRESS'], $po_no[$i]);
             $sk=1;
             if ($sukses[$i]) {
-//                var_dump($SAP);
-//                var_dump(sizeof($SAP));
-                //permasalahan looping ke oracle
                 for($j=0;$j<sizeof($data[$i]);$j++){
-//                    echo "perulangan update oracle item material:";
-//                    var_dump($data[$i][$j]);
-                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $qty[$i], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);                    
+                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $qty[$i], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);
                     $suksesReturn[$i][$j] = array("PO" => $po_no[$i], "MATNO" => $data[$i][$j]['MATNO'], "MAKTX" => $data[$i][$j]['MAKTX'],
                         "PLANT" => $data[$i][$j]['PLANT'], "NAMA_PLANT" => $data[$i][$j]['NAMA_PLANT'], "VENDOR_NAME" => $vendor[$i]['VENDOR_NAME']);                                       
                 }            
                 $sk = 1; 
-//                echo json_encode($suksesReturn);
             } else {
                 for($j=0;$j<sizeof($SAP[$i]);$j++){
                     $this->ec_ecatalog_m->POfailedOne($user, 'PL2018',
@@ -550,20 +495,11 @@ class EC_Ecatalog extends MX_Controller
             if($sk==1){
                 $po_number[$i] = $po_no[$i];
             }            
-//                var_dump($kmbl[$i]);
-//                var_dump($sukses[$i]);                
-////        errror            
         }               
-//        echo "PO yang terbit: <br/>";
-//        var_dump($po_number);        
         for ($d = 0; $d < sizeof($po_number); $d++) {
             $return = $this->sap_handler->getDetailPO($po_number[$d]);
-//            echo "get detail dari SAP:<br/>"; 
-//            var_dump($return);        
             for ($e = 0; $e < sizeof($return); $e++) {
                 $itempo = $this->ec_ecatalog_m->getItemforLinePO($po_number[$d]);
-//                echo "get line item PO:";
-//                var_dump($itempo);
                 for ($f = 0; $f < sizeof($itempo); $f++) {
                     if($return[$e]['MATERIAL']==$itempo[$f]['MATNO'] && $return[$e]['PO_NUMBER']==$itempo[$f]['PO_NO']){
                         $this->ec_ecatalog_m->updateLineItemPO($itempo[$f]['ID_CHART'], $return[$e]['PO_ITEM']);
@@ -571,17 +507,58 @@ class EC_Ecatalog extends MX_Controller
                 }
             }
         }                  
-//        //INSERT FOR HEADER GR
         for ($d = 0; $d < sizeof($po_number); $d++) {
-            $itempo = $this->ec_ecatalog_m->getItemforLinePO($po_number[$d]);
-//            echo "get line item PO Header:";
-//            var_dump($itempo);            
+            $itempo = $this->ec_ecatalog_m->getItemforLinePO($po_number[$d]); 
             for ($f = 0; $f < sizeof($itempo); $f++) {
                 $this->ec_ecatalog_m->insertHeaderGR($itempo[$f]['PO_NO'], $itempo[$f]['MATNO'], $itempo[$f]['LINE_ITEM'], $itempo[$f]['QTY'], $now, $itempo[$f]['ID_CHART']);
             }
         }
                 
         echo json_encode(array('suksesReturn' => $suksesReturn, 'gagalReturn' => $gagalReturn));
+    }
+
+    public function testQuery($VENDORNO)
+    {
+        $tableCart = 'EC_T_CHART';
+        $ID_USER = $this->session->userdata['ID'];
+        $this->db->from($this->tableCart);
+        $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CHART.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'inner');
+        $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('(SELECT PLANT,"DESC" NAMA_PLANT FROM EC_M_PLANT) PLN', 'PLN.PLANT = EC_T_DETAIL_PENAWARAN.PLANT', 'inner');
+        $this->db->where("PUBLISHED_LANGSUNG", '1', TRUE);
+        $this->db->where("ID_USER", $ID_USER, TRUE);
+        $this->db->where("EC_T_CHART.STATUS_CHART ", '0', TRUE);
+        $this->db->where("EC_T_CHART.BUYONE ", '0', TRUE);
+        $this->db->where('EC_T_DETAIL_PENAWARAN.VENDORNO', $VENDORNO);
+        $result = $this->db->get();
+        echo $this->db->last_query();
+//        print json_encode((array)$result->result_array());
+    }
+
+    public function notifToEmployee($email, $po)
+    {
+        $table = '';
+        $data = array(
+            'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+            'title' => 'Nomor PO ' . $po . ' Menunggu Approval Anda',
+            'title_header' => 'Nomor PO ' . $po . ' Berhasil di Buat',
+        );
+        $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+        $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+        Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $email, $message, $subject);
+    }
+
+    public function notifToVendor($vendor, $po)
+    {
+        $table = '';
+        $data = array(
+            'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+            'title' => 'Nomor PO ' . $po . ' Sebagai Notifikasi Anda',
+            'title_header' => 'Nomor PO ' . $po . ' Berhasil di Buat',
+        );
+        $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+        $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+        Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
     }
     
     public function confirm_pl_backup($cheat = false)

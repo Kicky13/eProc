@@ -1556,7 +1556,7 @@ class ec_catalog_produk extends CI_Model
     
     public function get_vendor_PO_PL($ID_USER)
     {
-        $this->db->select('EC_T_DETAIL_PENAWARAN.VENDORNO,VENDOR_NAME');
+        $this->db->select('EC_T_DETAIL_PENAWARAN.VENDORNO,VENDOR_NAME, EMAIL_ADDRESS');
         $this->db->from($this->tableCart);
         $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CHART.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'inner');
         $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
@@ -1566,7 +1566,7 @@ class ec_catalog_produk extends CI_Model
         $this->db->where("ID_USER", $ID_USER, TRUE);
         $this->db->where("EC_T_CHART.STATUS_CHART ", '0', TRUE);
         $this->db->where("EC_T_CHART.BUYONE ", '0', TRUE);        
-        $this->db->group_by('EC_T_DETAIL_PENAWARAN.VENDORNO, VENDOR_NAME');             
+        $this->db->group_by('EC_T_DETAIL_PENAWARAN.VENDORNO, VENDOR_NAME, EMAIL_ADDRESS');
         $this->db->order_by('EC_T_DETAIL_PENAWARAN.VENDORNO', 'ASC');        
         $result = $this->db->get();
         return (array)$result->result_array();
