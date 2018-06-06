@@ -119,7 +119,7 @@ function chk23() {
         // $("#myModalLabel").text('Konfirmasi Crate PO dengan ' + countSameCon + ' tipe barang berbeda')
 
         // $("#myModalLabel").text('Tiap nomer PO terbit berdasarkan nomer kontrak barang yang sama')
-        $("#btnCofirmmm").show();
+        $("#btnCofirmmm").hide();
         jml = 0,
             vndor = 0;
         vndor_no = "-";
@@ -289,7 +289,6 @@ function confirm(elm, id) {
         }, 10000);
 
     });
-
 }
 
 $('#modalPO').on('hidden.bs.modal', function (event) {
@@ -488,6 +487,12 @@ $(document).ready(function () {
         chk23();
     });
 
+    // if(document.getElementById("korin").value()) {
+    //     $('#btnCofirmmm').show();
+    // } else {
+    //     $('#btnCofirmmm').hide();
+    // }
+
     $('#btn_confirm').click(function (event) {
         if ($(this).hasClass("disabled")) {
             event.stopPropagation();
@@ -556,11 +561,13 @@ $(document).ready(function () {
                     $("#messagesUpload").show();
                     $("#messagesUpload").attr('style', 'color: green;');
                     $("#messagesUpload").text('Upload Sukses..!!');
+                    $("#btnCofirmmm").show();
 
                 } else {
                     $("#messagesUpload").show();
                     $("#messagesUpload").attr('style', 'color: red;');
                     $("#messagesUpload").text('Upload Gagal..!!');
+                    $("#btnCofirmmm").hide();
                 }
                 // console.log(result);
                 // console.log(result['file_name']);
