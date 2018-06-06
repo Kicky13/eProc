@@ -514,6 +514,12 @@ class EC_Ecatalog extends MX_Controller
                 }
             }
             $dest = 'yuwaka33@gmail.com';
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA ANALISA MUTU</h2>'.$table.'<br/>'
+                    . '<h2 style="text-align:center;">STATUS GR</h2>'.$tableGr.'<hr>',
+                'title' => 'BA Analisa Mutu ' . $data_BA['header']['NO_BA'] . ' Menunggu Approval Anda',
+                'title_header' => 'BA Analisa Mutu ' . $data_BA['header']['NO_BA'] . ' Berhasil di Approve',
+            );
             $message = 'Email Tujuannya adalah '.$onCC['EMAIL'];
             $subject = 'PO No. '.$po_no[$i].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
             Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $dest, $message, $subject);
