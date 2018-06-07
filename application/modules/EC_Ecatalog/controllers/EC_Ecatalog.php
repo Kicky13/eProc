@@ -473,8 +473,10 @@ class EC_Ecatalog extends MX_Controller
                     $sukses[$i] = true;
                 }
             }
-            $this->notifToEmployee('kicky120@gmail.com', $po_no[$i]);
-            $this->notifToVendor($vendor[$i]['EMAIL_ADDRESS'], $po_no[$i]);
+            for ($n = 0; $n < count($data); $n++){
+                $data[$i][$n]['PO_NO'] = $po_no[$i];
+            }
+            $this->notifToVendor($vendor[$i]['EMAIL_ADDRESS'], $data[$i]);
             $sk=1;
             if ($sukses[$i]) {
                 for($j=0;$j<sizeof($data[$i]);$j++){
@@ -495,7 +497,8 @@ class EC_Ecatalog extends MX_Controller
             if($sk==1){
                 $po_number[$i] = $po_no[$i];
             }            
-        }               
+        }
+        $this->notifToEmployee('kicky120@gmail.com', $data);
         for ($d = 0; $d < sizeof($po_number); $d++) {
             $return = $this->sap_handler->getDetailPO($po_number[$d]);
             for ($e = 0; $e < sizeof($return); $e++) {
@@ -517,11 +520,12 @@ class EC_Ecatalog extends MX_Controller
         echo json_encode(array('suksesReturn' => $suksesReturn, 'gagalReturn' => $gagalReturn));
     }
 
-    public function testQuery($VENDORNO)
+    public function testQuery()
     {
+        $VENDORNO = '0000110011';
         $tableCart = 'EC_T_CHART';
         $ID_USER = $this->session->userdata['ID'];
-        $this->db->from($this->tableCart);
+        $this->db->from($tableCart);
         $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CHART.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'inner');
         $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
         $this->db->join('(SELECT PLANT,"DESC" NAMA_PLANT FROM EC_M_PLANT) PLN', 'PLN.PLANT = EC_T_DETAIL_PENAWARAN.PLANT', 'inner');
@@ -535,30 +539,120 @@ class EC_Ecatalog extends MX_Controller
 //        print json_encode((array)$result->result_array());
     }
 
-    public function notifToEmployee($email, $po)
+    public function notifToEmployee($email, $tableData)
     {
-        $table = '';
-        $data = array(
-            'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
-            'title' => 'Nomor PO ' . $po . ' Menunggu Approval Anda',
-            'title_header' => 'Nomor PO ' . $po . ' Berhasil di Buat',
-        );
-        $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
-        $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia]';
-        Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $email, $message, $subject);
+        if (isset($tableData)){
+            $po = '';
+            foreach ($tableData as $x){
+                $po .= '('.$x[0]['PO_NO'].')';
+            }
+            $table = $this->buildTableUser($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'Nomor PO ' . $po . ' Menunggu Approval Anda',
+                'title_header' => 'Nomor PO ' . $po . ' Berhasil di Buat',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $email, $message, $subject);
+        }
     }
 
-    public function notifToVendor($vendor, $po)
+    public function notifToVendor($vendor, $tableData)
     {
-        $table = '';
-        $data = array(
-            'content' => '<h2 style="text-align:center;">DETAIL BERITA ACARA PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
-            'title' => 'Nomor PO ' . $po . ' Sebagai Notifikasi Anda',
-            'title_header' => 'Nomor PO ' . $po . ' Berhasil di Buat',
+        if (isset($tableData)){
+            $table = $this->buildTableVendor($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Sebagai Notifikasi Anda',
+                'title_header' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Buat',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'PO No. '.$tableData[0]['PO_NO'].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
+        }
+    }
+
+    private function buildTableUser($tableData) {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
         );
-        $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
-        $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia]';
-        Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;" class="text-center"> No.</th>
+                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;"> No. Vendor</th>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Satuan</th>
+                <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Harga per Satuan</th>
+                <th style="font-weight:600;"> Total</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        $no=1;
+        foreach ($tableData as $x) {
+            foreach ($x as $d){
+                if (isset($d['VENDORNO'])){
+                    $_tr = '<tr>
+                    <td> '.$no++.'</td>
+                    <td> '.$d['PO_NO'].'</td>                      
+                    <td> '.$d['VENDORNO'].'</td>
+                    <td> '.$d['MATNR'].'</td>
+                    <td> '.$d['MAKTX'].'</td>
+                    <td> '.$d['MEINS'].'</td>                      
+                    <td> '.$d['QTY'].'</td>
+                    <td> Rp. '.number_format($d['PRICE'], "00", ",", ".").'</td>                      
+                    <td> Rp. '.number_format($d['QTY'] * $d['PRICE'], "00", ",", ".").'</td>                            
+                  </tr>';
+                    array_push($tbody, $_tr);
+                }
+            }
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
+    }
+
+    private function buildTableVendor($tableData) {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;" class="text-center"> No.</th>
+                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Satuan</th>
+                <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Harga per Satuan</th>
+                <th style="font-weight:600;"> Total</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        $no=1;
+        foreach ($tableData as $d) {
+            if (isset($d['MATNR'])){
+                $_tr = '<tr>
+                    <td> '.$no++.'</td>
+                    <td> '.$d['PO_NO'].'</td>                      
+                    <td> '.$d['MATNR'].'</td>
+                    <td> '.$d['MAKTX'].'</td>
+                    <td> '.$d['MEINS'].'</td>                      
+                    <td> '.$d['QTY'].'</td>
+                    <td> Rp. '.number_format($d['PRICE'], ",", "00", ".").'</td>                      
+                    <td> Rp. '.number_format($d['QTY'] * $d['PRICE'], ",", "00", ".").'</td>                            
+                  </tr>';
+                array_push($tbody, $_tr);
+            }
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
     }
     
     public function confirm_pl_backup($cheat = false)
