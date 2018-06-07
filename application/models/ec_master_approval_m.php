@@ -93,6 +93,15 @@ class ec_master_approval_m extends CI_Model {
         return (array)$result->result_array();
     }
 
+    public function getActive_user($USERID)
+    {
+        $this->db->from($this->tableMaster);
+        $this->db->where('USERID', $USERID);
+        $this->db->order_by('UK_CODE', 'DESC');
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
     public function getEmailNotif($CC, $CNF)
     {
         $this->db->from($this->tableMaster);
@@ -101,6 +110,16 @@ class ec_master_approval_m extends CI_Model {
         $this->db->where('PROGRESS_CNF', $CNF);
         $result = $this->db->get();
         return (array)$result->row_array();
+    }
+
+    public function getEmailNext($CC, $CNF)
+    {
+        $this->db->from($this->tableMaster);
+        $this->db->join($this->employee, $this->tableMaster.'.USERID = '.$this->employee.'.ID');
+        $this->db->where('UK_CODE', $CC);
+        $this->db->where('PROGRESS_CNF', $CNF);
+        $result = $this->db->get();
+        return (array)$result->result_array();
     }
 
     public function getCNF($cc){

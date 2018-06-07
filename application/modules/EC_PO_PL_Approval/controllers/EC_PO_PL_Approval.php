@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_PO_PL_Approval extends CI_Controller
+class EC_PO_PL_Approval extends MX_Controller
 {
 
     private $user;
@@ -15,6 +15,64 @@ class EC_PO_PL_Approval extends CI_Controller
         $this->load->library('Layout');
         $this->load->helper("security");
         $this->user = $this->session->userdata('FULLNAME');
+    }
+
+    public function sendNotif($email, $tableData)
+    {
+        $send = 'kicky120@gmail.com';
+        if (isset($tableData)){
+            $po = $tableData['PO_NO'];
+            $table = $this->buildTableUser($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'Nomor PO ' . $po . ' Mohon Anda Approve Fwd To : '.$email,
+                'title_header' => 'Nomor PO ' . $po . ' Berhasil di Approve',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'PO No. '.$po.' Berhasil dibuat.[E-Catalog Semen Indonesia] Fwd To : '.$email;
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $send, $message, $subject);
+        }
+    }
+
+    private function buildTableUser($tableData) {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;" class="text-center"> No.</th>
+                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;"> No. Vendor</th>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Satuan</th>
+                <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Harga per Satuan</th>
+                <th style="font-weight:600;"> Total</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        $no=1;
+        foreach ($tableData['ITEM'] as $d) {
+            if (isset($tableData['VENDORNO'])){
+                $_tr = '<tr>
+                    <td> '.$no++.'</td>
+                    <td> '.$tableData['PO_NO'].'</td>                      
+                    <td> '.$tableData['VENDOR_NAME'].'</td>
+                    <td> '.$d['MATNO'].'</td>
+                    <td> '.$d['MAKTX'].'</td>
+                    <td> '.$d['MEINS'].'</td>                      
+                    <td> '.$d['QTY'].'</td>
+                    <td> Rp. '.number_format($d['PRICE'], "00", ",", ".").'</td>                      
+                    <td> Rp. '.number_format($d['TOTAL'], "00", ",", ".").'</td>                            
+                  </tr>';
+                array_push($tbody, $_tr);
+            }
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
     }
 
     public function index($brhasil = false)
@@ -55,6 +113,7 @@ class EC_PO_PL_Approval extends CI_Controller
         header('Content-Type: application/json');
         $this->load->model('ec_po_pl_approval_m');
         $data2=0;
+        $this->notifToNext($PO);
         if ($this->ec_po_pl_approval_m->approve($PO)) {
             $this->load->library('sap_handler');
             $data = $this->ec_po_pl_approval_m->detailCart($PO);
@@ -69,6 +128,36 @@ class EC_PO_PL_Approval extends CI_Controller
         redirect('EC_PO_PL_Approval/index/'.$data2);
     }
 
+    public function notifToNext($po)
+    {
+        $data = $this->getDetailPO($po);
+        $this->load->model('ec_master_approval_m');
+        $user = $this->session->userdata['ID'];
+        $active = $this->ec_master_approval_m->getActive_user($user);
+        $cc = $active['UK_CODE'];
+        $rec_CNF = $active['PROGRESS_CNF'];
+        $notif = 'Failed to Send';
+        switch ($rec_CNF){
+            case 1:
+                $next = $this->ec_master_approval_m->getEmailNext($cc, $rec_CNF + 1);
+                foreach ($next as $x){
+                    $this->sendNotif($x['EMAIL'], $data);
+                    $notif = 'Email Sent';
+                }
+                break;
+            case 2:
+                $next = $this->ec_master_approval_m->getEmailNext($cc, '0');
+                foreach ($next as $x){
+                    $this->sendNotif($x['EMAIL'], $data);
+                    $notif = 'Email Sent';
+                }
+                break;
+            default:
+                break;
+        }
+        return $notif;
+    }
+
     public function testSql()
     {
         $userid = $this->session->userdata['ID'];
@@ -78,26 +167,44 @@ class EC_PO_PL_Approval extends CI_Controller
 //        $this->db->get();
 //        echo $this->db->last_query(); exit;
 
-        $this->db->select('CT.PO_NO NOMERPO,TO_CHAR ((TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7), \'dd-mm-yyyy hh24:mi:ss\' ) COMMIT_DATE, CT.DATE_BUY,EC_PL_APPROVAL.CURR, VND_HEADER.VENDOR_NAME,  EC_PL_APPROVAL."VALUE",TDP.STOK_COMMIT, EC_PL_APPROVAL.VENDORNO,  EC_TRACKING_PO.*,TDP.DELIVERY_TIME',
-            false);
-        $this->db->from('(SELECT  PO_NO,  DATE_BUY FROM EC_T_CHART  WHERE CONTRACT_NO =  \'PL2018\' AND PO_NO IS NOT NULL GROUP BY  PO_NO, DATE_BUY ) CT');
-        $this->db->join('(SELECT P1.* FROM EC_TRACKING_PO P1 INNER JOIN (SELECT PO_NO,MAX(INDATE) DATE1 FROM EC_TRACKING_PO GROUP BY PO_NO) P2 ON P1.PO_NO=P2.PO_NO AND P1.INDATE=P2.DATE1 )EC_TRACKING_PO',
-            'EC_TRACKING_PO.PO_NO = CT.PO_NO', 'left');
-        $this->db->join('EC_PL_APPROVAL', 'CT.PO_NO = EC_PL_APPROVAL.PO_NO', 'inner');
-        $this->db->join('VND_HEADER', 'VND_HEADER.VENDOR_NO = EC_PL_APPROVAL.VENDORNO', 'left');
-        $this->db->join('EC_PL_CONFIG_APPROVAL', 'EC_PL_APPROVAL.PROGRESS_APP = EC_PL_CONFIG_APPROVAL.PROGRESS_CNF AND EC_PL_APPROVAL.COSCENTER = EC_PL_CONFIG_APPROVAL.UK_CODE', 'inner');
-        $this->db->join('(SELECT SUM(PRICE) PRICE,SUM(STOK_COMMIT) STOK_COMMIT,PO_NO,DELIVERY_TIME FROM EC_T_DETAIL_PENAWARAN 
-                            INNER JOIN EC_T_CHART CT ON CT.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN 
-                            GROUP BY PO_NO,DELIVERY_TIME) TDP ', 'CT.PO_NO = TDP.PO_NO', 'inner');
-        $this->db->where('EC_PL_CONFIG_APPROVAL.USERID', $userid, TRUE);
-        //        $this->db->where('EC_PL_CONFIG_APPROVAL.UK_CODE', $userid, TRUE);
-        $this->db->where('EC_PL_APPROVAL.STATUS', '1', TRUE);
-        $this->db->where('EC_PL_APPROVAL.PROGRESS_APP_GUDANG', '0', TRUE);
-        // $this->db->where('EC_PL_APPROVAL.PROGRESS_APP<=', 'EC_PL_APPROVAL.MAX_APPROVE', false);
-        $this->db->where('(TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7) >=', '(SELECT SYSDATE FROM DUAL)', false);
-        $this->db->order_by('CT.PO_NO DESC');
-        $this->db->get();
-        echo $this->db->last_query(); exit;
+//        $this->db->select('CT.PO_NO NOMERPO,TO_CHAR ((TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7), \'dd-mm-yyyy hh24:mi:ss\' ) COMMIT_DATE, CT.DATE_BUY,EC_PL_APPROVAL.CURR, VND_HEADER.VENDOR_NAME,  EC_PL_APPROVAL."VALUE",TDP.STOK_COMMIT, EC_PL_APPROVAL.VENDORNO,  EC_TRACKING_PO.*,TDP.DELIVERY_TIME',
+//            false);
+//        $this->db->from('(SELECT  PO_NO,  DATE_BUY FROM EC_T_CHART  WHERE CONTRACT_NO =  \'PL2018\' AND PO_NO IS NOT NULL GROUP BY  PO_NO, DATE_BUY ) CT');
+//        $this->db->join('(SELECT P1.* FROM EC_TRACKING_PO P1 INNER JOIN (SELECT PO_NO,MAX(INDATE) DATE1 FROM EC_TRACKING_PO GROUP BY PO_NO) P2 ON P1.PO_NO=P2.PO_NO AND P1.INDATE=P2.DATE1 )EC_TRACKING_PO',
+//            'EC_TRACKING_PO.PO_NO = CT.PO_NO', 'left');
+//        $this->db->join('EC_PL_APPROVAL', 'CT.PO_NO = EC_PL_APPROVAL.PO_NO', 'inner');
+//        $this->db->join('VND_HEADER', 'VND_HEADER.VENDOR_NO = EC_PL_APPROVAL.VENDORNO', 'left');
+//        $this->db->join('EC_PL_CONFIG_APPROVAL', 'EC_PL_APPROVAL.PROGRESS_APP = EC_PL_CONFIG_APPROVAL.PROGRESS_CNF AND EC_PL_APPROVAL.COSCENTER = EC_PL_CONFIG_APPROVAL.UK_CODE', 'inner');
+//        $this->db->join('(SELECT SUM(PRICE) PRICE,SUM(STOK_COMMIT) STOK_COMMIT,PO_NO,DELIVERY_TIME FROM EC_T_DETAIL_PENAWARAN
+//                            INNER JOIN EC_T_CHART CT ON CT.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN
+//                            GROUP BY PO_NO,DELIVERY_TIME) TDP ', 'CT.PO_NO = TDP.PO_NO', 'inner');
+//        $this->db->where('EC_PL_CONFIG_APPROVAL.USERID', $userid, TRUE);
+//        //        $this->db->where('EC_PL_CONFIG_APPROVAL.UK_CODE', $userid, TRUE);
+//        $this->db->where('EC_PL_APPROVAL.STATUS', '1', TRUE);
+//        $this->db->where('EC_PL_APPROVAL.PROGRESS_APP_GUDANG', '0', TRUE);
+//        // $this->db->where('EC_PL_APPROVAL.PROGRESS_APP<=', 'EC_PL_APPROVAL.MAX_APPROVE', false);
+//        $this->db->where('(TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7) >=', '(SELECT SYSDATE FROM DUAL)', false);
+//        $this->db->order_by('CT.PO_NO DESC');
+        $tableMaster = 'EC_PL_CONFIG_APPROVAL';
+        $employee = 'ADM_EMPLOYEE';
+        $USERID = $this->session->userdata['ID'];
+        $this->db->from($tableMaster);
+        $this->db->where('USERID', $USERID);
+        $this->db->order_by('UK_CODE', 'DESC');
+        $sql = $this->db->get();
+        $result= (array)$sql->row_array();
+
+        $CNF = $result['PROGRESS_CNF'];
+        $CC = $result['UK_CODE'];
+
+        $this->db->from($tableMaster);
+        $this->db->join($employee, $tableMaster.'.USERID = '.$employee.'.ID');
+        $this->db->where('UK_CODE', $CC);
+        $this->db->where('PROGRESS_CNF', $CNF);
+        $result2 = $this->db->get();
+        echo json_encode((array)$result2->result_array());
+//        echo $this->db->last_query();
+        exit;
     }
 
     public function approveTes($PO = '4500000496')
@@ -139,5 +246,14 @@ class EC_PO_PL_Approval extends CI_Controller
         header('Content-Type: application/json');
         $this->load->model('ec_po_pl_approval_m');
         echo json_encode($this->ec_po_pl_approval_m->history($PO));
+    }
+
+    public function getDetailPO($po)
+    {
+        $this->load->model('ec_po_pl_approval_m');
+        $user = $this->session->userdata['ID'];
+        $data = $this->ec_po_pl_approval_m->getDetailPO($user, $po);
+        $data['ITEM'] = $this->ec_po_pl_approval_m->detail($po);
+        return $data;
     }
 }
