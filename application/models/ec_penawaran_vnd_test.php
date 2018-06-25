@@ -11,7 +11,7 @@ class ec_penawaran_vnd_test extends CI_Model
         $this->db = $this->load->database('default', TRUE);
     }
 
-    public function get_data_produk($vendorno, $mins = 0, $max = 12)
+    public function get_data_produk($vendorno, $mins = 0, $max = 10)
     {
         /*$SQL = "SELECT  DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, ASS.*,
                     (SELECT TB1.STOK FROM EC_PL_PENAWARAN TB1 WHERE TB1.KODE_PENAWARAN=(SELECT MAX(TB2.KODE_PENAWARAN) FROM EC_PL_PENAWARAN TB2 WHERE TB2.VENDORNO='" . $vendorno . "' AND TB2.MATNO IN ASS.MATNO) ) AS STOK
@@ -47,7 +47,7 @@ class ec_penawaran_vnd_test extends CI_Model
         
 
         $result = $this->db->query($SQL)->result_array();
-        for ($i == $mins; $i <= $max; $i++){
+        for ($i = $mins; $i < 1; $i++){
             if(isset($result[$i])){
                 $a[$i] = $result[$i];
             }

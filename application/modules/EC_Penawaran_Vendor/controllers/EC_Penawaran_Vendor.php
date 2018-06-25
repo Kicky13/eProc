@@ -35,12 +35,31 @@ class EC_Penawaran_Vendor extends CI_Controller
         $this->layout->render('list', $data);
     }
 
+    public function indexTest($kode = '-')
+    {
+        $data['title'] = "Penawaran Produk";
+
+        $this->load->model('ec_penawaran_vnd_test');
+        $data['plant'] = $this->ec_penawaran_vnd_test->getPlant();
+
+        $this->layout->set_table_js();
+        $this->layout->set_table_cs();
+        $this->layout->add_js('bootbox.js');
+        $this->layout->add_js('jquery.form.min.js');
+        $this->layout->add_css('pages/EC_menu_nav.css');
+        $this->layout->add_css('plugins/bootstrap-datepicker/datepicker.css');
+        $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
+        $this->layout->add_js('pages/EC_penawaran_ven_test.js');
+        $this->layout->add_css('pages/EC_style_ecatalog.css');
+        $this->layout->render('list', $data);
+    }
+
     public function get_data()
     {
 //        var_dump($this->input->post('limitMax'));die();
         $this->load->model('ec_penawaran_vnd_test');        
         $dataCurr = $this->ec_penawaran_vnd_test->get_MasterCurrency();
-        $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO'],$this->input->post('limitMin'), $this->input->post('limitMax'));        
+        $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO']);
         $dataCount = $this->ec_penawaran_vnd_test->get_Count_produk($this->session->userdata['VENDOR_NO']);        
 //        var_dump($dataProduk);die(); 
         $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount));

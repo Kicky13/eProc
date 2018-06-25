@@ -10,6 +10,7 @@ var range_harga = ['-', '-'],
     pageMaxOld = 0,
     old = '-', hgh2,
     compareCntrk = [];
+
 function loadDataList() {
 
     $.ajax({
@@ -44,8 +45,7 @@ function loadDataList() {
         $("#divAttributes").empty()
         if (data.data.length == 0) {
             $("#divAttributes").append('<div class="row text-center">Data Tidak Ditemukan!!</div>')
-        }
-        else {
+        } else {
             header = ('<div class="row">')
             header += ('<div class="col-md-6" style="font-size:16px"><strong>&nbsp;&nbsp;List Item:</strong></div>')
             // header += ('<div class="col-md-5">')
@@ -957,6 +957,7 @@ var tt1 = [t1, t2, t3, t4, t5, t6, t7];
 var tt2 = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10];
 var tt3 = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14];
 $(document).ready(function () {
+    // loadDataTest();
     loadDataList();
 	
 	$("#form_simpan").ajaxForm({
