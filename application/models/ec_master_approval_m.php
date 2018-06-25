@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_master_approval_m extends CI_Model {
-	protected $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE';
+	protected $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE', $cart = 'EC_T_CHART', $vendor = 'VND_HEADER';
 	public function __construct() {
 		parent::__construct();
 		$this -> db = $this -> load -> database('default', TRUE);
@@ -98,6 +98,15 @@ class ec_master_approval_m extends CI_Model {
         $this->db->from($this->tableMaster);
         $this->db->where('USERID', $USERID);
         $this->db->order_by('UK_CODE', 'DESC');
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    public function getVendor_target($po)
+    {
+        $this->db->from($this->cart);
+        $this->db->join($this->vendor, $this->cart.'.VENDORNO = '.$this->vendor.'.VENDOR_NO');
+        $this->db->where('PO_NO', $po);
         $result = $this->db->get();
         return (array)$result->row_array();
     }

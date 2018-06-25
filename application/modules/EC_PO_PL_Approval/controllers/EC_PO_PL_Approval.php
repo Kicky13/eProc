@@ -42,7 +42,7 @@ class EC_PO_PL_Approval extends MX_Controller
             <tr>
                 <th style="font-weight:600;" class="text-center"> No.</th>
                 <th style="font-weight:600;"> No. PO</th>
-                <th style="font-weight:600;"> No. Vendor</th>
+                <th style="font-weight:600;"> Nama Vendor</th>
                 <th style="font-weight:600;"> No. Material</th>
                 <th style="font-weight:600;"> Nama Material</th>
                 <th style="font-weight:600;"> Satuan</th>
@@ -59,6 +59,45 @@ class EC_PO_PL_Approval extends MX_Controller
                     <td> '.$no++.'</td>
                     <td> '.$tableData['PO_NO'].'</td>                      
                     <td> '.$tableData['VENDOR_NAME'].'</td>
+                    <td> '.$d['MATNO'].'</td>
+                    <td> '.$d['MAKTX'].'</td>
+                    <td> '.$d['MEINS'].'</td>                      
+                    <td> '.$d['QTY'].'</td>
+                    <td> Rp. '.number_format($d['PRICE'], "00", ",", ".").'</td>                      
+                    <td> Rp. '.number_format($d['TOTAL'], "00", ",", ".").'</td>                            
+                  </tr>';
+                array_push($tbody, $_tr);
+            }
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
+    }
+
+    private function buildTableVendor($tableData) {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;" class="text-center"> No.</th>
+                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Satuan</th>
+                <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Harga per Satuan</th>
+                <th style="font-weight:600;"> Total</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        $no=1;
+        foreach ($tableData['ITEM'] as $d) {
+            if (isset($tableData['VENDORNO'])){
+                $_tr = '<tr>
+                    <td> '.$no++.'</td>
+                    <td> '.$tableData['PO_NO'].'</td>
                     <td> '.$d['MATNO'].'</td>
                     <td> '.$d['MAKTX'].'</td>
                     <td> '.$d['MEINS'].'</td>                      
@@ -134,6 +173,7 @@ class EC_PO_PL_Approval extends MX_Controller
         $this->load->model('ec_master_approval_m');
         $user = $this->session->userdata['ID'];
         $active = $this->ec_master_approval_m->getActive_user($user);
+        $vnd = $this->ec_master_approval_m->getVendor_target($po);
         $cc = $active['UK_CODE'];
         $rec_CNF = $active['PROGRESS_CNF'];
         $notif = 'Failed to Send';
@@ -144,6 +184,7 @@ class EC_PO_PL_Approval extends MX_Controller
                     $this->sendNotif($x['EMAIL'], $data);
                     $notif = 'Email Sent';
                 }
+                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'KA 1');
                 break;
             case 2:
                 $next = $this->ec_master_approval_m->getEmailNext($cc, '0');
@@ -151,11 +192,28 @@ class EC_PO_PL_Approval extends MX_Controller
                     $this->sendNotif($x['EMAIL'], $data);
                     $notif = 'Email Sent';
                 }
+                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'KA 2');
                 break;
             default:
+                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'Gudang');
                 break;
         }
         return $notif;
+    }
+
+    public function sendVendor($vendor, $tableData, $user)
+    {
+        if (isset($tableData)){
+            $table = $this->buildTableVendor($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Approve Oleh '.$user,
+                'title_header' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Approve',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'PO No. '.$tableData[0]['PO_NO'].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
+        }
     }
 
     public function testSql()

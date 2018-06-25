@@ -564,7 +564,7 @@ class EC_Ecatalog extends MX_Controller
             $table = $this->buildTableVendor($tableData);
             $data = array(
                 'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
-                'title' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Sebagai Notifikasi Anda',
+                'title' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Buat',
                 'title_header' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Buat',
             );
             $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
