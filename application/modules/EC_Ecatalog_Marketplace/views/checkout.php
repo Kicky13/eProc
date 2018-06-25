@@ -15,7 +15,7 @@
                     <input type="hidden" id="arr" name="arr[]"/>
                     <input type="hidden" id="avl" value=""/>
                     <input type="hidden" id="sisa" value=""/>
-                    <a href="<?php echo base_url(); ?>EC_Ecatalog/listCatalog" type="button"
+                    <a href="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/listCatalogLsgs" type="button"
                        style="box-shadow: 1px 1px 1px #ccc" class="btn btn-default"><span
                                 class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Kembali</a>
                     <a href="javascript:void(0)" data-toggle="modal" data-target="#modalbudget"

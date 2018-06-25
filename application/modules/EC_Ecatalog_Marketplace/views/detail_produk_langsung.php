@@ -140,8 +140,8 @@
              data-curr="<?php echo $deals[$i]['CURRENCY'] ?>" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-usd" ></i>&nbsp;&nbsp;Buy</a>
       </td>
       <td>
-          <a onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-usd" ></i>
-          Cart</a>
+          <a onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-plus" ></i>
+          Add to Cart</a>
       </td>
     </tr>
   <?php
