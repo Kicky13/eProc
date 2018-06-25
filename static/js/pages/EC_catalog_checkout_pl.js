@@ -111,7 +111,7 @@ function chk23() {
             teks += '<div class="row" style="font-size:12px">Delivery Time: <strong>' + data.data[i].DELIVERY_TIME + ' Days</strong></div>'
             teks += '<div class="row" style="font-size:12px">Nomor Material: <strong>' + data.data[i].MATNO + '</strong></div>'//" &mdash; " + "" + (data.data[i].CC_NAME == null ? "" : data.data[i].CC_NAME)            
             teks += '</div>' + '<div class="col-md-3">' + qty + '<form class="form-horizontal">'
-            teks += del + '<div class="col-md-6 col-md-offset-3"><input class="chkPlant" type="checkbox" data-matno="' + data.data[i].MATNR + '" data-price="' + data.data[i].PRICE + '" data-plant="' + data.data[i].PLANT + '" data-teks="' + data.data[i].MAKTX + '" ' + chk + ' onchange="' + act + '(this,\'' + data.data[i].ID_CHART + '\')" /></div>'
+            teks += del + '<div class="col-md-6 col-md-offset-3"><input class="chkPlant" type="checkbox" data-matno="' + data.data[i].MATNR + '" data-price="' + data.data[i].PRICE + '" data-plant="' + data.data[i].PLANT + '" data-desc="' + data.data[i].DESC + '" data-teks="' + data.data[i].MAKTX + '" ' + chk + ' onchange="' + act + '(this,\'' + data.data[i].ID_CHART + '\')" /></div>'
             teks += '</form>' + '</div>' + '</div>' + '</div>'
             $("#goods").append(teks)
 
@@ -499,10 +499,12 @@ $(document).ready(function () {
         } else {
             console.log('Klik Show');
             itemPlant = [];
+            itemDesc = [];
             $(".chkPlant").each(function () {
                 // var plant = $(this).data("plant")
                 if ($(this).is(":checked")) {
                     itemPlant.push(String($(this).data("plant")));
+                    itemDesc.push($(this).data("desc"));
                 }
             });
             itemQty = []
@@ -515,7 +517,7 @@ $(document).ready(function () {
             // dataitems = JSON.stringify(itemPlant);
             console.log(itemQty);
             console.log(CekHomogenous(itemQty));
-            if (isHomogenous(itemPlant)) {
+            if (isHomogenous(itemPlant) && isHomogenous(itemDesc)) {
                 if (CekHomogenous(itemQty)) {
 //                    console.log('itemPlant' + itemPlant);
 //                    var valPlant = '';
@@ -538,8 +540,15 @@ $(document).ready(function () {
                     alert('QTY masih 0');
                 }
             } else {
-                alert('Plant harus sama');
+                if (isHomogenous(itemDesc)) {
+                    alert('Plant harus sama');
+                } else {
+                    alert('Kategori harus sama');
+                }
             }
+            // else {
+            //     alert('Kategori harus sama');
+            // }
         }
     });
 

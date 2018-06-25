@@ -128,17 +128,17 @@
         <br>Delivery Time: <?php echo $deals[$i]['DELIVERY_TIME'] ?> Days
       </td>
       <td width="15%"><?php echo $deals[$i]['CURRENCY'] ?> &nbsp; <?php echo number_format($deals[$i]['HARGA'], 0, ",", ".") ?></td>
-      <td>
-          <a href="javascript:void(0)" data-toggle="modal" data-target="#modalBeli" 
-             data-vendor="<?php echo $deals[$i]['VENDOR_NAME']?>" 
-             data-deskripsi="<?php echo ($data_produk[0]['MAKTX']==''?'Tidak ada deskripsi' : $data_produk[0]['MAKTX']) ?>" 
-             data-plant="<?php echo $deals[$i]['PLANT'] ?> &mdash; <?php echo $deals[$i]['NAMA_PLANT'] ?>"
-             data-stok="<?php echo $deals[$i]['STOK'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>"            
-             data-delivery="<?php echo $deals[$i]['DELIVERY_TIME'] ?>"
-             data-detailpen="<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>" 
-             data-harga="<?php echo $deals[$i]['HARGA'] ?>" 
-             data-curr="<?php echo $deals[$i]['CURRENCY'] ?>" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-usd" ></i>&nbsp;&nbsp;Buy</a>
-      </td>
+<!--      <td>-->
+<!--          <a href="javascript:void(0)" data-toggle="modal" data-target="#modalBeli" -->
+<!--             data-vendor="--><?php //echo $deals[$i]['VENDOR_NAME']?><!--" -->
+<!--             data-deskripsi="--><?php //echo ($data_produk[0]['MAKTX']==''?'Tidak ada deskripsi' : $data_produk[0]['MAKTX']) ?><!--" -->
+<!--             data-plant="--><?php //echo $deals[$i]['PLANT'] ?><!-- &mdash; --><?php //echo $deals[$i]['NAMA_PLANT'] ?><!--"-->
+<!--             data-stok="--><?php //echo $deals[$i]['STOK'] ?><!--&nbsp;--><?php //echo $deals[$i]['MEINS'] ?><!--"            -->
+<!--             data-delivery="--><?php //echo $deals[$i]['DELIVERY_TIME'] ?><!--"-->
+<!--             data-detailpen="--><?php //echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?><!--" -->
+<!--             data-harga="--><?php //echo $deals[$i]['HARGA'] ?><!--" -->
+<!--             data-curr="--><?php //echo $deals[$i]['CURRENCY'] ?><!--" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-usd" ></i>&nbsp;&nbsp;Buy</a>-->
+<!--      </td>-->
       <td>
           <a onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-plus" ></i>
           Add to Cart</a>
