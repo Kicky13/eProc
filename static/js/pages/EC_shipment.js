@@ -345,14 +345,7 @@ function loadTable_() {
                 a += "</div>";
                 return a;
             }
-        },/* {
-            mRender: function (data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.GR_DATE==null?'-':full.GR_DATE;
-                a += "</div>";
-                return a;
-            }
-        },*/{
+        },{
             mRender: function (data, type, full) {
                 // hidden = '';
                 /*if(full.STATUS!=1){
@@ -384,9 +377,40 @@ function loadTable_() {
                 a += "</div>";
                 return a;
             }
+        },{
+            mRender: function (data, type, full) {                
+                a = "<div class='col-md-12 text-center'>";
+                if(full.QTY_SHIPMENT > 0){
+                    if(shipment != full.PO_NO){
+                        a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';
+                        shipment = full.PO_NO;
+                    } else {
+                        a += '<p> </p>';
+                        shipment = full.PO_NO;
+                    }
+                }
+                a += "</div>";
+                return a;
+            }
         }],
 
-    });    
+    });
+    mytable.on('click', '.btn-print', function (e) {
+        e.preventDefault();
+        var _tr = $(this).closest('tr');
+        var _tds = _tr.find('td');
+
+        var po = $(this).data('po');
+        var shipment = $(this).data('shipment');
+        var vendor = $(this).data('vendor');
+        var _data = {
+            po_no: po,            
+            vendor: vendor
+        };
+
+        $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakPO', _data, 'POST', '_blank');
+    }); 
+    
     mytable.columns().every(function () {
         var that = this;
         $('.srch', this.header()).on('keyup change', function () {
@@ -626,8 +650,8 @@ function loadTable_Intransit() {
             mRender: function (data, type, full) {                
                 a = "<div class='col-md-12 text-center'>";
                 if(shipment != full.NO_SHIPMENT){
-                    a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak </button>';
-                    shipment = full.NO_SHIPMENT;
+                    a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
+                    shipment = full.NO_SHIPMENT;                    
                 } else {
                     a += '<p> </p>';
                     shipment = full.NO_SHIPMENT;
@@ -652,7 +676,7 @@ function loadTable_Intransit() {
             vendor: vendor
         };
 
-        $.redirect($('#base-url').val() + 'EC_Shipment/CetakPO', _data, 'POST', '_blank');
+        $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakShipment', _data, 'POST', '_blank');
     });
     mytable.columns().every(function () {
         var that = this;

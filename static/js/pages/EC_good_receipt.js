@@ -138,7 +138,7 @@ function loadTable_Unprocessed() {
             mRender: function (data, type, full) {                
                 a = "<div class='col-md-12 text-center'>";
                 if(shipment != full.NO_SHIPMENT){
-                    a += '<button class="btn btn-sm btn-success btn-print" data-shipment=' + full.NO_SHIPMENT + ' data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak </button>';
+                    a += '<button class="btn btn-sm btn-success btn-print" data-shipment=' + full.NO_SHIPMENT + ' data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
                     shipment = full.NO_SHIPMENT;
                 } else {
                     shipment = full.NO_SHIPMENT;
@@ -164,7 +164,7 @@ function loadTable_Unprocessed() {
             shipment:shipment
         };
 
-        $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakPO', _data, 'POST', '_blank');
+        $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakShipment', _data, 'POST', '_blank');
     });
     mytableUnprocessed.columns().every(function () {
         var that = this;
@@ -306,6 +306,7 @@ function myFunction(val, qty, kode) {
 function loadTable_App() {
     $('#table_processed').DataTable().destroy();
     $('#table_processed tbody').empty();
+    var shipment = 0;
     mytable = $('#table_processed').DataTable({
         "bSort": true,
         "dom": 'rtpli',
@@ -460,10 +461,37 @@ function loadTable_App() {
                     '</div>';
                 return a;
             }
+        },{
+        mRender: function (data, type, full) {                
+                a = "<div class='col-md-12 text-center'>";   
+                if(full.QTY_SHIPMENT > 0){
+                    if(shipment != full.PO_NO){
+                        a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';                         
+                        shipment = full.PO_NO;
+                    } else {
+                        shipment = full.PO_NO;
+                    }           
+                }     
+                a += "</div>";
+                return a;
+            }
         }],
 
-    });
+    });                
+    mytable.on('click', '.btn-print', function (e) {
+        e.preventDefault();
+        var _tr = $(this).closest('tr');
+        var _tds = _tr.find('td');
 
+        var po = $(this).data('po');
+        var vendor = $(this).data('vendor');        
+        var _data = {
+            po_no: po,
+            vendor: vendor            
+        };
+
+        $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakPO', _data, 'POST', '_blank');
+    });
     mytable.columns().every(function () {
         var that = this;
         $('.srch', this.header()).on('keyup change', function () {
@@ -788,7 +816,7 @@ function loadTable_detailGR(pono, lineitem) {
         }],
 
     });
-
+    
     mytableGR.columns().every(function () {
         var that = this;
         $('.srchgr', this.header()).on('keyup change', function () {
@@ -1922,6 +1950,3 @@ function cetakLaporan(elm){
 	});
 	return false;
 }
-
-
-

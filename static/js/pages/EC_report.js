@@ -523,12 +523,12 @@ $('#modalDetailPo').on('show.bs.modal', function (event) {
             //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
             teks += "<td class=\"text-center\">" + data[i]['LINE_ITEM'] + "</td>";
             teks += "<td class=\"text-center\">" + data[i]['MAKTX'] + "</td>";
-            teks += "<td class=\"text-center\">" + data[i]['QTY'] + "</td>";
+            teks += "<td class=\"text-center\">" + data[i]['QTY_ORDER'] + "</td>";
             teks += "<td class=\"text-center\">" + data[i]['MEINS'] + "</td>";
             teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['PRICE']) + "</td>";
             teks += "<td class=\"text-center\">" + data[i]['CURRENCY'] + "</td>";
-            teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['TOTAL']) + "</td>";
-            teks += "<td class=\"text-center\">" + data[i]['PLANT'] +" - "+ data[i]['DESC'] +"</td>";
+            teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['VALUE_ITEM']) + "</td>";
+            teks += "<td class=\"text-center\">" + data[i]['PLANT'] +" - "+ data[i]['PLANT_NAME'] +"</td>";
             teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[i]['EXPIRED_DATE'] + "</strong></td>";
             teks += "</tr>";
         }

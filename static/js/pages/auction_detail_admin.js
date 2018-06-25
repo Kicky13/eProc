@@ -24,6 +24,35 @@ function updateRangking(){
 	});
 }
 
+function sortTablebobot(){
+	  var rows = $('.table-vendor tbody  tr').get();
+	  // console.log(rows);
+
+	  rows.sort(function(a, b) {
+
+	  var A = removeCommas($(a).children('td.nilai_gabung').text());
+	  var B = removeCommas($(b).children('td.nilai_gabung').text());
+
+	  // console.log(B);
+
+
+	  if(A > B) {
+	    return -1;
+	  }
+
+	  if(A < B) {
+	    return 1;	    
+	  }
+
+	  return 0;
+
+	  });
+	  
+	  $.each(rows, function(index, row) {	  			  	
+	    $('.table-vendor').children('tbody').append(row);
+	  });
+}
+
 function sortTable(){
 	  var rows = $('.table-vendor tbody  tr').get();
 	  // console.log(rows);
@@ -155,8 +184,15 @@ function initializeClock(endTime,startTime) {
 						trmin = tr;
 					}
 					tr.removeClass('success');
-					sortTable();
-					updateRangking();					
+					
+					if (paqd.bobot.isEmpty()){
+						sortTable();
+						updateRangking();
+					} else {
+						sortTablebobot();
+						updateRangking();
+					}
+										
 				};
 				//trmin.addClass('success');
 			})
