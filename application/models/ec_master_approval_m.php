@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_master_approval_m extends CI_Model {
-	protected $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE', $cart = 'EC_T_CHART', $vendor = 'VND_HEADER';
+	protected $tableMaster = 'EC_PL_CONFIG_APPROVAL', $approvalMaster = 'EC_PL_APPROVAL', $employee = 'ADM_EMPLOYEE', $cart = 'EC_T_CHART', $vendor = 'VND_HEADER';
 	public function __construct() {
 		parent::__construct();
 		$this -> db = $this -> load -> database('default', TRUE);
@@ -93,11 +93,14 @@ class ec_master_approval_m extends CI_Model {
         return (array)$result->result_array();
     }
 
-    public function getActive_user($USERID)
+    public function getActive_user($PO, $USERID)
     {
+        $this->db->select('PO_NO, UK_CODE, PROGRESS_APP, STATUS, STATUS_GUDANG, USER_AKSES, PROGRESS_CNF, PROGRESS_APP_GUDANG');
         $this->db->from($this->tableMaster);
+        $this->db->join($this->approvalMaster, $this->approvalMaster.'.COSCENTER = '.$this->tableMaster.'.UK_CODE');
         $this->db->where('USERID', $USERID);
-        $this->db->order_by('UK_CODE', 'DESC');
+        $this->db->where('PO_NO', $PO);
+        $this->db->group_by('PO_NO, UK_CODE, PROGRESS_APP, STATUS, STATUS_GUDANG, USER_AKSES, PROGRESS_CNF, PROGRESS_APP_GUDANG');
         $result = $this->db->get();
         return (array)$result->row_array();
     }
@@ -129,6 +132,21 @@ class ec_master_approval_m extends CI_Model {
         $this->db->where('PROGRESS_CNF', $CNF);
         $result = $this->db->get();
         return (array)$result->result_array();
+    }
+
+    public function checkNext_CNF($cc, $cnf)
+    {
+        $this->db->from($this->tableMaster);
+        $this->db->join($this->employee, $this->tableMaster.'.USERID = '.$this->employee.'.ID');
+        $this->db->where('UK_CODE', $cc);
+        $this->db->where('PROGRESS_CNF', $cnf);
+        $result = $this->db->get();
+        if (count((array)$result->result_array()) > 0){
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public function getCNF($cc){

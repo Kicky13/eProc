@@ -172,30 +172,48 @@ class EC_PO_PL_Approval extends MX_Controller
         $data = $this->getDetailPO($po);
         $this->load->model('ec_master_approval_m');
         $user = $this->session->userdata['ID'];
-        $active = $this->ec_master_approval_m->getActive_user($user);
+        $active = $this->ec_master_approval_m->getActive_user($po, $user);
         $vnd = $this->ec_master_approval_m->getVendor_target($po);
         $cc = $active['UK_CODE'];
-        $rec_CNF = $active['PROGRESS_CNF'];
+        $akses = $active['USER_AKSES'];
+        $gudang = $active['STATUS_GUDANG'];
+        $progress_gudang = $active['PROGRESS_APP_GUDANG'];
+        $progress_CNF = $active['PROGRESS_CNF'];
         $notif = 'Failed to Send';
-        switch ($rec_CNF){
-            case 1:
-                $next = $this->ec_master_approval_m->getEmailNext($cc, $rec_CNF + 1);
-                foreach ($next as $x){
-                    $this->sendNotif($x['EMAIL'], $data);
-                    $notif = 'Email Sent';
+        switch ($progress_CNF){
+            case 0:
+                switch ($gudang){
+                    case 1:
+                        if ($progress_gudang == 1){
+                            $next = $this->ec_master_approval_m->getEmailNext($cc, '0');
+                            foreach ($next as $x){
+                                $this->sendNotif($x['EMAIL'], $data);
+                                $notif = 'Email Sent';
+                            }
+                            $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                        } else {
+                            $notif = 'Email Sent';
+                            $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                        }
+                        break;
+                    default:
+                        $notif = 'Email Sent';
+                        $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                        break;
                 }
-                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'KA 1');
-                break;
-            case 2:
-                $next = $this->ec_master_approval_m->getEmailNext($cc, '0');
-                foreach ($next as $x){
-                    $this->sendNotif($x['EMAIL'], $data);
-                    $notif = 'Email Sent';
-                }
-                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'KA 2');
                 break;
             default:
-                $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, 'Gudang');
+                if ($this->ec_master_approval_m->checkNext_CNF($cc, $progress_CNF + 1)){
+                    $next = $this->ec_master_approval_m->getEmailNext($cc, $progress_CNF + 1);
+                    foreach ($next as $x){
+                        $this->sendNotif($x['EMAIL'], $data);
+                        $notif = 'Email Sent';
+                    }
+                    $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                } else {
+                    $notif = 'Email Sent';
+                    $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                }
                 break;
         }
         return $notif;
