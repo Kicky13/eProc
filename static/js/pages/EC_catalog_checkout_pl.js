@@ -102,7 +102,7 @@ function chk23() {
             teks += '<div class="col-md-2' + disable + '" style="  padding-left: 5px;">'
             teks += '<a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modaldetail" data-produk="' + data.data[i].MATNR + '"><img src="' + $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/" + data.data[i].PICTURE + '" class="img-responsive"></a>'
             teks += '</div>' + '<div class="col-md-3' + disable + '" style="  padding-left: 35px;">'
-            teks += '<div class="row" style="font-size:11px">Kategori: ' + data.data[i].DESC + '</div>'
+            teks += '<div class="row" style="font-size:11px">Kategori: (' + data.data[i].NAMA_PARENT + ') <br> ' + data.data[i].DESC +'</div>'
             //teks += '<div class="row" style="font-size:11px">' + plant + '-' + data.data[i][11] + '</div>'
             teks += '<div class="row" style="font-size:18px"><strong><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modaldetail" data-produk="' + data.data[i].MATNR + '">' + data.data[i].MAKTX + '</a></strong></div>'
             teks += '</div><div class="col-md-4' + disable + '" style="padding-left: 35px;">' + '<div class="row" style="font-size:14px;color: #E74C3C;">' + '<strong>Plant: ' + data.data[i].PLANT + " &mdash; " + data.data[i].NAMA_PLANT + '</strong>' + '</div>'
@@ -111,7 +111,7 @@ function chk23() {
             teks += '<div class="row" style="font-size:12px">Delivery Time: <strong>' + data.data[i].DELIVERY_TIME + ' Days</strong></div>'
             teks += '<div class="row" style="font-size:12px">Nomor Material: <strong>' + data.data[i].MATNO + '</strong></div>'//" &mdash; " + "" + (data.data[i].CC_NAME == null ? "" : data.data[i].CC_NAME)            
             teks += '</div>' + '<div class="col-md-3">' + qty + '<form class="form-horizontal">'
-            teks += del + '<div class="col-md-6 col-md-offset-3"><input class="chkPlant" type="checkbox" data-matno="' + data.data[i].MATNR + '" data-price="' + data.data[i].PRICE + '" data-plant="' + data.data[i].PLANT + '" data-desc="' + data.data[i].DESC + '" data-teks="' + data.data[i].MAKTX + '" ' + chk + ' onchange="' + act + '(this,\'' + data.data[i].ID_CHART + '\')" /></div>'
+            teks += del + '<div class="col-md-6 col-md-offset-3"><input class="chkPlant" type="checkbox" data-matno="' + data.data[i].MATNR + '" data-price="' + data.data[i].PRICE + '" data-plant="' + data.data[i].PLANT + '" data-desc="' + data.data[i].KODE_PARENT + '" data-teks="' + data.data[i].MAKTX + '" ' + chk + ' onchange="' + act + '(this,\'' + data.data[i].ID_CHART + '\')" /></div>'
             teks += '</form>' + '</div>' + '</div>' + '</div>'
             $("#goods").append(teks)
 
@@ -504,7 +504,7 @@ $(document).ready(function () {
                 // var plant = $(this).data("plant")
                 if ($(this).is(":checked")) {
                     itemPlant.push(String($(this).data("plant")));
-                    itemDesc.push($(this).data("desc"));
+                    itemDesc.push(String($(this).data("desc")));
                 }
             });
             itemQty = []

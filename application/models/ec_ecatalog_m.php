@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_ecatalog_m extends CI_Model
 {
-    protected $table = 'EC_T_CONTRACT', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tablegr = 'EC_GR_MATERIAL', $ccPl = 'EC_PL_BUY_COSTCENTER', $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE';
+    protected $table = 'EC_T_CONTRACT', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $parentCategory = 'EC_M_CATEGORY', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tablegr = 'EC_GR_MATERIAL', $ccPl = 'EC_PL_BUY_COSTCENTER', $tableMaster = 'EC_PL_CONFIG_APPROVAL', $employee = 'ADM_EMPLOYEE';
 
     public function __construct()
     {
@@ -48,6 +48,14 @@ class ec_ecatalog_m extends CI_Model
         $this->db->order_by('VND_HEADER.VENDOR_NO', 'ASC');     
         $result = $this->db->get();
         return (array)$result->result_array();
+    }
+
+    public function get_parent_category($parent)
+    {
+        $this->db->from($this->parentCategory);
+        $this->db->where('ID_CAT', $parent);
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 
     public function get_cc_checkout_pl()

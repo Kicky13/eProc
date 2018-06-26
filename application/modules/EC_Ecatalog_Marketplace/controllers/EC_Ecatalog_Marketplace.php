@@ -1579,6 +1579,8 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             $data['HARGA_PENAWARAN'] = $dataa[$j]['PRICE'] = !null ? $dataa[$j]['PRICE'] : "-";
             $dataa[$j]['STOK'] = $deals[0]['STOK'];
             //$data[4] = "";
+            $parent = $this->ec_ecatalog_m->get_parent_category($dataa[$j]['KODE_PARENT']);
+            $dataa[$j]['NAMA_PARENT'] = $parent['DESC'];
             $data[4] = $dataa[$j]['CURR'] = !null ? $dataa[$j]['CURR'] : "-";
             $data[5] = $dataa[$j]['DELIVERY_TIME'] = !null ? $dataa[$j]['DELIVERY_TIME'] : "-";
             $data[6] = $dataa[$j]['MEINS'] = !null ? $dataa[$j]['MEINS'] : "-";
