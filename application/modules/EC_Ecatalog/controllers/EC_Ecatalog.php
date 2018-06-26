@@ -443,23 +443,24 @@ class EC_Ecatalog extends MX_Controller
         $user=$this->session->userdata['ID'];
         $korin=$this->input->post('korin');
         $gudang=$this->input->post('gudang');
-        $onCC = $this->ec_ecatalog_m->getEmailNotif($this->input->post('costcenter'), 1);
         $suksesReturn = array();
         $gagalReturn = array();
         $data=array();
+        $table = array();
         $vendor=$this->EC_catalog_produk->get_vendor_PO_PL($user);        
         $qty=array();        
         $total=array();
         $po_number = array();
         for($i=0;$i<sizeof($vendor);$i++){
             $data[$i]=$this->EC_catalog_produk->get_cart_PO_PL($user,$vendor[$i]['VENDORNO']);
+            $table[$i] = $data[$i];
             for($x=0;$x<sizeof($data[$i]);$x++){
                 $tambah[$i]+=$data[$i][$x]['QTY'];
                 $tambahH[$i]+=$data[$i][$x]['QTY']*$data[$i][$x]['PRICE'];
             }            
-            $qty[$i]=$tambah[$i];                        
-            $total[$i]+=$tambahH[$i];                        
-        }     
+            $qty[$i]+=$tambah[$i];                        
+            $total[$i]+=$tambahH[$i];                 
+        }
         $SAP=array();           
         for ($i=0;$i < sizeof($data);$i++) {            
             $SAP[$i] = $this->sap_handler->createPOLangsungCart($this->input->post('company'), $user, $data[$i], $this->input->post('costcenter'),
@@ -473,32 +474,31 @@ class EC_Ecatalog extends MX_Controller
                     $sukses[$i] = true;
                 }
             }
-            for ($n = 0; $n < count($data); $n++){
-                $data[$i][$n]['PO_NO'] = $po_no[$i];
+            for ($n = 0; $n < count($table); $n++){
+                $table[$i][$n]['PO_NO'] = $po_no[$i];
             }
-            $this->notifToVendor($vendor[$i]['EMAIL_ADDRESS'], $data[$i]);
+            $this->notifToVendor($vendor[$i]['EMAIL_ADDRESS'], $table[$i]);
             $sk=1;
             if ($sukses[$i]) {
                 for($j=0;$j<sizeof($data[$i]);$j++){
-                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $qty[$i], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);
+                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $data[$i][$j]['QTY'], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);
                     $suksesReturn[$i][$j] = array("PO" => $po_no[$i], "MATNO" => $data[$i][$j]['MATNO'], "MAKTX" => $data[$i][$j]['MAKTX'],
                         "PLANT" => $data[$i][$j]['PLANT'], "NAMA_PLANT" => $data[$i][$j]['NAMA_PLANT'], "VENDOR_NAME" => $vendor[$i]['VENDOR_NAME']);                                       
-                }            
+                }
                 $sk = 1; 
             } else {
                 for($j=0;$j<sizeof($SAP[$i]);$j++){
                     $this->ec_ecatalog_m->POfailedOne($user, 'PL2018',
-                        $data[$i][$j]['MATNO'], $data[$i][$j]['ID_CHART']);
-                    $gagalReturn[] = $SAP[$i];                    
+                        $data[$i][$j]['MATNO'], $data[$i][$j]['ID_CHART']);                    
                 }
+                $gagalReturn[] = $SAP[$i];                    
                 $sk = 0;                    
-                echo json_encode($gagalReturn);
             }
             if($sk==1){
                 $po_number[$i] = $po_no[$i];
             }            
         }
-        $this->notifToEmployee('kicky120@gmail.com', $data);
+        $this->notifToEmployee('kicky120@gmail.com', $table);
         for ($d = 0; $d < sizeof($po_number); $d++) {
             $return = $this->sap_handler->getDetailPO($po_number[$d]);
             for ($e = 0; $e < sizeof($return); $e++) {
@@ -581,7 +581,7 @@ class EC_Ecatalog extends MX_Controller
             <tr>
                 <th style="font-weight:600;" class="text-center"> No.</th>
                 <th style="font-weight:600;"> No. PO</th>
-                <th style="font-weight:600;"> No. Vendor</th>
+                <th style="font-weight:600;"> Nama Vendor</th>
                 <th style="font-weight:600;"> No. Material</th>
                 <th style="font-weight:600;"> Nama Material</th>
                 <th style="font-weight:600;"> Satuan</th>
@@ -622,8 +622,7 @@ class EC_Ecatalog extends MX_Controller
         );
         $thead = '<thead>
             <tr>
-                <th style="font-weight:600;" class="text-center"> No.</th>
-                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;" class="text-center"> No.</th>                
                 <th style="font-weight:600;"> No. Material</th>
                 <th style="font-weight:600;"> Nama Material</th>
                 <th style="font-weight:600;"> Satuan</th>
@@ -637,8 +636,7 @@ class EC_Ecatalog extends MX_Controller
         foreach ($tableData as $d) {
             if (isset($d['MATNR'])){
                 $_tr = '<tr>
-                    <td> '.$no++.'</td>
-                    <td> '.$d['PO_NO'].'</td>                      
+                    <td> '.$no++.'</td>                                      
                     <td> '.$d['MATNR'].'</td>
                     <td> '.$d['MAKTX'].'</td>
                     <td> '.$d['MEINS'].'</td>                      
