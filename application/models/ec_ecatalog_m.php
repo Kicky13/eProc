@@ -875,7 +875,7 @@ class ec_ecatalog_m extends CI_Model
 
     function getCC($USER)
     {
-        $this->db->select('COSTCENTER,CC_NAME')->from($this->tableCC)->where(array('ID_USER' => $USER));
+        $this->db->select('COSTCENTER,COSTCENTER_NAME')->from($this->ccPl)->where(array('ID_USER' => $USER));
         $query = $this->db->get();
         $result = $query->row_array();
         return isset ($result) ? $result : "";
@@ -1240,6 +1240,10 @@ class ec_ecatalog_m extends CI_Model
     public function get_data_pembelian_lgsg($search = '-', $kategori = '-', $harga_min = '-', $harga_max = '-',
                                             $limitMin = '0', $limitMax = '12', $comp = '2000')
     {
+        $data = array();
+        $j = $limitMin;
+        $plant = 0;
+        $matno = '';
 //        var_dump($search);
 //        var_dump($comp); 
 //        var_dump($this->session->userdata['COMPANYID']);die();
@@ -1282,12 +1286,11 @@ class ec_ecatalog_m extends CI_Model
                 AND TB1.MATNO = TB2.MATNO
                 AND TB1.DATE1 = TB2.INDATE ) TB3 ON TB3.VENDORNO=DT.VENDORNO AND TB3.MATNO=DT.MATNO
 				WHERE SM.PUBLISHED_LANGSUNG = '1' AND DT.PLANT IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY='".$this->session->userdata['COMPANYID']."')";// AND T1.STOK > 0
-        if($limitMin==0){
-            $SQL .= " AND ROWNUM < 13 ";
-        }else{
-            $SQL .= " AND ROWNUM <= '".$limitMax."'";
-        }
-
+//        if($limitMin==0){
+//            $SQL .= " AND ROWNUM < 13 ";
+//        }else{
+//            $SQL .= " AND ROWNUM <= '".$limitMax."'";
+//        }
         if ($kategori != '-'){
             $SQL .= " AND CAT.KODE_USER LIKE '" . $kategori . "%' ";
         }
@@ -1297,10 +1300,27 @@ class ec_ecatalog_m extends CI_Model
         if ($harga_min != '-' && $harga_max != '-'){
             $SQL .= " AND DT.PRICE >= " . $harga_min . " AND DT.PRICE <= " . $harga_max;
         }
-        $SQL .= " ORDER BY ROWNUM ASC, SM.MATNR ASC";
+        $SQL .= " ORDER BY SM.MATNR ASC";
         // var_dump($SQL);
-        $result = $this->db->query($SQL);
-        return (array)$result->result_array();
+        $result = $this->db->query($SQL)->result_array();
+        while (count($data) < $limitMax && $j < count($result)){
+            if ($j != 0){
+                if ($result[$j]['MATNO'] == $matno && $plant == $result[$j]['PLANT']){
+                    $matno = $result[$j]['MATNO'];
+                    $plant = $result[$j]['PLANT'];
+                } else {
+                    $data[$j] = $result[$j];
+                    $matno = $result[$j]['MATNO'];
+                    $plant = $result[$j]['PLANT'];
+                }
+            } else {
+                $data[$j] = $result[$j];
+                $matno = $result[$j]['MATNO'];
+                $plant = $result[$j]['PLANT'];
+            }
+            $j++;
+        }
+        return $data;
     }
 
     public function getDealsVendor($matno, $plant, $comp = '2000')
