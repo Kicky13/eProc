@@ -59,7 +59,7 @@ class EC_Penawaran_Vendor extends CI_Controller
 //        var_dump($this->input->post('limitMax'));die();
         $this->load->model('ec_penawaran_vnd_test');        
         $dataCurr = $this->ec_penawaran_vnd_test->get_MasterCurrency();
-        $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO']);
+        $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO'], $this->input->post('limitMin'), $this->input->post('limitMax'));
         $dataCount = $this->ec_penawaran_vnd_test->get_Count_produk($this->session->userdata['VENDOR_NO']);        
 //        var_dump($dataProduk);die(); 
         $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount));
@@ -106,6 +106,7 @@ class EC_Penawaran_Vendor extends CI_Controller
             //     $dateAfter = "-";
             // }
             $data['VENDORNO'] =$value['VENDORNO'];
+            $data['MEINS'] = $value['MEINS'];
             $data['CURRENCY'] = $value['CURRENCY'] != null ? $value['CURRENCY'] : "";
             //$data[8] = $value['DELIVERY_TIME'] != null ? $value['DELIVERY_TIME'] : "";
             $data['STOK'] = $value['STOK'] != null ? $value['STOK'] : "";

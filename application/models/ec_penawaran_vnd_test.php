@@ -44,13 +44,36 @@ class ec_penawaran_vnd_test extends CI_Model
                         ON DT.MATNO=ASS.MATNO JOIN EC_M_LONGTEXT EML ON SM.MATNR=EML.MATNR
                 WHERE ASS.VENDORNO='" . $vendorno . "' GROUP BY DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.KODE_ASSIGN, ASS.MATNO, ASS.VENDORNO, ASS.START_DATE,ASS.END_DATE,ASS.INDATE,ASS.KODE_PENAWARAN,ASS.KODE_UPDATE,ASS.DAYS_UPDATE,ASS.CURRENCY) ORDER BY INDATE DESC NULLS LAST";
 //        }
-        
-
+        $a = array();
+        $matno = '';
         $result = $this->db->query($SQL)->result_array();
-        for ($i = $mins; $i < 1; $i++){
-            if(isset($result[$i])){
-                $a[$i] = $result[$i];
+//        for ($i = $mins; $i < count($result); $i++){
+//            if ($i != 0){
+//                if ($result[$i]['MATNO'] == $matno){
+//                    $matno = $result[$i]['MATNO'];
+//                } else {
+//                    $a[$i] = $result[$i];
+//                    $matno = $result[$i]['MATNO'];
+//                }
+//            } else {
+//                $a[$i] = $result[$i];
+//                $matno = $result[$i]['MATNO'];
+//            }
+//        }
+        $j = $mins;
+        while (count($a) < $max && $j < count($result)){
+            if ($j != 0){
+                if ($result[$j]['MATNO'] == $matno){
+                    $matno = $result[$j]['MATNO'];
+                } else {
+                    $a[$j] = $result[$j];
+                    $matno = $result[$j]['MATNO'];
+                }
+            } else {
+                $a[$j] = $result[$j];
+                $matno = $result[$j]['MATNO'];
             }
+            $j++;
         }
         return $a;
     }

@@ -69,6 +69,7 @@ function loadDataList() {
 										"<th style='width:70px;'>Picture</th>" +
 										"<th>Name</th>" +
 										"<th style='width:70px;'>Stok</th>" +
+                                        "<th style='width:70px;'>Satuan</th>" +
 										"<th>Kode</th>" +
 										"<th>Destination</th>" +
 										"<th style='width:70px;'>Currency</th>" +
@@ -121,7 +122,8 @@ function loadDataList() {
 							"<td rowspan='" + data.data[i].ISI.length + "'>" + '<strong><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modaldetail" data-produk="' + data.data[i].MATNO + '">' + data.data[i].MAKTX + '</a></strong>' + "</td>" +
 							"<td rowspan='" + data.data[i].ISI.length + "'><input type='text' value='" + data.data[i].STOK + "' style='width:100%;margin-bottom:2px;' id='stok"+i+"' placeholder='0'>" +
 							'<a href="javascript:updateStock(\'' + data.data[i].MATNO + '\',\'' + data.data[i][13] + '\',' + (data.data[i].STOK_COMMIT == "" ? 0 : data.data[i].STOK_COMMIT) + ',' + i + ',' + (data.data[i].STOK == "" ? 0 : data.data[i].STOK) + ')" style="font-size:12px;margin-top:2px;" class="btn btn-info btn-block">Update</a>' +
-							"</td>";
+							"</td>" +
+                            "<td rowspan='" + data.data[i].ISI.length + "'>" + "<p>" + data.data[i].MEINS +"</p>" + "</td>";
 				//console.log(data.data[i].ISI);
 				
 				// SaveHarga(matno, plant, harga, deliverytime, currency)
@@ -1060,12 +1062,12 @@ $(document).ready(function () {
         }
     });  
     
-    var _sudahTampilPesan = $('#sudahTampilPesan').text();
-    if(_sudahTampilPesan != '1'){
-      var _tmpMessage = [
-        '1. Harga untuk produk yang dikirimkan sudah termasuk PPH dan ongkos kirim namun belum termasuk PPN',
-        '2. Harga untuk produk pengambilan sendiri sudah termasuk PPH namun tidak termasuk PPH dan ongkos kirim'        
-        ];
-      bootbox.alert(_tmpMessage.join('<br />'));
-    }
+//    var _sudahTampilPesan = $('#sudahTampilPesan').text();
+//    if(_sudahTampilPesan != '1'){
+//      var _tmpMessage = [
+//        '1. Harga untuk produk yang dikirimkan sudah termasuk PPH dan ongkos kirim namun belum termasuk PPN',
+//        '2. Harga untuk produk pengambilan sendiri sudah termasuk PPH namun tidak termasuk PPH dan ongkos kirim'        
+//        ];
+//      bootbox.alert(_tmpMessage.join('<br />'));
+//    }
 });
