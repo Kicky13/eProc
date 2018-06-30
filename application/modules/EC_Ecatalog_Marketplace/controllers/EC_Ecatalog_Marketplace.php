@@ -2262,7 +2262,12 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             $page = count($dataa);
         }
         //$page = $this -> ec_ecatalog_m -> getAllCount();
-        $json_data = array('page' => $page, 'data' => $dataa);
+//        if (isset($dataa)){
+//            $json_data = array('page' => $page, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
+//        } else {
+            $json_data = array('page' => $page, 'n' => $dataa, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
+//        }
+
         //$this->getALL_lgsg($dataa));
         echo json_encode($json_data);
     }
@@ -2315,6 +2320,25 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $this->layout->add_css('pages/EC_miniTable.css');
 
         $this->layout->render('history_pl', $data);
+    }
+
+    public function compileDataPage_PL($data = array(), $min, $max)
+    {
+        $matno = '';
+        $plant = '';
+        $item = array();
+        for ($i = $min; $i < count($data); $i++){
+            if ($matno == $data[$i]['MATNO']){
+                if ($plant !== $data[$i]['PLANT']){
+                    array_push($item, $data[$i]);
+                }
+            } else {
+                array_push($item, $data[$i]);
+            }
+            $plant = $data[$i]['PLANT'];
+            $matno = $data[$i]['MATNO'];
+        }
+        return $item;
     }
 
     public function getHistory_pl($cheat = false)

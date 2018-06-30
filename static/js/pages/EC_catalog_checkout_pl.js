@@ -55,8 +55,8 @@ function chk23() {
 
             qty = '<div class="row"><div class="input-group col-md-11">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="minqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>'
-            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" max="' + data.data[i].STOK + '" onkeydown="return false" class="form-control text-center qtyy">'
-            qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
+            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + data.data[i].STOK + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+            qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\', \'' + data.data[i].STOK +'\', \'' + data.data[i].QTY + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             qty += '<span class="input-group-addon">' + data.data[i].MEINS + '</span>'
             qty += '</div></div><br>'
             del = ''
@@ -150,7 +150,7 @@ function chk23() {
         $(".qtyy").keyup(function () {
             that = this
             setTimeout(function () {
-                updQtycart(that, $(that).val(), $(that).data('id'))
+                updQtycart(that, $(that).val(), $(that).data('id'), $(that).data('stok'))
             }, 1500);
         });
     });
@@ -329,18 +329,19 @@ function confirmOLD(elm, id) {
 
 }
 
-function updQtycart(elm, qty, id) {
+function updQtycart(elm, qty, id, stok) {
     if (qty > 0 && qty.search(/[A-Za-z]/g) == -1)//
     // if (qty < $(elm).data('avl'))
         $.ajax({
             url: $("#base-url").val() + 'EC_Ecatalog/updQtyCart/' + id,
             data: {
-                "qty": qty
+                "qty": qty,
+                "stok": stok
             },
             type: 'POST',
             dataType: 'json'
         }).done(function (data) {
-            // console.log('hide ' + data);
+            console.log(stok);
         }).fail(function () {
             console.log("error");
         }).always(function (data) {
@@ -386,11 +387,15 @@ function minqtycart(elm, id) {
 
 }
 
-function plsqtycart(elm, id) {
+function plsqtycart(elm, id, stok, qty) {
     // console.log($(elm).prev().val() + "<" + $(elm).data('avl'))
     // if ($(elm).prev().val() < $(elm).data('avl'))
     $.ajax({
         url: $("#base-url").val() + 'EC_Ecatalog/plsqtycart/' + id,
+        data: {
+            "stok": stok,
+            "qty": qty
+        },
         type: 'POST',
         dataType: 'json'
     }).done(function (data) {

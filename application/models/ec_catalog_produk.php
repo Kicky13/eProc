@@ -1209,7 +1209,7 @@ class ec_catalog_produk extends CI_Model
 				WHERE SM.PUBLISHED_LANGSUNG = '1' AND DT.PLANT IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY='".$this->session->userdata['COMPANYID']."')";// AND T1.STOK > 0
         if($limitMin==0){
             $SQL .= " AND ROWNUM < 13 ";
-        }else{
+        } else {
             $SQL .= " AND ROWNUM <= '".$limitMax."'";
         }
 
@@ -1572,7 +1572,7 @@ class ec_catalog_produk extends CI_Model
         return (array)$result->result_array();
     }
     
-    public function get_cart_PO_PL($ID_USER,$VENDORNO)
+    public function get_cart_PO_PL($ID_USER, $VENDORNO)
     {        
         $this->db->from($this->tableCart);
         $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CHART.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'inner');

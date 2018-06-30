@@ -1240,10 +1240,6 @@ class ec_ecatalog_m extends CI_Model
     public function get_data_pembelian_lgsg($search = '-', $kategori = '-', $harga_min = '-', $harga_max = '-',
                                             $limitMin = '0', $limitMax = '12', $comp = '2000')
     {
-        $data = array();
-        $j = $limitMin;
-        $plant = 0;
-        $matno = '';
 //        var_dump($search);
 //        var_dump($comp); 
 //        var_dump($this->session->userdata['COMPANYID']);die();
@@ -1302,25 +1298,25 @@ class ec_ecatalog_m extends CI_Model
         }
         $SQL .= " ORDER BY SM.MATNR ASC";
         // var_dump($SQL);
-        $result = $this->db->query($SQL)->result_array();
-        while (count($data) < $limitMax && $j < count($result)){
-            if ($j != 0){
-                if ($result[$j]['MATNO'] == $matno && $plant == $result[$j]['PLANT']){
-                    $matno = $result[$j]['MATNO'];
-                    $plant = $result[$j]['PLANT'];
-                } else {
-                    $data[$j] = $result[$j];
-                    $matno = $result[$j]['MATNO'];
-                    $plant = $result[$j]['PLANT'];
-                }
-            } else {
-                $data[$j] = $result[$j];
-                $matno = $result[$j]['MATNO'];
-                $plant = $result[$j]['PLANT'];
-            }
-            $j++;
-        }
-        return $data;
+        $result = $this->db->query($SQL);
+//        while (count($data) < $limitMax && $j < count($result)){
+//            if ($j != 0){
+//                if ($result[$j]['MATNO'] == $matno && $plant == $result[$j]['PLANT']){
+//                    $matno = $result[$j]['MATNO'];
+//                    $plant = $result[$j]['PLANT'];
+//                } else {
+//                    $data[$j] = $result[$j];
+//                    $matno = $result[$j]['MATNO'];
+//                    $plant = $result[$j]['PLANT'];
+//                }
+//            } else {
+//                $data[$j] = $result[$j];
+//                $matno = $result[$j]['MATNO'];
+//                $plant = $result[$j]['PLANT'];
+//            }
+//            $j++;
+//        }
+        return (array)$result->result_array();
     }
 
     public function getDealsVendor($matno, $plant, $comp = '2000')

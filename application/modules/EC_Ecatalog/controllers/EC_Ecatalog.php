@@ -1708,7 +1708,11 @@ class EC_Ecatalog extends MX_Controller
     public function updQtyCart($ID)
     {
         $this->load->model('EC_catalog_produk');
-        $this->EC_catalog_produk->updQtyCart($ID, $this->input->post("qty"));
+        if($this->input->post("qty") >= $this->input->post("stok")){
+            $this->EC_catalog_produk->updQtyCart($ID, $this->input->post("stok"));
+        } else {
+            $this->EC_catalog_produk->updQtyCart($ID, $this->input->post("qty"));
+        }
         echo json_encode('pls min');
     }
 
@@ -1722,7 +1726,11 @@ class EC_Ecatalog extends MX_Controller
     public function plsqtyCart($ID)
     {
         $this->load->model('EC_catalog_produk');
-        $this->EC_catalog_produk->plsqtyCart($ID);
+        if ($this->input->post("qty") >= $this->input->post("stok")) {
+            $this->EC_catalog_produk->updQtyCart($ID, $this->input->post("stok"));
+        } else {
+            $this->EC_catalog_produk->plsqtyCart($ID);
+        }
         echo json_encode('pls 1');
     }
 
