@@ -43,8 +43,11 @@ class EC_Master_Approval extends CI_Controller
         $this->layout->add_css('plugins/select2/select2.css');
         $this->layout->add_css('plugins/select2/select2-bootstrap.css');
         $data['CC'] = $this->COSTCENTER_GETLIST();
-        $this->load->model('EC_catalog_produk');
+        $this->load->model('ec_master_approval_m');
+        $data['EMP'] = $this->ec_master_approval_m->getUser_employee();
+//        $this->load->model('EC_catalog_produk');
         //$data['ccc'] = $this->EC_catalog_produk->getCC($this->session->userdata['ID']);
+
         $this->layout->render('list', $data);
     }
 

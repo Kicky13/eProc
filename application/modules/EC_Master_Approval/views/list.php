@@ -244,10 +244,9 @@
                     <div class="form-group" id="modalbudget">
                         <select class="form-control CC2" name="viewusername" id="viewusername" style="width: 250px;">
                             <option value="0" selected="">Pilih Username</option>
-                            <option value="1687:icuk.hertanto">icuk.hertanto</option>
-                            <option value="7300:amin.erfandy">amin.erfandy</option>
-                            <option value="1111:ridde">ridde</option>
-                            <option value="2222:ramadhan">ramadhan</option> 
+                            <?php foreach ($EMP as $value){ ?>
+                            <option value="<?php echo $value['ID']; ?>"><?php echo $value['FULLNAME']; ?></option>
+                            <?php } ?>
                         </select>
                     </div>                    
                 </div>                

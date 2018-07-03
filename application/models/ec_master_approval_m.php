@@ -167,5 +167,13 @@ class ec_master_approval_m extends CI_Model {
 				// WHERE SM.PUBLISHED_LANGSUNG = '1' ";
     //     $result = $this->db->query($SQL);
     }
+    public function getUser_employee()
+    {
+        $this->db->select('*');
+        $this->db->from('ADM_EMPLOYEE');
+        $this->db->where('STATUS', 'Active');
+        $result = $this->db->get();
+        return $result->result_array();
+    }
 	// $pjg2 = strlen($result[$i]['KODE_USER']);
 }

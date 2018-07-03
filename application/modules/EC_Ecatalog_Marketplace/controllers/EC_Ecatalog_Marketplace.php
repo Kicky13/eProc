@@ -1579,8 +1579,12 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             $data['HARGA_PENAWARAN'] = $dataa[$j]['PRICE'] = !null ? $dataa[$j]['PRICE'] : "-";
             $dataa[$j]['STOK'] = $deals[0]['STOK'];
             //$data[4] = "";
-            $parent = $this->ec_ecatalog_m->get_parent_category($dataa[$j]['KODE_PARENT']);
-            $dataa[$j]['NAMA_PARENT'] = $parent['DESC'];
+            if ($dataa[$j]['KODE_PARENT'] == 0){
+                $dataa[$j]['NAMA_PARENT'] = $dataa[$j]['DESC'];
+            } else {
+                $parent = $this->ec_ecatalog_m->get_parent_category($dataa[$j]['KODE_PARENT']);
+                $dataa[$j]['NAMA_PARENT'] = $parent['DESC'];
+            }
             $data[4] = $dataa[$j]['CURR'] = !null ? $dataa[$j]['CURR'] : "-";
             $data[5] = $dataa[$j]['DELIVERY_TIME'] = !null ? $dataa[$j]['DELIVERY_TIME'] : "-";
             $data[6] = $dataa[$j]['MEINS'] = !null ? $dataa[$j]['MEINS'] : "-";
@@ -2265,7 +2269,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //        if (isset($dataa)){
 //            $json_data = array('page' => $page, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
 //        } else {
-            $json_data = array('page' => $page, 'n' => $dataa, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
+            $json_data = array('page' => $page, 'n' => $this->testPaging($dataa, $limitMin, $limitMax), 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
 //        }
 
         //$this->getALL_lgsg($dataa));
@@ -2337,6 +2341,27 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             }
             $plant = $data[$i]['PLANT'];
             $matno = $data[$i]['MATNO'];
+        }
+        return $item;
+    }
+
+    public function testPaging($data = array(), $min, $max)
+    {
+        $matno = '';
+        $plant = '';
+        $i = $min;
+        $item = array();
+        while (count($item) < $max && $i <count($data)){
+            if ($matno == $data[$i]['MATNO']){
+                if ($plant !== $data[$i]['PLANT']){
+                    array_push($item, $data[$i]);
+                }
+            } else {
+                array_push($item, $data[$i]);
+            }
+            $plant = $data[$i]['PLANT'];
+            $matno = $data[$i]['MATNO'];
+            $i++;
         }
         return $item;
     }

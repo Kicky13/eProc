@@ -1576,6 +1576,7 @@ class ec_catalog_produk extends CI_Model
     {        
         $this->db->from($this->tableCart);
         $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CHART.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'inner');
+        $this->db->join('VND_HEADER', 'EC_T_CHART.VENDORNO = VND_HEADER.VENDOR_NO', 'inner');
         $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
         $this->db->join('(SELECT PLANT,"DESC" NAMA_PLANT FROM EC_M_PLANT) PLN', 'PLN.PLANT = EC_T_DETAIL_PENAWARAN.PLANT', 'inner');
         $this->db->where("PUBLISHED_LANGSUNG", '1', TRUE);

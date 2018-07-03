@@ -498,7 +498,16 @@ class EC_Ecatalog extends MX_Controller
                 $po_number[$i] = $po_no[$i];
             }            
         }
-        $this->notifToEmployee('kicky120@gmail.com', $table);
+        for ($n = 0; $n < count($table); $n++){
+            if (isset($table[$n][0]['PO_NO'])){
+                break;
+            } else {
+                unset($table[$n]);
+            }
+        }
+        if (isset($table)) {
+            $this->notifToEmployee('kicky120@gmail.com', $table);
+        }
         for ($d = 0; $d < sizeof($po_number); $d++) {
             $return = $this->sap_handler->getDetailPO($po_number[$d]);
             for ($e = 0; $e < sizeof($return); $e++) {
@@ -598,7 +607,7 @@ class EC_Ecatalog extends MX_Controller
                     $_tr = '<tr>
                     <td> '.$no++.'</td>
                     <td> '.$d['PO_NO'].'</td>                      
-                    <td> '.$d['VENDORNO'].'</td>
+                    <td> '.$d['VENDOR_NAME'].'</td>
                     <td> '.$d['MATNR'].'</td>
                     <td> '.$d['MAKTX'].'</td>
                     <td> '.$d['MEINS'].'</td>                      
