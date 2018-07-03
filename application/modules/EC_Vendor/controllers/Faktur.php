@@ -14,7 +14,7 @@ class Faktur extends MX_Controller {
 
     public function index(){
         $this -> load -> library('Authorization');
-        $data['title'] = "Ekspedisi Faktur Pajak";
+        $data['title'] = "List Ekspedisi Faktur Pajak";
         $this->layout->set_table_js();
         $this->layout->set_table_cs();
         $this->layout->set_validate_css();
@@ -25,28 +25,62 @@ class Faktur extends MX_Controller {
 
         $this->layout->add_js('bootbox.js');
         $this->layout->add_js('pages/invoice/EC_common.js');
-        $this->layout->add_js('pages/invoice/ec_vendor_faktur.js?5');
+        $this->layout->add_js('pages/invoice/ec_vendor_faktur.js?7');
         $this->layout->render('EC_Vendor/faktur/list', $data);
     }
 
     public function data(){
-        $data = $this->fe->getData($this->session->userdata('VENDOR_NO'));    
-        echo json_encode(array('data'=>$data));    
+//YANG LAMA START-------------        
+        // $data = $this->fe->getData($this->session->userdata('VENDOR_NO'));
+        // // echo "<pre>";
+        // echo json_encode(array('data'=>$data));
+        // print_r($data);   
+// YANG LAMA END -------------
+		$this->load->library('sap_invoice');
+		$vendor_id = $this->session->userdata('VENDOR_NO');
+        $act=$this->sap_invoice->getFakturPajakAll($vendor_id);
+		$data = array();
 
-        // foreach ($data as $key => $val) {
-        //     $no_po = "-";
-        //     $ambilPO = $this->fe->getFaktur($val['NO_EKSPEDISI']);    
-        //     if(!empty($ambilPO[0]['PO'])){
-        //         $no_po = $ambilPO[0]['PO'];
-        //     }
-        //     $data[$key]['NOPO']=$no_po;
-        // }
-        // $data = array('data' => $data);
-        // echo json_encode($data);
+        	for ($i = 0; $i < count($act['output']); $i++) {
+        			$cuk = $act['output'][$i]['XBLNR'];
+        			$cuk = substr($cuk, 0,3) .'.'. substr($cuk, 3,3 ) .'-'. substr($cuk, 6,2) .'.'. substr($cuk, 8,8);
+
+        			$cuk1 = $act['output'][$i]['BLDAT'];
+        			$cuk1 = substr($cuk1, 6,2).'-'.substr($cuk1, 4,2).'-'.substr($cuk1, 0,4);
+
+					$cuk2 = $act['output'][$i]['TGL_TRIMA'];
+        			$cuk2 = substr($cuk2, 6,2).'-'.substr($cuk2, 4,2).'-'.substr($cuk2, 0,4);
+
+				$data2 = array (
+					'COMPANYCODE' => $act['output'][$i]['BUKRS'],
+					'TGL_EKSPEDISI' => $cuk1,
+					'NO_EKSPEDISI' => $act['output'][$i]['EKSPNO'],
+					'NO_FAKTUR' => $cuk,
+					'NO_VENDOR' => $this->session->userdata('VENDOR_NO'),
+					'NAMA_VENDOR' => $act['output'][$i]['NAME1'],
+                    'NPWP'=>$act['output'][$i]['STCD1'],
+                    'TGL_FAKTUR' => $act['output'][$i]['BLDAT'],
+                    'TGL_BAST'=> $act['output'][$i]['BLDAT'],
+                    'DPP'=> "Rp " . number_format($act['output'][$i]['HWBAS'],2,',','.'),
+                    'PPN'=> "Rp " . number_format($act['output'][$i]['HWSTE'],2,',','.'),
+                    'PO'=> $act['output'][$i]['EBELN'],
+                    'EMAIL'=> $act['output'][$i]['EMAIL'],
+                    'NAMA'=> $act['output'][$i]['PERSON'],
+                    'TGL_TERIMA' => $cuk2,
+                    'POSISI'=>$act['output'][$i]['POS'],
+                    'KET'=>$act['output'][$i]['KET'],
+				);
+				array_push($data, $data2);	
+         }
+ 				echo json_encode(array('data'=>$data));	        
     }
 
     public function ekspedisiFaktur(){   
         $this->load->library('sap_invoice');
+
+// print_r($this->input->post('no_faktur'));
+// die();
+
         $vendor=$this->db->select('VENDOR_TYPE, EMAIL_ADDRESS')->from('VND_HEADER')->where('VENDOR_NO', $this->session->userdata('VENDOR_NO'))->get()->result_array();                          
         $email=$this->input->post('email');
         // print_r($email);die;
@@ -54,15 +88,16 @@ class Faktur extends MX_Controller {
 
         $nama=$this->input->post('nama');
         $nama=$nama[1];
-        // echo $email;die;
-
         $jumlah=count($this->input->post('no_faktur'));
         $company=$this->input->post('company');
         $no_faktur=$this->input->post('no_faktur');
         $tgl_faktur=$this->input->post('tgl_faktur');    
-        $dpp=$this->input->post('dasar_pajak');    
+        
+        $dpp=$this->input->post('dasar_pajak');
+        $dpp = str_replace(',', '', $dpp);
         $bast=$this->input->post('tgl_bast');
         $po=$this->input->post('po');  
+        $file_gambar=$this->input->post('file_gambar');  
         // $input_param=array(        
         //     'BUKRS' => $company,
         //     'LIFNR' => $this->session->userdata('VENDOR_NO'),
@@ -73,8 +108,10 @@ class Faktur extends MX_Controller {
             'LIFNR' => $this->session->userdata('VENDOR_NO'),
             'EMAIL' => $email,
             'PERSON' => $nama
-            );  
+        );  
+        
         $input=array();
+
         foreach ($no_faktur as $i => $a) {
             $input_sap = array(
                 'XBLNR' => $no_faktur[$i],
@@ -82,14 +119,12 @@ class Faktur extends MX_Controller {
                 'BEDAT' => $bast[$i],
                 'HWBAS'=>$dpp[$i],
                 'EBELN'=>$po[$i]            
-                );       
+            );       
             array_push($input, $input_sap);
-        }    
-        $act=$this->sap_invoice->setEkspedisiFaktur($input_param, $input);     
-// var_dump($act);
-// echo "<pre>";
-// print_r($act);
-// die();
+        }
+    
+        $act=$this->sap_invoice->setEkspedisiFaktur($input_param, $input);
+        
         if($act){
             $tgl_sekarang=date("Ymd");
             if($act['pesan']['TYPE']==='S'){
@@ -99,11 +134,13 @@ class Faktur extends MX_Controller {
                     'VENDORNO'      => $this->session->userdata('VENDOR_NO'),
                     'NATION'        => $vendor[0]['VENDOR_TYPE'],
                     'NAMA_SETOR'    => $nama,
+                    'EMAIL_SETOR'   => $email,
                     'STATUS_SETOR'  => 1,
-                    );    
+                );    
                 $this->db->trans_start();
                 $this->db->set('TGL_EKSPEDISI',"to_date('".$tgl_sekarang."','YYYYMMDD')",false);  
-                $this->db->insert('EC_FAKTUR_EAEA', $data);       
+                $this->db->insert('EC_FAKTUR_EAEA', $data);
+
                 foreach ($act['output'] as $i => $a) {
                     $data_detail = array(
                         'NO_EKSPEDISI' => $act['noeks'],
@@ -112,9 +149,14 @@ class Faktur extends MX_Controller {
                         'NPWP'=>$act['output'][$i]['STCD1'],
                         'DPP'=>$act['output'][$i]['HWBAS'],
                         'PPN'=>$act['output'][$i]['HWSTE'],
-                        'TGL_BAST'=>$bast[$i],
-                        'PO'=>$po[$i]
-                        );       
+                        'TGL_BAST'=>$act['output'][$i]['BLDAT'],
+                        'PO'=>$act['output'][$i]['EBELN'],
+                        'FILE_FP'=>$file_gambar[$i]
+                    );
+			//echo "<pre>";
+            //        print_r($data_detail);
+            // echo "</pre>";     
+
                     $this->db->insert('EC_FAKTUR_DETAILS', $data_detail);
                 }
                 $this->db->trans_complete();
@@ -132,26 +174,91 @@ class Faktur extends MX_Controller {
     }  
 
     public function cetakDocument() {
+        //KODINGAN LAMA - START
+        // $this->load->config('ec');
+        // $kirim['ekspedisi'] = $this->input->post('id');
+        // $company_code = $this->input->post('company_code');
+        // $kirim['company_code'] = $this->input->post('company');
+        // $kirim['vendor_name']=$this->session->userdata('VENDOR_NAME');
+        // $kirim['vendor_no']=$this->session->userdata('VENDOR_NO');
+        // // print_r($kirim);die();
+        // $this->load->library('M_pdf');
+        // $mpdf = new M_pdf();
+        // $kirim['nation']=$this->db->select('VENDOR_TYPE')->from('VND_HEADER')->where('VENDOR_NO', $this->session->userdata('VENDOR_NO'))->get()->result_array();            
+        // $company_data = $this->config->item('company_data');                
+        // $kirim['company_data'] = $company_data[$company_code];  
+        // $kirim['data']=$this->fe->getFaktur($kirim['ekspedisi']);            
+        // $kirim['data_header']=$this->fe->getDataEkspedisi($kirim['ekspedisi']); 
+        
+        // // echo "<pre>";
+        // // print_r($kirim['data_header']);die;  
+
+        // $html = $this->load->view('EC_Vendor/faktur/cetak', $kirim, TRUE);
+
+        // $mpdf->pdf->writeHTML($html);
+        // $footer_rr = $this->load->view('EC_Vendor/faktur/footer', $kirim, TRUE);
+        // $mpdf->pdf->SetHTMLFooter($footer_rr);
+        // $mpdf->pdf->output('Ekspedisi Faktur Pajak No. ' . $kirim['ekspedisi'] . '.pdf', 'I');
+        //KODINGAN LAMA - END
+
         $this->load->config('ec');
+        $this->load->library('sap_invoice');
+        $this->load->library('M_pdf');
+
         $kirim['ekspedisi'] = $this->input->post('id');
-        $company_code = $this->input->post('company');
+        $kirim['company_code'] = $this->input->post('company');
         $kirim['vendor_name']=$this->session->userdata('VENDOR_NAME');
         $kirim['vendor_no']=$this->session->userdata('VENDOR_NO');
-        $this->load->library('M_pdf');
+        $kirim['nation']=$this->db->select('VENDOR_TYPE')->from('VND_HEADER')->where('VENDOR_NO', $this->session->userdata('VENDOR_NO'))->get()->result_array(); 
+        $company_data = $this->config->item('company_data');
+        $kirim['company_data'] = $company_data[$company_code];
         $mpdf = new M_pdf();
 
-        $kirim['nation']=$this->db->select('VENDOR_TYPE')->from('VND_HEADER')->where('VENDOR_NO', $this->session->userdata('VENDOR_NO'))->get()->result_array();            
-        $company_data = $this->config->item('company_data');                
-        $kirim['company_data'] = $company_data[$company_code];  
-        $kirim['data']=$this->fe->getFaktur($kirim['ekspedisi']);            
-        $kirim['data_header']=$this->fe->getDataEkspedisi($kirim['ekspedisi']);            
-        $html = $this->load->view('EC_Vendor/faktur/cetak', $kirim, TRUE);
+        $no_eks =  $this->input->post('id');
+        $vendor_id = $this->session->userdata('VENDOR_NO');
+        $company_code = $this->input->post('company');
+        
+        $act=$this->sap_invoice->getFakturPajakCetak($no_eks, $vendor_id, $company_code);
+        $kirim['sap'] = array();
 
+        // echo "<pre>";print_r($act);die();
+
+        for ($i=0; $i < count($act['output']) ; $i++) {
+            if ($act['output'][$i]['KET'] == 'Diterima') {
+                 $status = 'APPROVED';
+             } 
+             else 
+                $status = '';
+
+            $kirim3 = array(
+                'COMPANY_CODE' => $act['output'][$i]['BUKRS'],
+                'NO_EKSPEDISI' => $act['output'][$i]['EKSPNO'],
+                'NO_FAKTUR' => $act['output'][$i]['XBLNR'],
+                'NO_VENDOR' => $this->session->userdata('VENDOR_NO'),
+                'NAMA_VENDOR' => $act['output'][$i]['NAME1'],
+                'NPWP'=>$act['output'][$i]['STCD1'],
+                'TGL_FAKTUR' => $act['output'][$i]['BLDAT'],
+                'DPP'=> number_format($act['output'][$i]['HWBAS'],2,',','.'),
+                'PPN'=> number_format($act['output'][$i]['HWSTE'],2,',','.'),  
+                'EMAIL'=> $act['output'][$i]['EMAIL'],
+                'NAMA'=> $act['output'][$i]['PERSON'],
+                'STATUS' => $status,
+            );
+            array_push($kirim['sap'], $kirim3);
+        }
+
+        // echo json_encode(array('kirim'=>$kirim));die(); echo "<pre>";
+        // print_r($kirim);die();
+
+        $html = $this->load->view('EC_Vendor/faktur/cetak', $kirim, TRUE);
         $mpdf->pdf->writeHTML($html);
         $footer_rr = $this->load->view('EC_Vendor/faktur/footer', $kirim, TRUE);
         $mpdf->pdf->SetHTMLFooter($footer_rr);
         $mpdf->pdf->output('Ekspedisi Faktur Pajak No. ' . $kirim['ekspedisi'] . '.pdf', 'I');
+
     }
+
+
 
     public function ekspedisi($id = '') {
         $this->layout->set_table_js();
@@ -162,10 +269,37 @@ class Faktur extends MX_Controller {
         $this->layout->add_js('jquery.priceFormat.min.js');
         $this->layout->add_css('plugins/bootstrap-datepicker/datepicker.css');
         $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
-        $this->layout->add_js('pages/invoice/ec_vendor_faktur.js?2');      
+        $this->layout->add_js('pages/invoice/ec_vendor_faktur.js?7');      
 
         $data['urlAction'] = site_url('EC_Vendor/Faktur/ekspedisiFaktur/');
 
         $this->layout->render('faktur/form', $data);
     }      
+
+    public function doInsertFp() {
+        // print_r( $this->input->post());die;
+        error_reporting(E_ALL);
+        $GAMBAR             = $_FILES['GAMBAR']['tmp_name'];
+        $tes                = dirname(__FILE__);
+        $pet_pat            = str_replace('application/modules/EC_Vendor/controllers', '', $tes);
+
+        if (isset($_FILES) && !empty($_FILES['GAMBAR']['name'])) {
+            $type = explode('.', $_FILES['GAMBAR']['name']);
+            if(end($type)=="jpg" || end($type)=="jpeg" || end($type)=="png" || end($type)=="pdf" || end($type)=="doc" || end($type)=="docx"){
+                $this->_myFile = "FP_". date('YmdHms').'_'. $_FILES['GAMBAR']['name'];
+                $this->_path = $pet_pat . 'upload/fp_ekspedisi/' . $this->_myFile;
+                if (move_uploaded_file($GAMBAR, $this->_path)) {
+                    echo json_encode(array('success'=>true, 'pesan'=>'Faktur Pajak Berhasil Di Upload', 'gambar'=>$this->_myFile));
+                } else {
+                    echo json_encode(array('success'=>false, 'pesan'=>'Faktur Pajak GAGAL Di Upload', 'gambar'=>''));
+                }
+            } else {
+                echo json_encode(array('success'=>false, 'pesan'=>'File yang support hanya jpg, jpeg, png, pdf, doc, dan docx', 'gambar'=>''));
+            }
+        } else {
+            echo json_encode(array('success'=>false, 'pesan'=>'Error', 'gambar'=>''));
+
+        }
+    }
+
 }

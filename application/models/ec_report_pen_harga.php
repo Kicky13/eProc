@@ -122,7 +122,7 @@ class ec_report_pen_harga extends CI_Model
                 TB2.MATNO IN (SELECT MAT.MATNR FROM EC_M_STRATEGIC_MATERIAL MAT WHERE MAT.PUBLISHED_LANGSUNG='1') 
                 AND TB2.STOK > 0 AND DT3.PRICE != 0
             ORDER BY
-                SM.MATKL ASC, TB2.MATNO ASC, DT3.PLANT ASC, DT3.PRICE ASC";
+                DT3.INDATE DESC";
         $result = $this->db->query($SQL);
         return (array)$result->result_array();
     }

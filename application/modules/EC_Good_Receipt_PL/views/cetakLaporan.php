@@ -54,7 +54,14 @@
           <td style="width:75%;">
               <table>
                      <tr>
-                        <td colspan="3"><h2><?=$company_data['nama']?></h2></td>                        
+                        <td colspan="3">
+                            <h2>LAPORAN BARANG YANG TELAH DITERIMA</h2>                            
+                        </td>                        
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h3><?=$company_data['nama']?></h3>                            
+                        </td>
                     </tr>
                     <tr>
                         <td style="width:100px;">User</td>
@@ -83,10 +90,12 @@
         <td align="center">No</td>
         <td align="center">Shipment No</td>
         <td align="center">GR No</td>
+        <td align="center">PO No</td>
         <td align="center">Doc Date</td>
         <td align="center">Vendor</td>
         <td align="center">Material No.</td>
-        <td align="center">Qty</td>
+        <td align="center">Qty Order</td>
+        <td align="center">Qty Receipt</td>
         <td align="center">Harga Qty</td>
         <td align="center">Total</td>                
       </tr>
@@ -100,9 +109,11 @@
             <td><?=$no++?></td>
             <td><?=$v['NO_SHIPMENT'];?></td>
             <td><?=$v['GR_NO'];?></td>
+            <td><?=$v['PO_NO'];?></td>
             <td><?=$v['DOC_DATE'];?></td>
             <td><?=$v['VENDOR_NAME'];?></td>
             <td><?=$v['MATNO'];?></td>
+            <td><?=$v['QTY_ORDER'];?></td>
             <td><?=$v['QTY_RECEIPT'];?></td>
             <td><?=ribuan($v['PRICE']);?></td>
             <td><?=ribuan($v['PRICE']*$v['QTY_RECEIPT']);?></td>

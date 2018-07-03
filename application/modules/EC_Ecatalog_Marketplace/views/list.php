@@ -44,7 +44,7 @@
 							</div>
 						</div>
 					</form>
-				</div>
+				</div> 
 				<div class="col-lg-3 col-md-3 pull-right">
 					<?php echo form_open_multipart('EC_Ecatalog/compares/', array('method' => 'POST', 'class' => 'form-horizontal pull-right')); ?>
 					<input type="hidden" id="arr" name="arr[]" />

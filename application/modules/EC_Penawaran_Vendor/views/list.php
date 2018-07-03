@@ -18,6 +18,16 @@
 			</ul>--><!-- AJAX DATA TABLE -->
 			
 			<!--<div id="stokOnly">-->
+                         <div class="panel-group">
+                    <div class="panel panel-default">
+                    <div class="panel-heading" style="font-weight:600;">Informasi Ketentuan Harga Barang (PPN, PPH, Ongkos Kirim)</div>
+
+                      <div class="panel-body">
+                        1. Harga untuk produk yang dikirimkan sudah termasuk PPH dan ongkos kirim namun belum termasuk PPN <br/>
+                        2. Harga untuk produk pengambilan sendiri sudah termasuk PPH namun tidak termasuk PPH dan ongkos kirim
+                    </div>
+                </div>
+            </div>
 			<form method='post' action='<?php echo base_url(); ?>EC_Penawaran_Vendor/simpanHarga' id='form_simpan'>
 				<button type='button' class='btn btn-primary pull-right' onclick='konfirmasiSimpan();'>Save</button>
 				<br/>

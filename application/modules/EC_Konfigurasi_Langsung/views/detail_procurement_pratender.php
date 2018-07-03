@@ -202,7 +202,7 @@
                             </div>
                             <div class="row" style="margin-top: 10px;">
                             	<div class="col-md-2">
-                            	<label>jangka Waktu</label>
+                            	<label>Jangka Waktu Perubahan Harga dan Delivery Time Vendor</label>
                             	</div>
                                 <div class="col-md-2">
                                     <select class="form-control" id="activitySelector">                                  

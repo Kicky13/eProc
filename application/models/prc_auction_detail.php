@@ -60,6 +60,16 @@ class prc_auction_detail extends CI_Model
 		$this->db->join('PRC_TENDER_VENDOR', "PRC_AUCTION_QUO_HEADER.PTM_NUMBER = PRC_TENDER_VENDOR.PTM_NUMBER AND PRC_AUCTION_DETAIL.PTV_VENDOR_CODE = PRC_TENDER_VENDOR.PTV_VENDOR_CODE", 'left');
 	}
 
+	public function getMinBidBobot($paqh_id) {
+		$this->db->select('PTV_VENDOR_CODE');
+		$this->db->from($this->table.' t1');
+		$this->db->join('(SELECT MAX(NILAI_GABUNG) MIN_PRICE FROM PRC_AUCTION_DETAIL WHERE PAQH_ID = '.$paqh_id.') T2','T1.NILAI_GABUNG = T2.MIN_PRICE','inner');
+		$this->db->where(array('PAQH_ID' => $paqh_id));
+		$ans = $this->db->get()->row_array();
+		// var_dump($this->db->last_query());
+		return $ans;
+	}
+
 	public function getMinBid($paqh_id) {
 		$this->db->select('PTV_VENDOR_CODE');
 		$this->db->from($this->table.' t1');
@@ -68,6 +78,16 @@ class prc_auction_detail extends CI_Model
 		$ans = $this->db->get()->row_array();
 		// var_dump($this->db->last_query());
 		return $ans;
+	}
+
+	public function getVendorBobot($paqh_id){
+		$this->db->select('*');
+		$this->db->from($this->table);
+		$this->join_vnd();
+		$this->db->where("PRC_AUCTION_DETAIL.PAQH_ID = '$paqh_id'");
+		$this->db->order_by("PRC_AUCTION_DETAIL.NILAI_GABUNG","DESC");
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function getVendor($paqh_id){

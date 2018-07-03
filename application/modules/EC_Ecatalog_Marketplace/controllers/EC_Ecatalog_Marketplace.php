@@ -1174,11 +1174,11 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //                           array('COMPANYID' => '6000', 'COMPANYNAME' => 'Thang Long Cement'),
 //                           array('COMPANYID' => '7000', 'COMPANYNAME' => 'KSO'));
         $this->load->model('ec_ecatalog_m');
-        $data['CC'] = $this->COSTCENTER_GETLIST();
+        $data['CC'] = $this->COSTCENTER_GETLIST();        
         $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);
         $result = $this->sap_handler->GET_REPORTBUDGET($this->session->userdata, $data['CCC']["COSTCENTER"], false);
-//         var_dump($result);
-        // $dataa = array();
+//         var_dump($result);die();
+        // $dataa = array(); 
         for ($i = 0; $i < sizeof($result); $i++) {
             $data["AVAILBUDGET"] = $result[$i]["AVAILBUDGET"];
             // $dataa[] = $data;
@@ -2391,7 +2391,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         // }
         // var_dump(UPLOAD_PATH);
         // var_dump($_FILES);
-        $uploaded = $this->file_operation->uploadT(UPLOAD_PATH . 'EC_korin', $_FILES);
+        $uploaded = $this->file_operation->uploadTPL(UPLOAD_PATH . 'EC_korin', $_FILES);
         // var_dump($uploaded['korin']['file_name']);
         echo json_encode($uploaded['korin']);
     }

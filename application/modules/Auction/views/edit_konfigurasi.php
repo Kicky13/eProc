@@ -41,6 +41,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Bobot (Teknis : Harga)</td>
+                                <td>
+                                    <select name="bobot_type" id="bobot_type">
+                                        <option value="0" <?php echo ($paqh['BOBOT_TEKNIS'] == '') ? 'selected' : ''?>>Harga Terendah</option>
+                                        <option value="1" <?php echo ($paqh['BOBOT_TEKNIS'] == '60') ? 'selected' : ''?>>60 : 40</option>
+                                        <option value="2" <?php echo ($paqh['BOBOT_TEKNIS'] == '70') ? 'selected' : ''?>>70 : 30</option>
+                                        <option value="3" <?php echo ($paqh['BOBOT_TEKNIS'] == '80') ? 'selected' : ''?>>80 : 20</option>
+                                        <option value="4" <?php echo ($paqh['BOBOT_TEKNIS'] == '90') ? 'selected' : ''?>>90 : 10</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nilai Pengurangan</td>
                                 <td><input type="text" class="decrement_value form-control must_autonumeric" name="paqh_decrement_value" placeholder="" value="<?php echo $paqh['PAQH_DECREMENT_VALUE']?>"></td>
                             </tr>

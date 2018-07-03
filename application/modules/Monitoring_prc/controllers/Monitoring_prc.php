@@ -13,8 +13,10 @@ class Monitoring_prc extends CI_Controller {
 	public function index($cheat = false) {
 		$data['title'] = "Monitoring Procurement";
 		$data['cheat'] = $cheat;
-		$this->layout->set_table_js();
-		$this->layout->set_table_cs();
+		$this->load->model('m_filter_status');
+		$data['status'] = $this->m_filter_status->get();
+		// $this->layout->set_table_js();
+		// $this->layout->set_table_cs();
 		$this->layout->set_validate_css();
 		$this->layout->set_validate_js();
 		$this->layout->add_js('pages/monitor_prc.js?6');		

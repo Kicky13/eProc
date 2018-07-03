@@ -467,7 +467,7 @@ function buyOneCheck(elm, plant, matno, kode_penawaran, category) {
         dataType : 'json'
     }).done(function(data) {
         // console.log(data.sukses);
-        if(data.sukses){
+        if(data.sukses === true){            
             window.location=$("#base-url").val() + 'EC_Ecatalog_Marketplace/detail_prod_langsung/'+matno+'/'+plant;
         }else{
             bootbox.alert("You don't have authorized");

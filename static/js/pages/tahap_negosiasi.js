@@ -1,6 +1,6 @@
 var base_url = $('#base-url').val();
 function cek_terpilih_func() {
-	 
+
 	cek_terpilih = false;
 	$(".pilih_metode").each(function() {
 
@@ -8,7 +8,7 @@ function cek_terpilih_func() {
 		if ($(this).val() != '') {
 			cek_terpilih = true;
 		}
-	
+
 		
 	});
 	if (cek_terpilih) {		
@@ -67,7 +67,7 @@ function get_rekap_nego(){
 			// console.log(data);
 			$(".panel_rekap").show();				
 			$(".panel_rekap").html(data);
-		
+
 		},
 	});
 }
@@ -107,21 +107,21 @@ function kirim(){
 	// return false;
 
 	if(submit_nego_stat&&submit_auction_stat){	
-	
-	    $('#quotation-form')[0].submit();
+
+		$('#quotation-form')[0].submit();
 	}else{
 		console.log('error');
 		alert('Vendor belum dipilih, pilih minimal satu vendor');
 		swal({
-          title: 'ERROR',
-          text: 'Harus pilih minimal satu vendor',
-          type: 'error',
-          confirmButtonColor: '#d33',
-          confirmButtonText: 'OK',
-          confirmButtonClass: 'btn btn-danger',
-          closeOnConfirm: true,
-        }); 
-        return false;
+			title: 'ERROR',
+			text: 'Harus pilih minimal satu vendor',
+			type: 'error',
+			confirmButtonColor: '#d33',
+			confirmButtonText: 'OK',
+			confirmButtonClass: 'btn btn-danger',
+			closeOnConfirm: true,
+		}); 
+		return false;
 
 	}
 };
@@ -148,58 +148,73 @@ $(document).ready(function() {
 	});
 
 	$('.formsubmit_').on('click',function(){
-		console.log('click');
-		swal({
-		    title: 'Peringatan',
-		    text: 'Apakah Anda yakin?',
-		    type: 'warning',
-		    showCancelButton: true,
-		    confirmButtonColor: '#92c135',
-		    cancelButtonColor: '#d33',
-		    confirmButtonText: 'Ya',
-		    cancelButtonText: 'Tidak',
-		    confirmButtonClass: 'btn btn-success',
-		    cancelButtonClass: 'btn btn-danger',
-		    closeOnConfirm: true,
-		    closeOnCancel: true
-		  },
-		 	function(isConfirm){
-		  	console.log(isConfirm);
-		  		if(isConfirm===true){
-		  			kirim();
-		  		}else{
-		  			console.log('no submit');
-		  		}
-		        
-		  });
+
+		if ($('#ece_assign').val() == ''){
+			console.log('error');
+			// alert('Evaluator ECE belum dipilih');
+			swal({
+				title: 'Evaluator ECE belum dipilih',
+				text: 'Pilih Evaluator ECE terlebih dahulu',
+				type: 'error',
+				confirmButtonColor: '#d33',
+				confirmButtonText: 'OK',
+				confirmButtonClass: 'btn btn-danger',
+				closeOnConfirm: true,
+			}); 
+		}else{
+			console.log('click');
+			swal({
+				title: 'Peringatan',
+				text: 'Apakah Anda yakin?',
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#92c135',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Ya',
+				cancelButtonText: 'Tidak',
+				confirmButtonClass: 'btn btn-success',
+				cancelButtonClass: 'btn btn-danger',
+				closeOnConfirm: true,
+				closeOnCancel: true
+			},
+			function(isConfirm){
+				console.log(isConfirm);
+				if(isConfirm===true){
+					kirim();
+				}else{
+					console.log('no submit');
+				}
+
+			});
+		}
 	});
 
 	$('.btn_approval').on('click',function(){
 		var approval=$(this).val();
 		console.log(approval);
 		swal({
-		    title: 'Peringatan',
-		    text: 'Apakah Anda yakin?',
-		    type: 'warning',
-		    showCancelButton: true,
-		    confirmButtonColor: '#92c135',
-		    cancelButtonColor: '#d33',
-		    confirmButtonText: 'Ya',
-		    cancelButtonText: 'Tidak',
-		    confirmButtonClass: 'btn btn-success',
-		    cancelButtonClass: 'btn btn-danger',
-		    closeOnConfirm: true,
-		    closeOnCancel: true
-		  },
-		 	function(isConfirm){
-		  	console.log(isConfirm);
-		  		if(isConfirm===true){
-		  			approve(approval);
-		  		}else{
-		  			console.log('no submit');
-		  		}
-		        
-		  });
+			title: 'Peringatan',
+			text: 'Apakah Anda yakin?',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#92c135',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Ya',
+			cancelButtonText: 'Tidak',
+			confirmButtonClass: 'btn btn-success',
+			cancelButtonClass: 'btn btn-danger',
+			closeOnConfirm: true,
+			closeOnCancel: true
+		},
+		function(isConfirm){
+			console.log(isConfirm);
+			if(isConfirm===true){
+				approve(approval);
+			}else{
+				console.log('no submit');
+			}
+
+		});
 	});
 
 })

@@ -113,6 +113,8 @@ class Auction extends CI_Controller {
 		// 	$vendor= $this->prc_tender_quo_item->get_ptm($id,$value);
 		// }
 		$paqh_id = $this->prc_auction_quo_header->get_id();
+
+		//penambahan bobot archie//
 		$bobot = $this -> input -> post('bobot_type');
 		
 		// echo "<pre>";
@@ -131,6 +133,7 @@ class Auction extends CI_Controller {
 			$bt = 90;
 			$bh = 10;
 		}
+		//end penambahan bobot//
 
 		// echo "<pre>";
 		// print_r($bt);
@@ -148,8 +151,10 @@ class Auction extends CI_Controller {
 			'PAQH_LOCATION' => $this->input->post('paqh_location'),
 			'PAQH_OPEN_STATUS' => 0,
 			'PAQH_SUBJECT_OF_WORK' => $this->input->post('paqh_subject_of_work'),
+			//penambahan bobot archie//
 			'BOBOT_TEKNIS' => $bt,
 			'BOBOT_HARGA' => $bh
+			//end penambahan bobot//
 			);
 
 		$harus_ada=array(
@@ -198,26 +203,33 @@ class Auction extends CI_Controller {
 						);
 
 					$this->prc_auction_detail->insert($data_vendor);
-
-					$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd);
-					$min_harga = $this->prc_auction_detail->get_min_harga($paqh_id);
-					foreach ($vendor1 as $nilai) {
-						$bobot_teknis = $nilai['PQI_TECH_VAL'] * $data['BOBOT_TEKNIS'] / 100;
-						$bobot_harga = $min_harga['MINHARGA'] / $data_vendor['PAQD_FINAL_PRICE'] * $data['BOBOT_HARGA'];
-						$nilai_gabung = $bobot_teknis + $bobot_harga;
-						$data2['NILAI_GABUNG'] = $nilai_gabung;
-						$where1['PAQH_ID']= $paqh_id;
-						$where1['PTV_VENDOR_CODE']= $vnd;
-						echo "<pre>";
-						print_r($vendor1);die;
-						$this->prc_auction_detail->update($data2, $where1);
-					}
-
+					
 						//--LOG DETAIL--//
 					$this->log_data->detail($LM_ID,'Auction/save','prc_auction_detail','insert',$data_vendor);
 						//--END LOG DETAIL--//
 				}
 			}
+			//penambahan bobot archie//
+			foreach ($vnd_ikut as $vnd) {
+				$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd);
+				$min_harga = $this->prc_auction_detail->get_min_harga($paqh_id);
+					// echo "<pre>";
+					// print_r($min_harga);die;
+				foreach ($vendor1 as $nilai) {
+					$bobot_teknis = $nilai['PQI_TECH_VAL'] * $data['BOBOT_TEKNIS'] / 100;
+					$bobot_harga = $min_harga['MINHARGA'] / $harga_vendor[$vnd] * $data['BOBOT_HARGA'];
+					$nilai_gabung = $bobot_teknis + $bobot_harga;
+					$dataa['NILAI_GABUNG'] = number_format($nilai_gabung,2);
+					$where1['PAQH_ID']= $paqh_id;
+					$where1['PTV_VENDOR_CODE']= $vnd;
+						// echo "<pre>";
+						// print_r($nilai_gabung);
+				}
+					// echo "<pre>";
+					// print_r($vendor1);
+				$this->prc_auction_detail->update($dataa, $where1);
+			}
+						//end penambahan bobot//
 		}
 
 		
@@ -349,10 +361,32 @@ class Auction extends CI_Controller {
 
 	/* save new auction config */
 	public function simpan_edit() {
-		$this->load->model(array('prc_auction_quo_header','prc_auction_detail','prc_tender_item','prc_tender_vendor','prc_tender_main'));
+		$this->load->model(array('prc_auction_quo_header','prc_auction_detail','prc_tender_item','prc_tender_vendor','prc_tender_main','prc_tender_quo_item'));
 		
 		$where = array('PAQH_ID' => $this->input->post('paqh_id'));
 		$paqh=$this->prc_auction_quo_header->get($where);
+		
+		//penambahan bobot archie//
+		$paqhID = $this->input->post('paqh_id');
+		$bobot = $this -> input -> post('bobot_type');
+		
+		// echo "<pre>";
+		// print_r($bobot);die;
+
+		if($bobot=="1"){
+			$bt = 60;
+			$bh = 40;
+		} else if($bobot=="2"){
+			$bt = 70;
+			$bh = 30;
+		} else if($bobot=="3"){
+			$bt = 80;
+			$bh = 20;
+		} else if($bobot=="4"){
+			$bt = 90;
+			$bh = 10;
+		}
+		//end penambahan bobot//
 
 		if($paqh[0]['PAQH_OPEN_STATUS']==0){
 			$data = array(
@@ -361,14 +395,20 @@ class Auction extends CI_Controller {
 				'PAQH_HPS' => $this->input->post('paqh_hps'),
 				'PAQH_AUC_START' => oracledate(strtotime($this->input->post('paqh_auc_start'))),
 				'PAQH_AUC_END' => oracledate(strtotime($this->input->post('paqh_auc_end'))),
-				'PAQH_LOCATION' => $this->input->post('paqh_location')
+				'PAQH_LOCATION' => $this->input->post('paqh_location'),
+				//penambahan bobot archie//
+				'BOBOT_TEKNIS' => $bt,
+				'BOBOT_HARGA' => $bh
+				//end penambahan bobot//
 				);
 		}else if($paqh[0]['PAQH_OPEN_STATUS']==1){
 			$data = array(
 				'PAQH_DECREMENT_VALUE' => str_replace(',', '', $this->input->post('paqh_decrement_value')),						
 				'PAQH_AUC_START' => oracledate(strtotime($this->input->post('paqh_auc_start'))),
 				'PAQH_AUC_END' => oracledate(strtotime($this->input->post('paqh_auc_end'))),
-				'PAQH_LOCATION' => $this->input->post('paqh_location')
+				'PAQH_LOCATION' => $this->input->post('paqh_location'),
+				'BOBOT_TEKNIS' => $bt,
+				'BOBOT_HARGA' => $bh
 				);
 		}
 
@@ -386,7 +426,8 @@ class Auction extends CI_Controller {
 			$this->session->set_flashdata('error', $err.' Harus diisi'); redirect('Auction/index');
 		}
 
-
+		// echo "<pre>";
+		// print_r($data['BOBOT_TEKNIS']);die;
 		$this->prc_auction_quo_header->update($data, $where);
 			//--LOG MAIN--//
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
@@ -406,6 +447,7 @@ class Auction extends CI_Controller {
 
 			$vnd_ikut = $this->input->post('vendor_ikut');
 			$harga_vendor = $this->input->post('total');
+			$id_ptm = $this->input->post('ptm');
 
 			$arr = $this->prc_auction_detail->delete(array('PAQH_ID' => $this->input->post('paqh_id')));
 				//--LOG DETAIL--//
@@ -427,11 +469,34 @@ class Auction extends CI_Controller {
 							'PAQD_FINAL_PRICE' => $harga_vendor[$vnd]
 							);
 						$this->prc_auction_detail->insert($data_vendor);
+
 							//--LOG DETAIL--//
 						$this->log_data->detail($LM_ID,'Auction/simpan_edit','prc_auction_detail','insert',$data_vendor);
 							//--END LOG DETAIL--//
 					}
+
 				}
+				//penambahan bobot archie//
+				foreach ($vnd_ikut as $vnd) {
+					$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd);
+					$min_harga = $this->prc_auction_detail->get_min_harga($paqhID);
+					// echo "<pre>";
+					// print_r($min_harga);die;
+					foreach ($vendor1 as $nilai) {
+						$bobot_teknis = $nilai['PQI_TECH_VAL'] * $data['BOBOT_TEKNIS'] / 100;
+						$bobot_harga = $min_harga['MINHARGA'] / $harga_vendor[$vnd] * $data['BOBOT_HARGA'];
+						$nilai_gabung = $bobot_teknis + $bobot_harga;
+						$data3['NILAI_GABUNG'] = number_format($nilai_gabung,2);
+						$where1['PAQH_ID']= $paqhID;
+						$where1['PTV_VENDOR_CODE']= $vnd;
+						// echo "<pre>";
+						// print_r($nilai_gabung);
+					}
+					// echo "<pre>";
+					// print_r($vendor1);
+					$this->prc_auction_detail->update($data3, $where1);
+				}
+						//end penambahan bobot//
 			}
 
 			
@@ -498,22 +563,52 @@ class Auction extends CI_Controller {
 		$data['ptm_number'] = $data_paqh[0]['PTM_NUMBER'];
 		$data['paqh'] = $data_paqh[0];
 		$data['item'] = $this->prc_tender_item->ptm_paqh($data_paqh[0]['PTM_NUMBER'], $data_paqh[0]['PAQH_ID']);
+		// echo "<pre>";
+		// print_r($data_paqh);die;
 
 		$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 		$now = date_format($datetimestamp, 'd-m-Y H.i.s');
 
-		$vendor = $this->prc_auction_detail->getVendor($data_paqh[0]['PAQH_ID']);
-		$data['vendor'] = $vendor;
-		// var_dump($data['vendor']);
-		// die();
-		$min = $data['vendor'][0]['PAQD_FINAL_PRICE'];
-		$minvendor = $data['vendor'][0]['PTV_VENDOR_CODE'];
-		for ($i=1; $i < count($data['vendor']) ; $i++) { 
-			if(intval($min) > intval($data['vendor'][$i]['PAQD_FINAL_PRICE'])){
-				$min = $data['vendor'][$i]['PAQD_FINAL_PRICE'];
-				$minvendor = $data['vendor'][$i]['PTV_VENDOR_CODE'];
-			}
+		//penambahan bobot ARCHIE//
+		if (!empty($data_paqh[0]['BOBOT_TEKNIS'])){
+			$vendor = $this->prc_auction_detail->getVendorBobot($data_paqh[0]['PAQH_ID']);
+		} else {
+			$vendor = $this->prc_auction_detail->getVendor($data_paqh[0]['PAQH_ID']);	
 		}
+		//end bobot archie//
+
+		$data['vendor'] = $vendor;
+		// echo "<pre>";
+		// print_r($data['vendor']);
+		// die();
+
+		if (!empty($data_paqh[0]['BOBOT_TEKNIS'])){
+			$min = $data['vendor'][0]['NILAI_GABUNG'];
+		// echo "<pre>";
+		// print_r($min);die;
+			$minvendor = $data['vendor'][0]['PTV_VENDOR_CODE'];
+			for ($i=1; $i < count($data['vendor']) ; $i++) { 
+				if(intval($min) < intval($data['vendor'][$i]['NILAI_GABUNG'])){
+					$min = $data['vendor'][$i]['NILAI_GABUNG'];
+					$minvendor = $data['vendor'][$i]['PTV_VENDOR_CODE'];
+				}
+			}
+		} else {
+			$min = $data['vendor'][0]['PAQD_FINAL_PRICE'];
+		// echo "<pre>";
+		// print_r($min);die;
+			$minvendor = $data['vendor'][0]['PTV_VENDOR_CODE'];
+			for ($i=1; $i < count($data['vendor']) ; $i++) { 
+				if(intval($min) > intval($data['vendor'][$i]['PAQD_FINAL_PRICE'])){
+					$min = $data['vendor'][$i]['PAQD_FINAL_PRICE'];
+					$minvendor = $data['vendor'][$i]['PTV_VENDOR_CODE'];
+				}
+			}	
+		}
+
+		
+		// echo "<pre>";
+		// print_r($min);die;
 
 		$data['min'] = $minvendor;
 		$this->prc_auction_log->join_vnd();
@@ -712,9 +807,19 @@ class Auction extends CI_Controller {
 		$this->prc_auction_log->join_vnd();
 		$data['log'] = $this->prc_auction_log->paqh($paqh);
 		$paqh = $this->prc_auction_quo_header->id($paqh);
+		// echo "<pre>";
+		// print_r($paqh);die;
 		$data['paqh'] = $paqh[0];
 		$data['item'] = $this->prc_tender_item->ptm_paqh($paqh[0]['PTM_NUMBER'], $paqh[0]['PAQH_ID']);
-		$vendor = $this->prc_auction_detail->getVendor($paqh[0]['PAQH_ID']);
+
+		//penambahan bobot ARCHIE//
+		if (!empty($paqh[0]['BOBOT_TEKNIS'])){
+			$vendor = $this->prc_auction_detail->getVendorBobot($paqh[0]['PAQH_ID']);
+		} else {
+			$vendor = $this->prc_auction_detail->getVendor($paqh[0]['PAQH_ID']);	
+		}
+		//end bobot archie//
+		// $vendor = $this->prc_auction_detail->getVendor($paqh[0]['PAQH_ID']);
 		$data['vendor'] = $vendor;
 		
 		
@@ -777,7 +882,13 @@ class Auction extends CI_Controller {
 
 	public function getCurrentPrice($paqh_id) {
 		$this->load->model('prc_auction_detail');
+		$this->load->model('prc_auction_quo_header');
 		$paqd = $this->prc_auction_detail->paqh($paqh_id);
+		$paqh = $paqd[0]['PAQH_ID'];
+		$bobot = $this->prc_auction_quo_header->get(array('PAQH_ID' => $paqh));
+		$paqd['bobot'] = $bobot[0]['BOBOT_TEKNIS'];
+		// echo "<pre>";
+		// print_r($bobot);die;
 		foreach ($paqd as $key => $value) {
 			$paqd[$key]['PAQD_INIT_PRICE'] = number_format($value['PAQD_INIT_PRICE']);
 			$paqd[$key]['PAQD_FINAL_PRICE'] = number_format($value['PAQD_FINAL_PRICE']);

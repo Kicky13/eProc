@@ -24,7 +24,7 @@ class ec_master_costcenter extends CI_Model {
 		if ($count > 0) {
 			return false;
 		}else{
-			$this->db->insert($this->tableMaster, array('COSTCENTER' => $data['COSTCENTER'], 'COSTCENTER_NAME' => $data['COSTCENTER_NAME'], 'ID_USER' => $data['USERID']));
+			$this->db->insert($this->tableMaster, array('COSTCENTER' => $data['COSTCENTER'], 'COSTCENTER_NAME' => $data['COSTCENTER_NAME'], 'ID_USER' => $data['USERID'],'GUDANG'=>$data['GUDANG']));
 			return true;
 		}
 
@@ -51,6 +51,7 @@ class ec_master_costcenter extends CI_Model {
                         $this->db->set('COSTCENTER', $data['COSTCENTER']);
                         $this->db->set('COSTCENTER_NAME', $data['COSTCENTER_NAME']);
                         $this->db->set('ID_USER', $data['USERID']);
+                        $this->db->set('GUDANG', $data['GUDANG']);
                         $this->db->where('ID', $data['ID']);
 			$this->db->update($this->tableMaster);
 			return true;
@@ -63,9 +64,10 @@ class ec_master_costcenter extends CI_Model {
     }
 
 	public function getMaster_costcenter(){
-        $this->db->select($this->tableMaster.'.ID, FULLNAME, COSTCENTER, COSTCENTER_NAME, ID_USER');    
+        $this->db->select($this->tableMaster.'.ID, FULLNAME, COSTCENTER, COSTCENTER_NAME, ID_USER, GUDANG');    
 	$this->db->from($this->tableMaster);
         $this->db->join($this->employee, $this->tableMaster.'.ID_USER = '.$this->employee.'.ID');
+        $this->db->order_by('COSTCENTER ASC');
         $result = $this->db->get();
         return (array)$result->result_array();
     }

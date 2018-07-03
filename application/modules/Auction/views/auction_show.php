@@ -36,6 +36,18 @@
                                 <td><input type="text" class="form-control" id="" name="paqh_auc_end" placeholder="" value="<?php echo $paqh['PAQH_AUC_END'];?>" readonly></td>
                             </tr>
                             <tr>
+                                <td>Tipe Bobot (Teknis : Harga)</td>
+                                <td>
+                                    <select name="bobot_type" id="bobot_type" disabled="">
+                                        <option value="0" <?php echo ($paqh['BOBOT_TEKNIS'] == '') ? 'selected' : ''?>>Harga Terendah</option>
+                                        <option value="1" <?php echo ($paqh['BOBOT_TEKNIS'] == '60') ? 'selected' : ''?>>60 : 40</option>
+                                        <option value="2" <?php echo ($paqh['BOBOT_TEKNIS'] == '70') ? 'selected' : ''?>>70 : 30</option>
+                                        <option value="3" <?php echo ($paqh['BOBOT_TEKNIS'] == '80') ? 'selected' : ''?>>80 : 20</option>
+                                        <option value="4" <?php echo ($paqh['BOBOT_TEKNIS'] == '90') ? 'selected' : ''?>>90 : 10</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nilai Pengurangan</td>
                                 <td><input type="text" class="form-control" name="paqh_decrement_value" placeholder="" value="<?php echo number_format($paqh['PAQH_DECREMENT_VALUE'])?>" readonly></td>
                             </tr>
@@ -99,6 +111,10 @@
                                         <th>Vendor Code</th>
                                         <th>Nama</th>
                                         <th class="text-right">Harga Awal</th>
+                                        <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                        <th>Nilai</th>
+                                        <?php } ?>
+
                                     </thead>
                                     <tbody>
                                         <?php $no = 1; foreach ($vendor as $vnd) { ?>
@@ -108,6 +124,9 @@
                                             <td><?php echo $vnd['PTV_VENDOR_CODE'] ?></td>
                                             <td><?php echo $vnd['VENDOR_NAME'] ?></td>
                                             <td class="text-right"><?php echo number_format($vnd['PAQD_INIT_PRICE']) ?></td>
+                                            <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                            <td><?php echo $vnd['NILAI_GABUNG'] ?></td>
+                                            <?php } ?>
                                             <td class="hidden">
                                                 <input type="text" class="vendor_code" name="vendor_code<?php echo $no ?>" value="<?php echo $vnd['PTV_VENDOR_CODE'] ?>" hidden>
                                                 <input type="text" name="vendor_init_price<?php echo $no ?>" value="<?php echo $vnd['PAQD_INIT_PRICE'] ?>" hidden>

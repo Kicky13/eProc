@@ -121,6 +121,7 @@
                         </form>
                     </div>
                 </div>
+                <input type="hidden" id="gudang" name="gudang" value="<?=$CCC['GUDANG']?>">
                 <div class="row" style="margin-top: 10px;">
                     <div class="col-sm-3 col-md-3 col-lg-3">
                         Cost Center
@@ -157,7 +158,7 @@
                         <!-- </div> -->
                         <!-- </form>                  -->
                     </div>
-                </div>
+                </div>                
                 <div class="row" style="margin-top: 10px;">
                     <!-- <?php //echo form_open_multipart('EC_Ecatalog_Marketplace/tesUplaod/',array('method' => 'POST','id'=>'formUp','class' => 'form-horizontal')); ?> -->
                     <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
@@ -168,25 +169,12 @@
                             <input type="hidden" id="korin_name" name="korin_name">
                             <input type="file" name="korin" id="korin"><span id="messagesUpload"></span>
                             <p class="help-block">
-                                <small>NB : File harus berextensi " .jpg, .jpeg atau .pdf "</small>
+                                <small>NB : File harus berextensi " .doc, .docx, .jpg, .jpeg atau .pdf "</small>
                             </p>
                             <!-- <button type="submit" id="" class="btn btn-info">Upload</button> -->
                         </div>
                     </form>
-                </div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="col-sm-3 col-md-3 col-lg-3">
-                        Approved Gudang?
-                    </div>
-                    <div class="col-sm-5 col-md-5 col-lg-5">                                                
-                        <label class="radio-inline">
-                            <input type="radio" id="inlineRadio1" name="gudang" value="1" checked=""> Perlu
-                         </label>
-                        <label class="radio-inline">
-                          <input type="radio" id="inlineRadio2" name="gudang" value="0"> Tidak Perlu
-                        </label>
-                    </div>
-                </div>
+                </div>                
                 <hr>
                 <div class="row">
                     <div class="col-xs-4">

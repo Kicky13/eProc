@@ -264,23 +264,5 @@ class EC_Shipment extends CI_Controller
 
         
     	//var_dump($tes);
-    }
-    
-    public function CetakPO(){                    
-        $this->load->model('ec_shipment_m');
-        $this->load->config('ec');
-        $this->load->library('M_pdf');
-        $company_data = $this->config->item('company_data');        
-        $data['vendor']=$this->ec_shipment_m->get_vendor_detail($this->input->post('vendor'));
-        $data['po']=$this->ec_shipment_m->get_shipment_detail($this->input->post('po_no'),$this->input->post('shipment'),$this->input->post('vendor'));
-        $data['detail']=$this->ec_shipment_m->get_order($this->input->post('po_no'),$this->input->post('shipment'));
-        $data['company']=$company_data[$data['detail'][0]['EM_COMPANY']];
-        $mpdf = new M_pdf();
-        $html = $this->load->view('EC_Shipment/cetakPO', $data, TRUE);
-
-        $mpdf->pdf->writeHTML($html);
-        $footer_rr = $this->load->view('EC_Shipment/cetakPOFooter', $data['po'], TRUE);
-        $mpdf->pdf->SetHTMLFooter($footer_rr);        
-        $mpdf->pdf->output('Cetak PO Pembelian Langsung ' . $data['detail'][0]['PO_NO'] . '.pdf', 'I');
-    }
+    }        
 }

@@ -15,7 +15,7 @@
             <div class="row">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#Unapprove" aria-controls="Unapprove" role="tab" data-toggle="tab">Unapprove</a></li>
+    <li role="presentation" class="active"><a href="#Unapprove" aria-controls="Unapprove" role="tab" data-toggle="tab">Waiting Approved</a></li>
     <li role="presentation"><a href="#PORelease" aria-controls="PORelease" role="tab" data-toggle="tab">PO Release</a></li>
     <li role="presentation"><a href="#ShipmentIntransit" aria-controls="ShipmentIntransit" role="tab" data-toggle="tab">Shipment Intransit</a></li>
     <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
@@ -97,9 +97,11 @@
                                             <th class="text-center ts8"><a href="javascript:void(0)">Status</a></th>                                            
                                             <th class="text-center ts10"><a href="javascript:void(0)">Aksi</a></th>
                                             <th class="text-center ts11"><a href="javascript:void(0)">Check List</a></th>                                            
+                                            <th class="text-center ts12"><a href="javascript:void(0)">Cetak</a></th>  
                                         </tr>
                                         <tr class="sear2">
                                             <!-- <th></th> -->
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -411,7 +413,70 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="modalDetilGR">
+    <div class="modal-dialog modal-md" style="width:75%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center"><strong><u>History Good Receipt</u></strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <table id="table_detailGR" class="table table-striped nowrap" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center s1"><a href="javascript:void(0)">Vendor</a></th>
+                                            <th class="text-center s2"><a href="javascript:void(0)">Shipment Number</a></th>
+                                            <th class="text-center s3"><a href="javascript:void(0)">PO Number</a></th>
+                                            <th class="text-center s4"><a href="javascript:void(0)">Line Item</a></th>
+                                            <th class="text-center s5"><a href="javascript:void(0)">Material</a></th>
+                                            <th class="text-center s6"><a href="javascript:void(0)">Qty</a></th>
+                                            <th class="text-center s7"><a href="javascript:void(0)">Status</a></th>
+                                            <th class="text-center s8"><a href="javascript:void(0)">Alasan Reject</a></th>
+                                            <th class="text-center s9"><a href="javascript:void(0)">UoM</a></th>
+                                            <th class="text-center s10"><a href="javascript:void(0)">Plant</a></th>
+                                            <th class="text-center s11"><a href="javascript:void(0)">GR Number</a></th>
+                                            <th class="text-center s12"><a href="javascript:void(0)">GR Year</a></th>
+                                            <th class="text-center s13"><a href="javascript:void(0)">Doc Date</a></th>
+                                            <th class="text-center s14"><a href="javascript:void(0)">Post Date</a></th>                                            
+                                            <th class="text-center s16"><a href="javascript:void(0)">Created On</a></th>
+                                            <th class="text-center s17"><a href="javascript:void(0)">Created By</a></th>
+                                        </tr>
+                                        <tr class="seargr">
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modaldetail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

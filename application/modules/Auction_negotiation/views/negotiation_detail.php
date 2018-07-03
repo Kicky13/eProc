@@ -38,6 +38,18 @@
                                 <td><input type="text" id="PAQH_AUC_END" class="form-control" name="paqh_location" placeholder="" value="<?php echo substr($paqh['PAQH_AUC_END'], 0, 19);?>" readonly></td>
                             </tr>
                             <tr>
+                                <td>Tipe Bobot (Teknis : Harga)</td>
+                                <td>
+                                    <select name="bobot_type" id="bobot_type" disabled="">
+                                        <option value="0" <?php echo ($paqh['BOBOT_TEKNIS'] == '') ? 'selected' : ''?>>Harga Terendah</option>
+                                        <option value="1" <?php echo ($paqh['BOBOT_TEKNIS'] == '60') ? 'selected' : ''?>>60 : 40</option>
+                                        <option value="2" <?php echo ($paqh['BOBOT_TEKNIS'] == '70') ? 'selected' : ''?>>70 : 30</option>
+                                        <option value="3" <?php echo ($paqh['BOBOT_TEKNIS'] == '80') ? 'selected' : ''?>>80 : 20</option>
+                                        <option value="4" <?php echo ($paqh['BOBOT_TEKNIS'] == '90') ? 'selected' : ''?>>90 : 10</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nilai Pengurangan</td>
                                 <td>
                                     <input type="hidden" class="form-control" id="dec_val" name="paqh_decrement_value" placeholder="" value="<?php echo $paqh['PAQH_DECREMENT_VALUE']?>" readonly>
@@ -101,6 +113,9 @@
                                         <th>Vendor</th>
                                         <th>Harga Awal</th>
                                         <th>Last Price</th>
+                                        <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                        <th>Nilai Teknis</th>
+                                        <?php } ?>
                                         <th>STATUS</th>
                                         <!-- <th>Ikut</th> -->
                                     </thead>
@@ -111,6 +126,9 @@
                                             echo '<td>'.$vendor['VENDOR_NAME'].'</td>';
                                             echo '<td id="penawaran_awal">'.number_format($vendor['PAQD_INIT_PRICE']).'</td>';
                                             echo '<td id="penawaran_akhir">'.number_format($vendor['PAQD_FINAL_PRICE']).'</td>';
+                                            if(!empty($paqh['BOBOT_TEKNIS'])) { 
+                                            echo '<td>'.$nilai_teknis.'</td>';
+                                            }
                                             if($paqh['PAQH_PRICE_TYPE'] == 'S'){
                                                 echo '<td id="status"><span class="label label-warning label_ece '.(($vendor['PAQD_FINAL_PRICE'] < $tot_sat_price || $vendor['PAQD_FINAL_PRICE']==$tot_sat_price)?'':'hidden').'">ece</span></td>';
                                             }else if($paqh['PAQH_PRICE_TYPE'] == 'T'){

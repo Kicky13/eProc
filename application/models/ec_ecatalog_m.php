@@ -875,7 +875,7 @@ class ec_ecatalog_m extends CI_Model
 
     function getCC($USER)
     {
-        $this->db->select('COSTCENTER,COSTCENTER_NAME')->from($this->ccPl)->where(array('ID_USER' => $USER));
+        $this->db->select('COSTCENTER,COSTCENTER_NAME,GUDANG')->from($this->ccPl)->where(array('ID_USER' => $USER));
         $query = $this->db->get();
         $result = $query->row_array();
         return isset ($result) ? $result : "";

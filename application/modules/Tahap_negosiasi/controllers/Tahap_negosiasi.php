@@ -65,6 +65,7 @@ class Tahap_negosiasi extends CI_Controller {
 	}
 
 	public function save_bidding() {
+		error_reporting(E_ALL);
 		$id = $this->input->post('ptm_number');
 		$this->load->library('process');
 		$this->load->model('adm_employee');
@@ -74,6 +75,7 @@ class Tahap_negosiasi extends CI_Controller {
 		$this->load->model('prc_tender_quo_main');
 		$this->load->model('prc_tender_quo_item');
 		$this->load->model('prc_tender_vendor');
+		$this->load->model('prc_purchase_requisition');
 
 		$next_process =	$this->input->post('next_process');
 		if ($next_process == 0) {
@@ -108,7 +110,7 @@ class Tahap_negosiasi extends CI_Controller {
 
 			//--LOG MAIN--//
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
-				$this->authorization->getCurrentRole(),'Tahap Negosiasi','OK',$this->input->ip_address()
+			$this->authorization->getCurrentRole(),'Tahap Negosiasi','OK',$this->input->ip_address()
 			);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
@@ -119,14 +121,28 @@ class Tahap_negosiasi extends CI_Controller {
 
 		$with_apv=false;
 		$tit_note = $this->input->post('tit_note');
+		$ece_assign = $this->input->post('ece_assign');
 		foreach ($this->input->post('metode') as $key => $value) {
 			if ($value != '') {
 				$where = array('TIT_ID' => $key);
 				$set['TIT_STATUS']=$value;
 				if(!empty($tit_note[$key])){
 					$set['TIT_NOTE']=$tit_note[$key];
+					// $set['PPR_ASSIGNEE']=$ece_assign[$key];
 				}
 				$this->prc_tender_item->update($set, $where);
+
+				$this->prc_tender_item->join_pr();
+				$this->prc_tender_item->where_in('TIT_ID',$where);
+				$ambil = $this->prc_tender_item->get(array('PRC_TENDER_ITEM.PTM_NUMBER' => $id));
+				$no_pr = $ambil[0]['PPI_PRNO'];
+				$where1['PPR_PRNO'] = $no_pr;
+				$set1['ECE_ASSIGN'] = $ece_assign;
+
+				$this->prc_purchase_requisition->update($set1, $where1);
+				// echo "<pre>";die;
+				// echo $this->db->last_query();die;
+				// print_r($ambil);die;
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Tahap_negosiasi/save_bidding','prc_tender_item','update',$set,$where);
 					//--END LOG DETAIL--//
@@ -238,7 +254,7 @@ class Tahap_negosiasi extends CI_Controller {
 		$this->prc_tender_quo_main->join_pqe();
 		$data['vendor_data'] = $this->prc_tender_quo_main->get_join(array('PRC_TENDER_QUO_MAIN.PTM_NUMBER' => $id));
 
-	
+
 		$data['status'] = $this->prc_tender_item->get_tit_status();
 		$data['ptm_comment'] = $this->snippet->ptm_comment($id);		
 		$data['detail_ptm_snip'] = $this->snippet->detail_ptm($id, false);
@@ -296,7 +312,7 @@ class Tahap_negosiasi extends CI_Controller {
 			$action = 'REJECT';
 		}
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
-				$this->authorization->getCurrentRole(),$process_name,$action,$this->input->ip_address()
+			$this->authorization->getCurrentRole(),$process_name,$action,$this->input->ip_address()
 			);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
@@ -403,10 +419,10 @@ class Tahap_negosiasi extends CI_Controller {
 		$ptm = $this->prc_tender_main->ptm($id);
 		$ptm = $ptm[0];
 		$where = array(
-				'KEL_PLANT_PRO'=>$ptm['KEL_PLANT_PRO'],
-				'TIPE_SAMPUL'=>$ptm['SAMPUL'],
-				'JUSTIFICATION'=>$ptm['JUSTIFICATION'],
-				'PROCESS_MASTER_ID'=>'Tahap_negosiasi/index',
+			'KEL_PLANT_PRO'=>$ptm['KEL_PLANT_PRO'],
+			'TIPE_SAMPUL'=>$ptm['SAMPUL'],
+			'JUSTIFICATION'=>$ptm['JUSTIFICATION'],
+			'PROCESS_MASTER_ID'=>'Tahap_negosiasi/index',
 			);
 		$ap = $this->app_process->get($where);
 		return $ap[0]['CURRENT_PROCESS'];
@@ -447,9 +463,9 @@ class Tahap_negosiasi extends CI_Controller {
 					'PRICE_BEFORE' => $tit['TIT_PRICE'],
 					'CREATED_AT' => date(timeformat()),
 					'STATUS_APPROVAL' => 0,
-					'PPR_ASSIGNEE' => $tit['PPR_ASSIGNEE'],
+					'PPR_ASSIGNEE' => $tit['ECE_ASSIGN'],
 					'EC_ID_GROUP' => $ec_id_group,
-				);
+					);
 				$this->prc_ece_change->insert($data);
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Tahap_negosiasi/accept_pilih_status_item','prc_ece_change','insert',$data);
@@ -661,10 +677,41 @@ class Tahap_negosiasi extends CI_Controller {
 
 	public function get_analisa_kewajaran($id,$tit_id,$title){
 		$this->load->model('prc_tender_item');
+		$this->load->model('adm_employee');
 
-			$this->prc_tender_item->where_in('TIT_ID',$tit_id); 
+		$this->prc_tender_item->join_pr();
+		$this->prc_tender_item->where_in('TIT_ID',$tit_id);
 		$data['titems'] = $this->prc_tender_item->get(array('PRC_TENDER_ITEM.PTM_NUMBER' => $id));
+		$data['ece_tit_id'] = $this->input->post('ece_tit_id');
+		$data['ece_tit_id'] = $data['ece_tit_id'][0];
+		// echo "<pre>";
+		// print_r($data['titems']);die;
 		$data['title'] = $title;
+		$requestioner = array();
+		$data['employees'] = array();
+		$opco = $this->session->userdata['EM_COMPANY'];
+
+		foreach ($data['titems'] as $val) {
+			$requestioner[] = $val['PPR_REQUESTIONER'];
+			$mrpc = $val['PPI_MRPC'];
+			$plant = $val['PPR_PLANT'];
+
+			if ($opco == '7000' || $opco == '2000' || $opco == '5000') {
+				$this->adm_employee->mrpc_plant($mrpc, $plant);
+				$data['employees'] = $this->adm_employee->get();
+
+			} else if ($opco == '3000' || $opco == '4000') {
+				$this->adm_employee->where_mkcctr($requestioner);
+				$data['employees'] = $this->adm_employee->get();
+			} 
+
+		}
+
+
+		$data['evaluator_ece'] = $data['titems'][0];
+		$data['evaluator_ece'] = $this->adm_employee->find($data['evaluator_ece']['ECE_ASSIGN']);
+		// echo "<pre>";
+		// print_r($data['evaluator_ece']);die;
 
 		$data = $this->load->view('analisa_kewajaran', $data, FALSE);
 		echo $data;		

@@ -81,6 +81,7 @@ class EC_Invoice_Report extends CI_Controller {
             $dt['INVOICE_DATE'] = $dataa[$i]['INVOICE_DATE2'];
             $dt['NO_INVOICE'] = $dataa[$i]['NO_INVOICE'];
             $dt['VEND_NAME'] = $dataa[$i]['VEND_NAME'];
+            $dt['BSART'] = $dataa[$i]['BSART'];
             $dt['NO_SP_PO'] = $dataa[$i]['NO_SP_PO'];
             //$dt['FAKTUR_PJK'] = $dataa[$i]['FAKTUR_PJK'];
             $dt['TOTAL_AMOUNT'] = $dataa[$i]['TOTAL_AMOUNT'];

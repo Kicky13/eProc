@@ -430,7 +430,7 @@ class ec_shipment_m extends CI_Model
     }
     
     public function get_vendor_detail($VENDORNO){
-        $this->db->select('ADDRESS_STREET, ADDRESS_CITY, CONTACT_PHONE_NO, CONTACT_EMAIL, VENDOR_NAME, VENDOR_NO', 
+        $this->db->select('ADDRESS_STREET, ADDRESS_CITY, CONTACT_PHONE_NO, EMAIL_ADDRESS, VENDOR_NAME, VENDOR_NO', 
             false);
         $this->db->from('VND_HEADER');        
         $this->db->where("VENDOR_NO", $VENDORNO, TRUE);        
@@ -438,8 +438,23 @@ class ec_shipment_m extends CI_Model
         return (array)$result->result_array();
     }  
     
-    public function get_order($PO, $shipment){
+    public function get_order($PO){
         $this->db->select('EC_T_CHART.PO_NO, DATE_BUY, FULLNAME, EM_COMPANY, NO_SHIPMENT, PLN.DESC, PLN.PLANT');
+        $this->db->from('EC_T_CHART');  
+        $this->db->join('EC_T_DETAIL_PENAWARAN DP', 'EC_T_CHART.KODE_PENAWARAN=DP.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('EC_M_PLANT PLN', 'DP.PLANT=PLN.PLANT', 'inner');
+        $this->db->join('ADM_EMPLOYEE', 'ADM_EMPLOYEE.ID=EC_T_CHART.ID_USER');                
+        $this->db->join('EC_T_SHIPMENT', 'EC_T_SHIPMENT.PO_NO=EC_T_CHART.PO_NO');
+        $this->db->join('EC_T_DETAIL_SHIPMENT', 'EC_T_DETAIL_SHIPMENT.KODE_SHIPMENT=EC_T_SHIPMENT.KODE_SHIPMENT');
+        $this->db->where("EC_T_SHIPMENT.PO_NO", $PO, TRUE);        
+        $this->db->where('ROWNUM', 1, false);
+        $this->db->group_by("EC_T_CHART.PO_NO, DATE_BUY, FULLNAME, EM_COMPANY, NO_SHIPMENT, PLN.DESC, PLN.PLANT");        
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+    
+    public function get_shipment($PO, $shipment){
+        $this->db->select('EC_T_CHART.PO_NO, DATE_BUY, EC_T_DETAIL_SHIPMENT.SEND_DATE, EC_T_DETAIL_SHIPMENT.GR_NO, FULLNAME, EM_COMPANY, NO_SHIPMENT, PLN.DESC, PLN.PLANT');
         $this->db->from('EC_T_CHART');  
         $this->db->join('EC_T_DETAIL_PENAWARAN DP', 'EC_T_CHART.KODE_PENAWARAN=DP.KODE_DETAIL_PENAWARAN', 'inner');
         $this->db->join('EC_M_PLANT PLN', 'DP.PLANT=PLN.PLANT', 'inner');
@@ -449,7 +464,7 @@ class ec_shipment_m extends CI_Model
         $this->db->where("EC_T_SHIPMENT.PO_NO", $PO, TRUE);
         $this->db->where('NO_SHIPMENT', $shipment, TRUE);
         $this->db->where('ROWNUM', 1, false);
-        $this->db->group_by("EC_T_CHART.PO_NO, DATE_BUY, FULLNAME, EM_COMPANY, NO_SHIPMENT, PLN.DESC, PLN.PLANT");        
+        $this->db->group_by("EC_T_CHART.PO_NO, DATE_BUY, EC_T_DETAIL_SHIPMENT.SEND_DATE, EC_T_DETAIL_SHIPMENT.GR_NO, FULLNAME, EM_COMPANY, NO_SHIPMENT, PLN.DESC, PLN.PLANT");        
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -472,4 +487,25 @@ class ec_shipment_m extends CI_Model
         $result = $this->db->get();
         return (array)$result->result_array();                   
     }    
+    
+     public function get_po_detail($PO,$vendor){
+        $this->db->select('TS.PO_NO, ,TB1.NO_SHIPMENT, TB1.*, EGP.DOC_DATE, TC.MATNO, TC.QTY AS QTY_ORDER, MAT.MAKTX, MAT.MEINS, TC.LINE_ITEM, PEN.PLANT, PEN.DELIVERY_TIME, PEN.PRICE, PEN.CURRENCY, (TC.QTY*PEN.PRICE) AS VALUE_ITEM,
+    PLN."DESC" AS PLANT_NAME, TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\') AS DATE_ORDER,
+    TO_CHAR ((TO_DATE(TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\') EXPIRED_DATE', 
+            false);
+        $this->db->from('EC_T_SHIPMENT TS');
+        $this->db->join('(SELECT DS.* FROM EC_T_DETAIL_SHIPMENT DS) TB1', 'TB1.KODE_SHIPMENT=TS.KODE_SHIPMENT', 'inner');
+        $this->db->join('EC_GR_DETAIL_PL EGP', 'TB1.GR_NO=EGP.GR_NO', 'inner');
+        $this->db->join('EC_T_CHART TC', 'TC.ID_CHART= TB1.ID_CHART', 'inner');
+        $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'TC.MATNO=MAT.MATNR', 'inner');
+        $this->db->join('EC_T_DETAIL_PENAWARAN PEN', 'TC.KODE_PENAWARAN=PEN.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('EC_M_PLANT PLN', 'PEN.PLANT=PLN.PLANT', 'inner');                
+        $this->db->where("TC.PO_NO", $PO, TRUE);     
+        $this->db->where("TS.VENDORNO", $vendor, TRUE);
+        $this->db->order_by("TB1.IN_DATE DESC, TC.LINE_ITEM ASC");        
+//        $this->db->get();
+//        echo $this->db->last_query();die();
+        $result = $this->db->get();
+        return (array)$result->result_array();                   
+    } 
 }

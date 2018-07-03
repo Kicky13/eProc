@@ -130,7 +130,7 @@ function loadTable_Unprocessed() {
         },{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += "<input type='checkbox' data-kodeshipment=" + full.KODE_DETAIL_SHIPMENT + " data-po=" + full.PO_NO + " data-noshipment=" + full.NO_SHIPMENT + " class='itemShipment'>";
+                a += "<input type='checkbox' data-kodeshipment=" + full.KODE_DETAIL_SHIPMENT + " data-plant=" + full.PLANT + " data-namaplant='" + full.PLANT_NAME + "' data-satuan=" + full.MEINS + " data-matno=" + full.MATNO + " data-maktx=" + full.MAKTX + "  data-po=" + full.PO_NO + " data-noshipment=" + full.NO_SHIPMENT + " class='itemShipment'>";
                 a += "</div>";
                 return a;
             }
@@ -441,28 +441,15 @@ function loadTable_App() {
                 return a;
             }
         },{
-            mRender: function (data, type, full) {
-                // hidden = '';
-                /*if(full.STATUS!=1){
-                    hidden = 'hidden';
-                }*/
-                /*if(full.STOCK_COMMIT==full.QTY_SHIPMENT){
-                    hidden = 'hidden';
-                }*/
-               /* a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:send(' + (full.KODE_SHIPMENT) + ')" '+hidden+'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
-                    '</div>';*/
-                    a = "<div class='col-md-12 text-center'>" +
-                    //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="'+(full.KODE_SHIPMENT)+'" data-stokcommit="'+(full.STOCK_COMMIT)+'" data-qtyshipment="'+(full.QTY_SHIPMENT)+'" '+hidden+'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-kodeshipment="' + (full.KODE_SHIPMENT) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '" data-lineitem="' + (full.LINE_ITEM) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
+            mRender: function (data, type, full) {                
+                    a = "<div class='col-md-12 text-center'>" +                    
+                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
                 return a;
             }
         },{
-        mRender: function (data, type, full) {                
+        mRender: function (data, type, full) {   
+            var shipment;
                 a = "<div class='col-md-12 text-center'>";   
                 if(full.QTY_SHIPMENT > 0){
                     if(shipment != full.PO_NO){
@@ -645,7 +632,9 @@ function loadTable_detailGR(pono, lineitem) {
         s12 = true,
         s13 = true,
         s14 = true,
-        s15 = true
+        s15 = true,
+        s16 = true,
+        s17 = true
     // $('#table_detailGR').DataTable().clear();
     $('#table_detailGR').DataTable().destroy();
     $('#table_detailGR tbody').empty();
@@ -747,6 +736,25 @@ function loadTable_detailGR(pono, lineitem) {
             }
         }, {
             mRender: function (data, type, full) {
+                if(full.STATUS==1){
+                    status = 'Receipt'
+                }else if(full.STATUS==2){
+                    status = 'Reject'
+                }
+                a = "<div class='col-md-12 text-center'>";
+                a += status;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {                
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.ALASAN_REJECT==null?'-':full.ALASAN_REJECT);
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += full.MEINS;
                 a += "</div>";
@@ -784,18 +792,6 @@ function loadTable_detailGR(pono, lineitem) {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += full.POST;
-                a += "</div>";
-                return a;
-            }
-        },{
-            mRender: function (data, type, full) {
-                if(full.STATUS==1){
-                    status = 'Receipt'
-                }else if(full.STATUS==2){
-                    status = 'Reject'
-                }
-                a = "<div class='col-md-12 text-center'>";
-                a += status;
                 a += "</div>";
                 return a;
             }
@@ -1857,7 +1853,7 @@ $(document).ready(function () {
 
     $('#saveShipment').click(function () {
         //items = []
-
+        
         $(".itemspo").each(function () {
             if ($(this).is(":checked"))
                 // if (itemShipment.indexOf($(this).data("po")) == -1)
@@ -1915,6 +1911,7 @@ function receiptShipment(dataitems, dataqty, docdate, postdate, rating, comment)
 }
 
 function rejectShipment(dataitems, dataqty, rating, alasan) {
+    if(alasan !==''){
         $.ajax({
             url: $("#base-url").val() + 'EC_Good_Receipt_PL/rejectShipment',
             type: 'POST',
@@ -1932,6 +1929,9 @@ function rejectShipment(dataitems, dataqty, rating, alasan) {
         }).always(function (data) {
 
         })
+    }else{
+        alert('Alasan Reject Wajib diisi');
+    }
 }
 function cetakLaporan(elm){
 	var _url = $(elm).data('href');

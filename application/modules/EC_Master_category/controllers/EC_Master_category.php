@@ -31,8 +31,8 @@ class EC_Master_category extends CI_Controller {
 
 	public function get_data() {
 		header('Content-Type: application/json');
-		$this->load->model('ec_master_category_m');
-		$dataa = $this->ec_master_category_m->get();
+		$this -> load -> model('ec_master_category_m');
+		$dataa = $this -> ec_master_category_m -> get();
 		$i = 1;
 		$data_tabel = array();
 		// foreach ($dataa as $value) {

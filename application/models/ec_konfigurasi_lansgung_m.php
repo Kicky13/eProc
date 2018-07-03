@@ -76,8 +76,6 @@ UNION
 SELECT VP.PRODUCT_CODE as MATKL,VP.PRODUCT_CODE,VH.VENDOR_ID,VH.VENDOR_NO,VH.VENDOR_NAME 
 FROM VND_PRODUCT VP RIGHT JOIN VND_HEADER VH ON VP.VENDOR_ID=VH.VENDOR_ID 
 WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO");
-//        var_dump($result);die();
-        // $this -> db -> order_by('PL.VENDORNO');        
         return (array)$result->result_array();
     }
     

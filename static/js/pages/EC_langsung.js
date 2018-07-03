@@ -11,7 +11,7 @@ var range_harga = ['-', '-'],
     pageMaxOld = 0,
     mode = "list",
     compareCntrk = [],
-    MIN = 9999999999999,
+    MIN = 9999999999999, 
     MAX = 1
 function loadDataList() {
     $('.breadcrumb').empty()

@@ -166,6 +166,7 @@
                                             <th class="text-center tts11"><a href="javascript:void(0)">Plant</a></th>
                                             <th class="text-center tts12"><a href="javascript:void(0)">Expired Date</a></th>
                                             <th class="text-center tts13"><a href="javascript:void(0)">Detail</a></th>
+                                            <th class="text-center tts14"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear2">
                                             <!-- <th></th> -->
@@ -181,6 +182,7 @@
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                            <th></th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -341,18 +343,20 @@
                                             <th class="text-center s3"><a href="javascript:void(0)">PO Number</a></th>
                                             <th class="text-center s4"><a href="javascript:void(0)">Line Item</a></th>
                                             <th class="text-center s5"><a href="javascript:void(0)">Material</a></th>
-                                            <th class="text-center s6"><a href="javascript:void(0)">Qty Receipt</a></th>
-                                            <th class="text-center s7"><a href="javascript:void(0)">UoM</a></th>
-                                            <th class="text-center s8"><a href="javascript:void(0)">Plant</a></th>
-                                            <th class="text-center s9"><a href="javascript:void(0)">GR Number</a></th>
-                                            <th class="text-center s10"><a href="javascript:void(0)">GR Year</a></th>
-                                            <th class="text-center s11"><a href="javascript:void(0)">Doc Date</a></th>
-                                            <th class="text-center s12"><a href="javascript:void(0)">Post Date</a></th>
-                                            <th class="text-center s13"><a href="javascript:void(0)">Status</a></th>
-                                            <th class="text-center s14"><a href="javascript:void(0)">Created On</a></th>
-                                            <th class="text-center s15"><a href="javascript:void(0)">Created By</a></th>
+                                            <th class="text-center s6"><a href="javascript:void(0)">Qty</a></th>
+                                            <th class="text-center s7"><a href="javascript:void(0)">Status</a></th>
+                                            <th class="text-center s8"><a href="javascript:void(0)">Alasan Reject</a></th>
+                                            <th class="text-center s9"><a href="javascript:void(0)">UoM</a></th>
+                                            <th class="text-center s10"><a href="javascript:void(0)">Plant</a></th>
+                                            <th class="text-center s11"><a href="javascript:void(0)">GR Number</a></th>
+                                            <th class="text-center s12"><a href="javascript:void(0)">GR Year</a></th>
+                                            <th class="text-center s13"><a href="javascript:void(0)">Doc Date</a></th>
+                                            <th class="text-center s14"><a href="javascript:void(0)">Post Date</a></th>                                            
+                                            <th class="text-center s16"><a href="javascript:void(0)">Created On</a></th>
+                                            <th class="text-center s17"><a href="javascript:void(0)">Created By</a></th>
                                         </tr>
                                         <tr class="seargr">
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srchgr" style="margin: 0px"></th>
@@ -407,7 +411,7 @@
                                 <th class="text-center">PO Number</th>
                                 <th class="text-center">Line Item</th>
                                 <th class="text-center">Material</th>
-                                <th class="text-center">QTY Receipt</th>
+                                <th class="text-center">QTY</th>
                                 <th class="text-center">UoM</th>
                                 <th class="text-center">Plant</th>
                                 <th class="text-center">No GR</th>

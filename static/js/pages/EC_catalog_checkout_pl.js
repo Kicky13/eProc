@@ -234,7 +234,7 @@ function confirm(elm, id) {
             "company": $("#selComp").val(),
             "costcenter": $("#costcenter-yu").val(),
             'korin': $('#korin_name').val(),
-            'gudang': $('input[name="gudang"]:checked').val()
+            'gudang': $('input[name="gudang"]').val()
         },
         dataType: 'json'
     }).done(function (data) {

@@ -43,6 +43,18 @@
                                 <td><input type="text" id="PAQH_AUC_END" class="form-control" name="paqh_location" placeholder="" value="<?php echo substr($paqh['PAQH_AUC_END'], 0, 19);?>" readonly></td>
                             </tr>
                             <tr>
+                                <td>Tipe Bobot (Teknis : Harga)</td>
+                                <td>
+                                    <select name="bobot_type" id="bobot_type" disabled="">
+                                        <option value="0" <?php echo ($paqh['BOBOT_TEKNIS'] == '') ? 'selected' : ''?>>Harga Terendah</option>
+                                        <option value="1" <?php echo ($paqh['BOBOT_TEKNIS'] == '60') ? 'selected' : ''?>>60 : 40</option>
+                                        <option value="2" <?php echo ($paqh['BOBOT_TEKNIS'] == '70') ? 'selected' : ''?>>70 : 30</option>
+                                        <option value="3" <?php echo ($paqh['BOBOT_TEKNIS'] == '80') ? 'selected' : ''?>>80 : 20</option>
+                                        <option value="4" <?php echo ($paqh['BOBOT_TEKNIS'] == '90') ? 'selected' : ''?>>90 : 10</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nilai Pengurangan</td>
                                 <td><input type="text" class="form-control" name="paqh_decrement_value" placeholder="" value="<?php echo number_format($paqh['PAQH_DECREMENT_VALUE'])?>" readonly></td>
                             </tr>
@@ -138,6 +150,9 @@
                                         <th>Vendor</th>
                                         <th>Harga Awal</th>
                                         <th>Harga Akhir</th>
+                                        <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                        <th>Nilai</th>
+                                        <?php } ?>
                                         <th>Ikut</th>
                                         <th class="text-center">Pemenang</th>
                                     </thead>
@@ -150,6 +165,9 @@
                                             echo '<td>'.$vnd['VENDOR_NAME'].'</td>';
                                             echo '<td>'.number_format($vnd['PAQD_INIT_PRICE']).'</td>';
                                             echo '<td>'.number_format($vnd['PAQD_FINAL_PRICE']).'</td>';
+                                            if(!empty($paqh['BOBOT_TEKNIS'])) { 
+                                            echo '<td>'.$vnd['NILAI_GABUNG'].'</td>';
+                                            }
                                             echo '<td>Ya</td>';
                                             echo '<input type="text" name="vendor_code'.$no.'" value="'.$vnd['PTV_VENDOR_CODE'].'" hidden>';
                                             echo '<input type="text" name="vendor_init_price'.$no.'" value="'.$vnd['PAQD_FINAL_PRICE'].'" hidden>';

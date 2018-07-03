@@ -4,9 +4,11 @@
   $totalPO=0;
     $no = 1;
     foreach ($po as $key => $value) {         
-    $barang=$value['QTY']-($value['QTY_RECEIPT']+$value['QTY_REJECT']);
+    $barang=$value['QTY_RECEIPT'];
+    $date=date_create($value['DOC_DATE']);                
     $tr = '<tr>
-          <td style="height:'.$tinggi.'" align="center">'.$no++.'</td>        
+          <td style="height:'.$tinggi.'" align="center">'.$no++.'</td>       
+          <td style="height:'.$tinggi.'" align="center">'.$value['NO_SHIPMENT'].'<br/>GR: '.$value['GR_NO'].'<br/>TGL GR: '.date_format($date,"d-m-Y").'</td>
           <td style="height:'.$tinggi.'" align="center">'.$value['MATNO'].'</td>
           <td style="height:'.$tinggi.'" align="center">'.$value['MAKTX'].'</td>          
           <td style="height:'.$tinggi.'" align="center">'.$value['MEINS'].'</td>
@@ -88,11 +90,11 @@
           <div class="vendor_name mini">
             <div><?php echo $vendor[0]['VENDOR_NAME'] ?></div>
             <div>PHONE: <?php echo $vendor[0]['CONTACT_PHONE_NO']?></div>
-            <div>EMAIL: <?php echo $vendor[0]['CONTACT_EMAIL']?></div>
+            <div>EMAIL: <?php echo $vendor[0]['EMAIL_ADDRESS']?></div>
             <div>ALAMAT: <?php echo $vendor[0]['ADDRESS_STREET'].', '.$vendor[0]['ADDRESS_CITY'];?></div>            
           </div>                    
         </td>
-        <td valign="top" align="center" colspan="7">
+        <td valign="top" align="center" colspan="8">
           <div style="height:100px;font-weight:bold">
             <h2>PO PEMBELIAN LANGSUNG</h2>
             <br >
@@ -104,11 +106,7 @@
               <tr>
                 <td>NO. PO</td>                
                 <td> : <?=$detail[0]['PO_NO']?></td>                
-              </tr>              
-              <tr>
-                <td>NO. SHIPMENT</td>                
-                <td> : <?=$detail[0]['NO_SHIPMENT']?></td>                
-              </tr>      
+              </tr>                            
               <tr>
                 <td>TUJUAN</td>                
                 <td> : <?=$detail[0]['PLANT']." - ".$detail[0]['DESC']?></td>                
@@ -125,13 +123,14 @@
         </td>        
       </tr>
       <tr>
-        <td align="center">No</td>                
+        <td align="center">No</td>          
+        <td align="center">Shipment No</td>  
         <td align="center">Material No</td>  
         <td align="center">Nama Barang</td>      
         <td align="center">Sat.</td>
         <td align="center">Jumlah Order</td>
         <td align="center">Jumlah Reject</td>
-        <td align="center">Jumlah Pengiriman</td>        
+        <td align="center">Jumlah Receipt</td>        
         <td align="center">Harga Satuan (Rp)</td>
         <td align="center">Jumlah Harga (Rp)</td>
       </tr>

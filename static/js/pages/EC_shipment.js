@@ -361,7 +361,7 @@ function loadTable_() {
                     '</div>';*/
 					a = "<div class='col-md-12 text-center'>" +
                     //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +                    
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="" data-kodeshipment=""><span title="Detail Shipment" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+                    
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
                 return a;
@@ -1090,9 +1090,9 @@ $('#shipment').on('show.bs.modal', function (event) {
                             '<th class="text-center">Deskripsi</th>'+
                             '<th class="text-center">QTY</th>'+
                             '<th class="text-center">UoM</th>'+
-                            '<th class="text-center">Price</th>'+
+                            '<th class="text-center">Unit Price</th>'+
                             '<th class="text-center">Currency</th>'+
-                            '<th class="text-center">Value</th>'+
+                            '<th class="text-center">Total Value</th>'+
                             '<th class="text-center">Ship To</th>'+
                             '<th class="text-center">Expired Date</th>'+                            
                             '<th class="text-center">QTY Shipment</th>'+
@@ -1576,3 +1576,408 @@ function deleteShipment(data) {
         }
     });        
 }
+var t0 = true,
+    t1 = true,
+    t2 = true,
+    t3 = true,
+    t4 = true,
+    t5 = true,
+    t6 = true,
+    t7 = true,
+    t8 = true,
+    t9 = true,
+    t10 = true,
+    t11 = true,
+    t12 = true,
+    t13 = true,
+    t14 = true,    
+
+    tt1 = true,
+    tt2 = true,
+    tt3 = true,
+    tt4 = true,
+    tt5 = true,
+    tt6 = true,
+    tt7 = true,
+    tt8 = true,
+    tt9 = true,
+    tt10 = true,
+
+    s1 = true,
+    s2 = true,
+    s3 = true,
+    s4 = true,
+    s5 = true,
+    s6 = true,
+    s7 = true,
+    s8 = true,
+    s9 = true,
+    s10 = true,
+    s11 = true,
+    s12 = true,
+    s13 = true,
+    s14 = true,
+    s15 = true,
+
+    clicks = 0,
+    timer = null;
+var ss4 = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15];
+$(".seargr").hide();
+for (var i = 0; i < ss4.length; i++) {
+        $(".s" + i).on("click", function (e) {
+            clicks++;
+            if (clicks === 1) {
+                timer = setTimeout(function () {
+                    $(".seargr").toggle();
+                    clicks = 0;
+                }, 300);
+            } else {
+                clearTimeout(timer);
+                $(".seargr").hide();
+                clicks = 0;
+            }
+        }).on("dblclick", function (e) {
+            e.preventDefault();
+        });
+    }
+function loadTable_detailGR(pono, lineitem) {
+    var s1 = true,
+        s2 = true,
+        s3 = true,
+        s4 = true,
+        s5 = true,
+        s6 = true,
+        s7 = true,
+        s8 = true,
+        s9 = true,
+        s10 = true,
+        s11 = true,
+        s12 = true,
+        s13 = true,
+        s14 = true,
+        s15 = true,
+        s16 = true,
+        s17 = true
+    // $('#table_detailGR').DataTable().clear();
+    $('#table_detailGR').DataTable().destroy();
+    $('#table_detailGR tbody').empty();
+    mytableGR = $('#table_detailGR').DataTable({
+        "bSort": true,
+        "dom": 'rtpli',
+        "deferRender": true,
+        "colReorder": true,
+        "pageLength": 25,
+        "order": [],        
+        "language": {
+            "loadingRecords": "<center><b>Please wait - Updating and Loading Data List PO...</b></center>"
+        },        
+        "ajax": {
+                url: $("#base-url").val() + 'EC_Good_Receipt_PL/detailHistoryGR/' + pono,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    line_item: lineitem
+                }
+            },        
+        "fnInitComplete": function () {
+            $('#table_detailGR tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');                
+            });
+        },        
+        "drawCallback": function (settings) {
+            $('#table_detailGR tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
+        "columns": [{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.VENDOR_NAME;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.NO_SHIPMENT;
+                a += "</div>";
+                return a;
+            }
+        },  {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.PO_NO;
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.LINE_ITEM;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.MAKTX;
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if(full.STATUS==1){
+                    qty = full.QTY_RECEIPT;
+                }else if(full.STATUS==2){
+                    qty = full.QTY_REJECT;
+                }
+                a = "<div class='col-md-12 text-center'>";
+                a += numberWithCommas(qty);
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if(full.STATUS==1){
+                    status = 'Receipt'
+                }else if(full.STATUS==2){
+                    status = 'Reject'
+                }
+                a = "<div class='col-md-12 text-center'>";
+                a += status;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {                
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.ALASAN_REJECT==null?'-':full.ALASAN_REJECT);
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.MEINS;
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.PLANT+" - "+full.PLANT_NAME;
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.GR_NO==null?'-':full.GR_NO);
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.GR_YEAR==null?'-':full.GR_YEAR);
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.DOC;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.POST;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.CREATED_ON;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.CREATED_BY;
+                a += "</div>";
+                return a;
+            }
+        }],
+
+    });
+    
+    mytableGR.columns().every(function () {
+        var that = this;
+        $('.srchgr', this.header()).on('keyup change', function () {
+            if (that.search() !== this.value) {
+                that.search(this.value).draw();
+            }
+        });
+    });    
+
+    $('#table_detailGR').find("th").off("click.DT");    
+    $('.s1').on('dblclick', function () {
+        if (s1) {
+            mytableGR.order([0, 'asc']).draw();
+            s1 = false;
+        } else {
+            mytableGR.order([0, 'desc']).draw();
+            s1 = true;
+        }
+    });
+    $('.s2').on('dblclick', function () {
+        if (s2) {
+            mytableGR.order([1, 'asc']).draw();
+            s2 = false;
+        } else {
+            mytableGR.order([1, 'desc']).draw();
+            s2 = true;
+        }
+        console.log(s2)
+    });
+    $('.s3').on('dblclick', function () {
+        if (s3) {
+            mytableGR.order([2, 'asc']).draw();
+            s3 = false;
+        } else {
+            mytableGR.order([2, 'desc']).draw();
+            s3 = true;
+        }
+    });
+    $('.s4').on('dblclick', function () {
+        if (s4) {
+            mytableGR.order([3, 'asc']).draw();
+            s4 = false;
+        } else {
+            mytableGR.order([3, 'desc']).draw();
+            s4 = true;
+        }
+    });
+    $('.s5').on('dblclick', function () {
+        if (s5) {
+            mytableGR.order([4, 'asc']).draw();
+            s5 = false;
+        } else {
+            mytableGR.order([4, 'desc']).draw();
+            s5 = true;
+        }
+    });
+    $('.s6').on('dblclick', function () {
+        if (s6) {
+            mytableGR.order([5, 'asc']).draw();
+            s6 = false;
+        } else {
+            mytableGR.order([5, 'desc']).draw();
+            s6 = true;
+        }
+    });
+    $('.s7').on('dblclick', function () {
+        if (s7) {
+            mytableGR.order([6, 'asc']).draw();
+            s7 = false;
+        } else {
+            mytableGR.order([6, 'desc']).draw();
+            s7 = true;
+        }
+    });
+    $('.s8').on('dblclick', function () {
+        if (s8) {
+            mytableGR.order([7, 'asc']).draw();
+            s8 = false;
+        } else {
+            mytableGR.order([7, 'desc']).draw();
+            s8 = true;
+        }
+    });
+    $('.s9').on('dblclick', function () {
+        if (s9) {
+            mytableGR.order([8, 'asc']).draw();
+            s9 = false;
+        } else {
+            mytableGR.order([8, 'desc']).draw();
+            s9 = true;
+        }
+    });
+    $('.s10').on('dblclick', function () {
+        if (s10) {
+            mytableGR.order([9, 'asc']).draw();
+            s10 = false;
+        } else {
+            mytableGR.order([9, 'desc']).draw();
+            s10 = true;
+        }
+    });
+    $('.s11').on('dblclick', function () {
+        if (s11) {
+            mytableGR.order([10, 'asc']).draw();
+            s11 = false;
+        } else {
+            mytableGR.order([10, 'desc']).draw();
+            s11 = true;
+        }
+    });
+    $('.s12').on('dblclick', function () {
+        if (s12) {
+            mytableGR.order([11, 'asc']).draw();
+            s12 = false;
+        } else {
+            mytableGR.order([11, 'desc']).draw();
+            s12 = true;
+        }
+    });
+    $('.s13').on('dblclick', function () {
+        if (s13) {
+            mytableGR.order([12, 'asc']).draw();
+            s13 = false;
+        } else {
+            mytableGR.order([12, 'desc']).draw();
+            s13 = true;
+        }
+    });
+    $('.s14').on('dblclick', function () {
+        if (s14) {
+            mytableGR.order([13, 'asc']).draw();
+            s14 = false;
+        } else {
+            mytableGR.order([13, 'desc']).draw();
+            s14 = true;
+        }
+    });
+    $('.s15').on('dblclick', function () {
+        if (s15) {
+            mytableGR.order([14, 'asc']).draw();
+            s15 = false;
+        } else {
+            mytableGR.order([14, 'desc']).draw();
+            s15 = true;
+        }
+    });
+    $('.s16').on('dblclick', function () {
+        if (s15) {
+            mytableGR.order([15, 'asc']).draw();
+            s15 = false;
+        } else {
+            mytableGR.order([15, 'desc']).draw();
+            s15 = true;
+        }
+    });
+}
+$('#modalDetilGR').on('hidden.bs.modal', function (event) {
+    
+    
+});
+$('#modalDetilGR').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var pono = button.data('pono')
+    var lineitem = button.data('lineitem')    
+    loadTable_detailGR(pono, lineitem);  
+});

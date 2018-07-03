@@ -50,7 +50,19 @@
 <body>
   <table class="header">
       <tr>
-          <td style="width:65%;"><?=$company_data['nama']?></td>
+          <!-- <td style="width:65%;"><?=$company_data['nama']?></td> -->
+          <td style="width:65%;">
+            <?php
+            if($company_code==2000){
+              echo "PT. Semen Indonesia (Persero) Tbk. - Gresik";
+            } else if($company_code==7000){
+              echo "PT. Semen Indonesia (Persero) Tbk. - Tuban";
+            } else if($company_code==5000){
+              echo "PT. Semen Gresik";
+            }
+            ?>
+              
+            </td>
           <td style="width:35%;">
               <table>
                     <tr>
@@ -75,7 +87,7 @@
         <td align="center">No</td>
         <td align="center">No Faktur Pajak</td>
         <td align="center">Vendor</td>
-        <td align="center">TGL Faktur</td>
+        <td align="center">Tgl Faktur</td>
         <td align="center">NPWP</td>
         <td align="center">DPP</td>
         <td align="center">PPN</td>
@@ -85,7 +97,7 @@
         <?php 
         $no=1;
         
-        foreach($data as $d => $v){
+        foreach($sap as $d => $v){
             $time = strtotime($v['TGL_FAKTUR']);
             $newformat = date('d.m.Y',$time);?>
         <tr>
@@ -94,8 +106,8 @@
             <td style="text-align:center;"><?=$vendor_no."<br/>".$vendor_name."<br/>".$nation[0]['VENDOR_TYPE'];?></td>
             <td><?=$newformat?></td>
             <td><?=$v['NPWP']?></td>
-            <td><?=ribuan($v['DPP'])?></td>
-            <td><?=ribuan($v['PPN'])?></td>
+            <td><?=$v['DPP']?></td>
+            <td><?=$v['PPN']?></td>
         </tr>
         <?php }?>
     </tbody>

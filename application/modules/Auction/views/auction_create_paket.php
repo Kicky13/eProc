@@ -38,6 +38,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Bobot (Teknis : Harga)</td>
+                                <td>
+                                    <select name="bobot_type" id="bobot_type">
+                                        <option value="0">Harga Terendah</option>
+                                        <option value="1">60 : 40</option>
+                                        <option value="2">70 : 30</option>
+                                        <option value="3">80 : 20</option>
+                                        <option value="4">90 : 10</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nilai Pengurangan</td>
                                 <td><input type="text" class="form-control must_autonumeric" name="paqh_decrement_value" placeholder=""></td>
                             </tr>

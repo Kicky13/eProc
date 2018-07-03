@@ -43,7 +43,7 @@ class ec_po_pl_approval_m extends CI_Model
         } else if ($uakses == 'GUDANG') {
             $this->db->select('CT.PO_NO NOMERPO,TO_CHAR ((TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7), \'dd-mm-yyyy hh24:mi:ss\' ) COMMIT_DATE, CT.DATE_BUY,EC_PL_APPROVAL.CURR, VND_HEADER.VENDOR_NAME,  EC_PL_APPROVAL."VALUE",TDP.STOK_COMMIT, EC_PL_APPROVAL.VENDORNO,  EC_TRACKING_PO.*,TDP.DELIVERY_TIME',
                 false);
-            $this->db->from('(SELECT  PO_NO,  DATE_BUY FROM EC_T_CHART  WHERE CONTRACT_NO =  \'PL2017\' AND PO_NO IS NOT NULL GROUP BY  PO_NO, DATE_BUY ) CT');
+            $this->db->from('(SELECT  PO_NO,  DATE_BUY FROM EC_T_CHART  WHERE CONTRACT_NO =  \'PL2018\' AND PO_NO IS NOT NULL GROUP BY  PO_NO, DATE_BUY ) CT');
             $this->db->join('(SELECT P1.* FROM EC_TRACKING_PO P1 INNER JOIN (SELECT PO_NO,MAX(INDATE) DATE1 FROM EC_TRACKING_PO GROUP BY PO_NO) P2 ON P1.PO_NO=P2.PO_NO AND P1.INDATE=P2.DATE1 )EC_TRACKING_PO',
                 'EC_TRACKING_PO.PO_NO = CT.PO_NO', 'left');
             $this->db->join('EC_PL_APPROVAL', 'CT.PO_NO = EC_PL_APPROVAL.PO_NO', 'inner');

@@ -234,7 +234,7 @@ class Auction_negotiation extends CI_Controller {
 
 	function detail_negotiation($paqh_id) {
 		$paqh_id = url_decode($paqh_id);
-		$this->load->model(array('prc_auction_quo_header', 'prc_tender_item', 'prc_tender_vendor', 'prc_tender_quo_item', 'prc_auction_detail'));
+		$this->load->model(array('prc_auction_quo_header', 'prc_tender_item', 'prc_tender_vendor', 'prc_tender_quo_item', 'prc_auction_detail','prc_tender_quo_item'));
 		$data['title'] = 'Auction Negotiation Detail';
 
 		if($this->prc_auction_quo_header->get(array('PAQH_ID' => $paqh_id)) != NULL)
@@ -244,6 +244,12 @@ class Auction_negotiation extends CI_Controller {
 			$data['ptm_number'] = $data_paqh[0]['PTM_NUMBER'];
 			$data['paqh'] = $data_paqh[0];			
 			$data['item'] = $this->prc_tender_item->ptm_paqh($data['ptm_number'], $data_paqh[0]['PAQH_ID']);
+
+			$vnd = $this->session->userdata['VENDOR_NO'];
+			$vendor1= $this->prc_tender_quo_item->get_ptm($data['ptm_number'],$vnd);
+			$data['nilai_teknis'] = $vendor1[0]['PQI_TECH_VAL'];
+			// echo"<pre>";
+			// print_r($vnd);die;
 
 			$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 			$now = date_format($datetimestamp, 'd-m-Y H.i.s');
@@ -293,7 +299,7 @@ class Auction_negotiation extends CI_Controller {
 			$auction_nego = $data;	
 		}
 
-				
+
 		$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 		$now = date_format($datetimestamp, 'd-m-Y H.i.s');
 		foreach ((array)$auction_nego as $key => $value) {
@@ -327,11 +333,16 @@ class Auction_negotiation extends CI_Controller {
 	}
 
 	function update_bid() {
-		$this->load->model(array('prc_auction_detail', 'prc_auction_quo_header','prc_auction_log'));
+		$this->load->model(array('prc_auction_detail','prc_auction_quo_header','prc_auction_log','prc_tender_quo_item'));
 		$id = $this->input->post('paqh');
 
 		$data_paqh = $this->prc_auction_quo_header->get(array('PAQH_ID' => $id));
 		$paqh = $data_paqh[0];
+		$id_ptm = $paqh['PTM_NUMBER'];
+		$bt = $paqh['BOBOT_TEKNIS'];
+		$bh = $paqh['BOBOT_HARGA'];
+		// echo "<pre>";
+		// print_r($data_paqh);die;
 
 		$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 		$now = strtotime(date_format($datetimestamp, 'd-m-Y H.i.s'));
@@ -350,15 +361,41 @@ class Auction_negotiation extends CI_Controller {
 		$ptv_vendor_code = $this->input->post('ptv_vendor_code');
 		$iterasi_temp = $this->prc_auction_detail->get(array('PAQH_ID' => $this->input->post('paqh'), 'PTV_VENDOR_CODE' => $ptv_vendor_code));
 		$iterasi = $iterasi_temp[0]['PAQD_ITER'];
+
 		$data = array (
-				'PAQD_FINAL_PRICE' => $this->input->post('bid'),
-				'PAQD_ITER' => $iterasi+1
+			'PAQD_FINAL_PRICE' => $this->input->post('bid'),
+			'PAQD_ITER' => $iterasi+1
 			);
 		$this->prc_auction_detail->update($data, array('PAQH_ID' => $this->input->post('paqh'), 'PTV_VENDOR_CODE' => $ptv_vendor_code));
 
+		//penambahan bobot ARCHIE//
+		if (!empty($paqh['BOBOT_TEKNIS'])){
+			$vnd_detail = $this->prc_auction_detail->get(array('PAQH_ID' => $this->input->post('paqh')));
+		// echo "<pre>";
+		// print_r($vnd_detail);die;
+			foreach ($vnd_detail as $value) {
+				$vnd_code = $value['PTV_VENDOR_CODE'];
+				$vnd_price = $value['PAQD_FINAL_PRICE'];
+				$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd_code);
+				$min_harga = $this->prc_auction_detail->get_min_harga($id);
+
+				$bobot_teknis = $vendor1[0]['PQI_TECH_VAL'] * $bt / 100;
+				$bobot_harga = $min_harga['MINHARGA'] / $vnd_price * $bh;
+				$nilai_gabung = $bobot_teknis + $bobot_harga;
+				$dataa['NILAI_GABUNG'] = number_format($nilai_gabung,2);
+				$where1['PAQH_ID']= $id;
+				$where1['PTV_VENDOR_CODE']= $vnd_code;
+			// echo "<pre>";
+			// print_r($where1);
+			# code...
+				$this->prc_auction_detail->update($dataa, $where1);
+			}
+		}
+		//end penambahan bobot archie//
+
 			//--LOG MAIN--//
 		$this->log_data->main($this->session->userdata['VENDOR_NO'],$this->session->userdata['VENDOR_NAME'],
-					'VENDOR','Auction Negotiation','SUBMIT',$this->input->ip_address()
+			'VENDOR','Auction Negotiation','SUBMIT',$this->input->ip_address()
 			);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
@@ -369,11 +406,11 @@ class Auction_negotiation extends CI_Controller {
 			//--END LOG DETAIL--//
 
 		$data = array (
-				'VENDOR_NO' => $ptv_vendor_code,
-				'CREATED_AT' => date('d-M-Y g.i.s A'),
-				'PRICE' => $this->input->post('bid'),
-				'ITER' => $iterasi+1,
-				'PAQH_ID' => $this->input->post('paqh')
+			'VENDOR_NO' => $ptv_vendor_code,
+			'CREATED_AT' => date('d-M-Y g.i.s A'),
+			'PRICE' => $this->input->post('bid'),
+			'ITER' => $iterasi+1,
+			'PAQH_ID' => $this->input->post('paqh')
 			);
 		$this->prc_auction_log->insert($data);
 			//--LOG DETAIL--//
@@ -384,9 +421,16 @@ class Auction_negotiation extends CI_Controller {
 	}
 
 	function get_min_bid() {
-		$this->load->model(array('prc_auction_detail'));
+		$this->load->model(array('prc_auction_detail','prc_auction_quo_header'));
 		$paqh = $this->input->post('paqh');
-		$vendorWinner = $this->prc_auction_detail->getMinBid($paqh);
+		$bobot = $this->prc_auction_quo_header->get(array('PAQH_ID' => $paqh));
+		if (!empty($bobot[0]['BOBOT_TEKNIS'])) {
+			$vendorWinner = $this->prc_auction_detail->getMinBidBobot($paqh);
+		} else {
+			$vendorWinner = $this->prc_auction_detail->getMinBid($paqh);
+		}
+		// echo "<pre>";
+		// print_r($vendorWinner);die;
 		echo json_encode($vendorWinner);
 	}
 

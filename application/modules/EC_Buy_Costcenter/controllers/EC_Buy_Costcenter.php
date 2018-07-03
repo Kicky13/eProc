@@ -69,7 +69,7 @@ class EC_Buy_Costcenter extends CI_Controller
         $CC = explode('-', $this->input->post('cc'));
         $ccVal = $CC[0];
         $ccName = $CC[1];
-        $detail = array('COSTCENTER' => $ccVal, 'COSTCENTER_NAME' => $ccName, 'USERID' => $this->input->post('userid'));
+        $detail = array('COSTCENTER' => $ccVal, 'COSTCENTER_NAME' => $ccName, 'USERID' => $this->input->post('userid'), 'GUDANG'=>$this->input->post('gudang'));
         $query = $this->ec_master_costcenter->simpanData($detail);
         if($query){
             echo "Success";
@@ -92,7 +92,7 @@ class EC_Buy_Costcenter extends CI_Controller
     	header('Content-Type: application/json'); 
         $this->load->model('ec_master_costcenter');
         $CC = explode(':', $this->input->post('costCenter'));
-        $detail = array('ID' => $this->input->post('id'), 'COSTCENTER' => $CC[0], 'COSTCENTER_NAME' => $CC[1], 'USERID' => $this->input->post('userid'));
+        $detail = array('ID' => $this->input->post('id'), 'COSTCENTER' => $CC[0], 'COSTCENTER_NAME' => $CC[1], 'USERID' => $this->input->post('userid'),'GUDANG' => $this->input->post('gudang'));
         $query = $this->ec_master_costcenter->updateData($detail);
         if($query){
         	echo "Success"; 

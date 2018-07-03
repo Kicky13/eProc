@@ -25,17 +25,12 @@ function loadTable_() {
             "searchable": false,
             "orderable": true,
             "targets": 0
-        }],
-        // "order": [[ 1, 'asc' ]],
+        }],        
         "fnInitComplete": function () {
             $('#table_inv tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');
-                // $(this).find('td').addClass('text-center');
+                $(this).find('td').attr('nowrap', 'nowrap');          
             });
         },
-        /*"fnCreatedRow": function (row, data, index) {
-            $('td', row).eq(0).html("<div class='col-md-12 text-center'>"+(index + 1)+"</div>");
-        },*/
         "drawCallback": function (settings) {
             $('#table_inv tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
@@ -63,7 +58,19 @@ function loadTable_() {
                 a += "</div>";
                 return a;
             }
-        }, {
+        },  {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";                                
+                if(full.GUDANG =='1'){
+                    gudang='Ya';
+                }else{
+                    gudang='Tidak';
+                }
+                a += gudang;
+                a += "</div>";
+                return a;
+            }
+        },{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>" +
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-cc="' + (full.COSTCENTER) + '" data-fullname="' + (full.FULLNAME) + '" data-ccname="' + (full.COSTCENTER_NAME) + '" data-userid="' + (full.ID_USER) + '" data-id="' + (full.ID) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
@@ -71,18 +78,7 @@ function loadTable_() {
                     '</div>';
                 return a;
             }
-        }],
-             /*{
-            mRender: function (data, type, full) {
-                a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:approve(' + (full.PROGRESS_CNF) + ')"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:reject(' + (full.PROGRESS_CNF) + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PROGRESS_CNF) + '" data-curr="' + (full.PROGRESS_CNF) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.PROGRESS_CNF) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
-                    '</div>';
-                return a;
-            }
-        }],*/
+        }],            
 
     });
 
@@ -140,52 +136,7 @@ function loadTable_() {
             mytable.order([4, 'desc']).draw();
             t4 = true;
         }
-    });
-    $('.ts5').on('dblclick', function () {
-        if (t5) {
-            mytable.order([5, 'asc']).draw();
-            t5 = false;
-        } else {
-            mytable.order([5, 'desc']).draw();
-            t5 = true;
-        }
-    });
-    $('.ts6').on('dblclick', function () {
-        if (t6) {
-            mytable.order([6, 'asc']).draw();
-            t6 = false;
-        } else {
-            mytable.order([6, 'desc']).draw();
-            t6 = true;
-        }
-    });
-    /*$('.ts7').on('dblclick', function () {
-        if (t7) {
-            mytable.order([7, 'asc']).draw();
-            t7 = false;
-        } else {
-            mytable.order([7, 'desc']).draw();
-            t7 = true;
-        }
-    });
-    $('.ts8').on('dblclick', function () {
-        if (t8) {
-            mytable.order([8, 'asc']).draw();
-            t8 = false;
-        } else {
-            mytable.order([8, 'desc']).draw();
-            t8 = true;
-        }
-    });
-    $('.ts9').on('dblclick', function () {
-        if (t9) {
-            mytable.order([9, 'asc']).draw();
-            t9 = false;
-        } else {
-            mytable.order([9, 'desc']).draw();
-            t9 = true;
-        }
-    });*/
+    });    
 }
 
 function approve(PO) {
@@ -242,47 +193,26 @@ var t0 = true,
     timer = null;
 var t = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9];
 
-function simpan() {
-    // console.log($(element).is(":checked"));
-    //console.log($(element).parent().parent().find(".endDate").data('provide'))
-    // var harga1 = $('#' + harga).val();
-    // var currency = $('#' + curr).val();
-    // var time = $('#' + deliverytime).val();
-    // if (harga1 == '' || currency == null || time == '') {
-    //     alert('Harga, currency atau delivery time masih kosong');
-    // } else {
-        // if (confirm('Apakah anda yakin menyimpan data ini ?'))
+function simpan() {    
             $.ajax({
                 url: $("#base-url").val() + 'EC_Buy_Costcenter/simpan/',
                 data: {
                     "cc": $('#cc').val(),
                     "userid": $("#ID_USER").val(),
-                    "username": $("#txt_Nama").val()
+                    "username": $("#txt_Nama").val(),
+                    "gudang": $('input[name="gudang"]:checked').val()
                 },
                 type: 'POST',
                 dataType: 'json'
             }).done(function (data) { 
-                //location.reload(true);
-                alert(data.responseText);
-                // if (alert(data.responseText))
-                // {
-                //     window.location.reload();
-                // }
-                //window.location.reload();
-                //window.location = $("#base-url").val() + 'EC_Master_Approval/';
-                //console.log(data);
+                alert(data.responseText);                
             }).fail(function (data) {
-                alert(data.responseText);
-                // console.log("error");
-                // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
+                alert(data.responseText);                
             }).always(function (data) {
                 if(data.responseText=='Success'){
                     location.reload(true);
                 }                
-                // console.log(data)
-                //$("#statsPO").text(data)
-            });
-    // }
+            });    
 
 }
 
@@ -301,7 +231,8 @@ function update() {
                 data: {
                     "id":$('#viewid').val(),
                     "costCenter": $('#viewcc').val(),
-                    "userid": $('#viewusername').val()
+                    "userid": $('#viewusername').val(),
+                    "gudang": $('input[name="gudang_update"]:checked').val()
                 },
                 type: 'POST',
                 dataType: 'json'

@@ -5,8 +5,12 @@
         	<br>
         	<br>
         	<br>
-        	<br>
-        	<br>
+            <br>
+            <H3><?php if(!empty($sap[0]['STATUS'])) echo $sap[0]['STATUS']."<br>"; ?></H3>
+            <!-- <br> -->
+            <br>
+            <br>
+            <br>
         	(
         	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -21,7 +25,8 @@
         	<br>
             <br>
         	<br>
-            <?php echo $data_header[0]['NAMA_SETOR']; ?><br>
+            <?php if(!empty($sap[0]['NAMA'])) echo $sap[0]['NAMA']."<br>"; ?>
+            <?php if(!empty($sap[0]['EMAIL'])) echo $sap[0]['EMAIL']."<br>"; ?>
         	( <?php echo $vendor_name; ?> )
         </td>        
     </tr>
