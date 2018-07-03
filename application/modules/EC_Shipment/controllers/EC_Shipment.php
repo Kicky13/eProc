@@ -42,6 +42,44 @@ class EC_Shipment extends CI_Controller
         $this->layout->render('list', $data);
     }
 
+    public function setShipment()
+    {
+        header('Content-Type: application/json');
+        $this->load->model();
+        $this->load->model('ec_shipment_m');
+        $data = array();
+        $kode = $this->input->post('kode_shipment');
+        for ($i = 0; $i < count($kode); $i++){
+            $data1 = $this->ec_shipment_m->getPODetail($kode[$i]);
+            for ($j = 0; $j < sizeof($data1); $j++) {
+                $qtyIntransit = $this->ec_shipment_m->getQtyIntransit($data1[$j]['ID_CHART']);
+                $qtyReject = $this->ec_shipment_m->getQtyReject($data1[$j]['ID_CHART']);
+                $datax[$j]["KODE_SHIPMENT"] = $data1[$j]["KODE_SHIPMENT"];
+                $datax[$j]["PO_NO"] = $data1[$j]["PO_NO"];
+                $datax[$j]["VENDORNO"] = $data1[$j]["VENDORNO"];
+                $datax[$j]["STATUS"] = $data1[$j]["STATUS"];
+                $datax[$j]["STOCK_COMMIT"] = $data1[$j]["STOCK_COMMIT"];
+                $datax[$j]["QTY"] = $data1[$j]["QTY"];
+                $datax[$j]["LINE_ITEM"] = $data1[$j]["LINE_ITEM"];
+                $datax[$j]["MAKTX"] = $data1[$j]["MAKTX"];
+                $datax[$j]["ID_CHART"] = $data1[$j]["ID_CHART"];
+                $datax[$j]["MEINS"] = $data1[$j]["MEINS"];
+                $datax[$j]["PLANT"] = $data1[$j]["PLANT"];
+                $datax[$j]["PLANT_NAME"] = $data1[$j]["PLANT_NAME"];
+                $datax[$j]["PRICE"] = $data1[$j]["PRICE"];
+                $datax[$j]["DELIVERY_TIME"] = $data1[$j]["DELIVERY_TIME"];
+                $datax[$j]["CURRENCY"] = $data1[$j]["CURRENCY"];
+                $datax[$j]["EXPIRED_DATE"] = $data1[$j]["EXPIRED_DATE"];
+                $datax[$j]["TOTAL"] = $data1[$j]["TOTAL"];
+                $datax[$j]["QTY_RECEIPT"] = $data1[$j]["QTY_RECEIPT"];
+                $datax[$j]["QTY_INTRANSIT"] = ($qtyIntransit["QTY_INTRANSIT"]==null?'0':$qtyIntransit["QTY_INTRANSIT"]);
+                $datax[$j]["QTY_REJECT"] = ($qtyReject["QTY_REJECT"]==null?'0':$qtyReject["QTY_REJECT"]);
+            }
+            $data[$i] = $datax;
+        }
+        echo json_encode($data);
+    }
+
     public function tesgetPORelease($cheat = false)
     {
         header('Content-Type: application/json');
@@ -55,7 +93,21 @@ class EC_Shipment extends CI_Controller
     {
         header('Content-Type: application/json');
         $this->load->model('ec_shipment_m');
-        echo json_encode(array('data' => $this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO'])));
+        echo json_encode(array('data' => $this->compilePORelease($this->ec_shipment_m->getPORelease($this->session->userdata['VENDOR_NO']))));
+    }
+
+    public function compilePORelease($data)
+    {
+        $po = '';
+        for ($i = 0; $i < count($data); $i++){
+            if ($data[$i]['PO_NO'] == $po){
+                $data[$i]['ROWSPAN'] = 'NO';
+            } else {
+                $data[$i]['ROWSPAN'] = 'YES';
+            }
+            $po = $data[$i]['PO_NO'];
+        }
+        return $data;
     }
 
     public function getPOorder($cheat = false)
@@ -121,8 +173,23 @@ class EC_Shipment extends CI_Controller
     {
         header('Content-Type: application/json');
         $this->load->model('ec_shipment_m');
-        echo json_encode(array('data' => $this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO'])));
+        echo json_encode(array('data' => $this->compileIntransitData($this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO']))));
         // echo json_encode($this->ec_shipment_m->detailIntransit());
+    }
+
+    public function compileIntransitData($data)
+    {
+        $shipment = '';
+        for ($i = 0; $i < count($data); $i++){
+            if ($data[$i]['NO_SHIPMENT'] == $shipment){
+                $data[$i]['ROWSPAN'] = 'NO';
+                $shipment = $data[$i]['NO_SHIPMENT'];
+            } else {
+                $data[$i]['ROWSPAN'] = 'YES';
+                $shipment = $data[$i]['NO_SHIPMENT'];
+            }
+        }
+        return $data;
     }
 
     public function send($kode_shipment)

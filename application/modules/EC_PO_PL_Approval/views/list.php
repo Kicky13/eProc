@@ -125,7 +125,7 @@
                                 <th class="text-center">Value</th>
                                 <th class="text-center">Curr</th>
                                 <th class="text-center">Ship to</th>
-                                <th class="text-center">Korin</th>
+                                <th class="text-center">Dokumen Pendukung</th>
                                 <th class="text-center">Est. Date</th>
                             </tr>
                             </thead>

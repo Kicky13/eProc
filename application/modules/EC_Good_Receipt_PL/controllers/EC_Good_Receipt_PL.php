@@ -51,7 +51,21 @@ class EC_Good_Receipt_PL extends MX_Controller
     {        
         header('Content-Type: application/json');
         $this->load->model('ec_goodreceipt_m');
-        echo json_encode(array('data' => $this->ec_goodreceipt_m->getPOShipment($this->session->userdata('ID'))));
+        echo json_encode(array('data' => $this->compilePOShipment($this->ec_goodreceipt_m->getPOShipment($this->session->userdata('ID')))));
+    }
+
+    public function compilePOShipment($data)
+    {
+        $shipment = '';
+        for ($i = 0; $i < count($data); $i++){
+            if ($data[$i]['NO_SHIPMENT'] == $shipment){
+                $data[$i]['ROWSPAN'] = 'NO';
+            } else {
+                $data[$i]['ROWSPAN'] = 'YES';
+            }
+            $shipment = $data[$i]['NO_SHIPMENT'];
+        }
+        return $data;
     }
 
     public function getPOShipmentReview()
@@ -355,7 +369,21 @@ class EC_Good_Receipt_PL extends MX_Controller
     {
         header('Content-Type: application/json');
         $this->load->model('ec_goodreceipt_m');
-        echo json_encode(array('data' => $this->ec_goodreceipt_m->getPOorder($this->session->userdata('ID'))));
+        echo json_encode(array('data' => $this->compilePOorder($this->ec_goodreceipt_m->getPOorder($this->session->userdata('ID')))));
+    }
+
+    public function compilePOorder($data)
+    {
+        $po = '';
+        for ($i = 0; $i < count($data); $i++){
+            if ($data[$i]['PO_NO'] == $po){
+                $data[$i]['ROWSPAN'] = 'NO';
+            } else {
+                $data[$i]['ROWSPAN'] = 'YES';
+            }
+            $po = $data[$i]['PO_NO'];
+        }
+        return $data;
     }
 
     public function getDescItem($MATNR)

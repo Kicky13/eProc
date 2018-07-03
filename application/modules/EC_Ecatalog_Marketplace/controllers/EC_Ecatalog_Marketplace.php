@@ -1175,8 +1175,8 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //                           array('COMPANYID' => '7000', 'COMPANYNAME' => 'KSO'));
         $this->load->model('ec_ecatalog_m');
         $data['CC'] = $this->COSTCENTER_GETLIST();        
-        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);
-        $result = $this->sap_handler->GET_REPORTBUDGET($this->session->userdata, $data['CCC']["COSTCENTER"], false);
+        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);        
+        $result = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0,1), $data['CCC']["COSTCENTER"], false);
 //         var_dump($result);die();
         // $dataa = array(); 
         for ($i = 0; $i < sizeof($result); $i++) {

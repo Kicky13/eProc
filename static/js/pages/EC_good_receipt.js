@@ -58,9 +58,13 @@ function loadTable_Unprocessed() {
             }
         }, {
             mRender: function (data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.NO_SHIPMENT;
-                a += "</div>";
+                if (full.ROWSPAN == "YES"){
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.NO_SHIPMENT;
+                    a += "</div>";
+                } else {
+                    a = "";
+                }
                 return a;
             }
         },{
@@ -365,9 +369,13 @@ function loadTable_App() {
             }
         }, {
             mRender: function (data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.PO_NO;
-                a += "</div>";
+                if (full.ROWSPAN == "YES"){
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.PO_NO;
+                    a += "</div>";
+                } else {
+                    a = "";
+                }
                 return a;
             }
         }, {
@@ -1695,7 +1703,7 @@ $(document).ready(function () {
         if(itemShipment.length==0){
             alert('pilih Item dulu');
             // $('#receipt').modal('hide');
-        }else{
+        } else {
             $('#receipt').modal('show');
             $.ajax({
                 url: $("#base-url").val() + 'EC_Good_Receipt_PL/getPOShipmentReview/',
@@ -1711,7 +1719,7 @@ $(document).ready(function () {
                     teks += "<tr>";
                     // teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
                     teks += "<td class=\"text-center\">" + data[i]['VENDOR_NAME'] + "</td>"
-                    teks += "<td class=\"text-center\">" + data[i]['PO_NO'] + "</td>"
+                    teks += "<td class=\"rowspan text-center\">" + data[i]['PO_NO'] + "</td>"
                     teks += "<td class=\"text-center\">" + data[i]['LINE_ITEM'] + "</td>"
                     teks += "<td class=\"text-center\">" + data[i]['MAKTX'] + "</td>"
                     teks += "<td class=\"text-center\">" + itemQty[i] + "</td>"

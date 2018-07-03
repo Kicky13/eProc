@@ -279,7 +279,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
             teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['TOTAL']) + "</td>"
             teks += "<td class=\"text-center\">" + curr + "</td>"
             teks += "<td class=\"text-center\">" + data[i]['PLANT'] + "&mdash;" + data[i]['PLANT_NAME'] + "</td>"
-            teks += "<td class=\"text-center\"><a target=\"_blank\" href="+$("#base-url").val()+"/upload/EC_korin/"+data[i]['FILE_KORIN']+">View Korin</a></td>"
+            teks += "<td class=\"text-center\"><a target=\"_blank\" href="+$("#base-url").val()+"/upload/EC_korin/"+data[i]['FILE_KORIN']+">View Dokumen</a></td>"
             teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + addDays(data[i]['DELIVERY_TIME']) + "</strong></td>"
             teks += "</tr>"
         }

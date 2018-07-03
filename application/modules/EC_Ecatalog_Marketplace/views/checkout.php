@@ -163,7 +163,7 @@
                     <!-- <?php //echo form_open_multipart('EC_Ecatalog_Marketplace/tesUplaod/',array('method' => 'POST','id'=>'formUp','class' => 'form-horizontal')); ?> -->
                     <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
                         <div class="col-sm-3 col-md-3 col-lg-3">
-                            Upload Korin
+                            Upload Dokumen Pendukung
                         </div>
                         <div class="col-sm-5 col-md-5 col-lg-5">
                             <input type="hidden" id="korin_name" name="korin_name">

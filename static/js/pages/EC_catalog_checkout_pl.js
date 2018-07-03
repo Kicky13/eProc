@@ -119,7 +119,7 @@ function chk23() {
         // $("#myModalLabel").text('Konfirmasi Crate PO dengan ' + countSameCon + ' tipe barang berbeda')
 
         // $("#myModalLabel").text('Tiap nomer PO terbit berdasarkan nomer kontrak barang yang sama')
-        $("#btnCofirmmm").hide();
+        // $("#btnCofirmmm").hide();
         jml = 0,
             vndor = 0;
         vndor_no = "-";
@@ -575,13 +575,13 @@ $(document).ready(function () {
                     $("#messagesUpload").show();
                     $("#messagesUpload").attr('style', 'color: green;');
                     $("#messagesUpload").text('Upload Sukses..!!');
-                    $("#btnCofirmmm").show();
+                    // $("#btnCofirmmm").show();
 
                 } else {
                     $("#messagesUpload").show();
                     $("#messagesUpload").attr('style', 'color: red;');
                     $("#messagesUpload").text('Upload Gagal..!!');
-                    $("#btnCofirmmm").hide();
+                    // $("#btnCofirmmm").hide();
                 }
                 // console.log(result);
                 // console.log(result['file_name']);
