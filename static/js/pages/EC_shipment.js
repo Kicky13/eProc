@@ -11,7 +11,7 @@ function loadTable_App() {
         "dom": 'rtpli',
         "deferRender": true,
         "colReorder": true,
-        "pageLength": 25,
+        "pageLength": 25, 
         "order": [],
         // "fixedHeader" : true,
         // "scrollX" : true,
@@ -285,7 +285,7 @@ function loadTable_() {
             }
         }, */{
             mRender: function (data, type, full) {
-                a = "<div class='col-md-12 text-center rowspan'>";
+                a = "<div class='col-md-12 text-center'>";
                 a += (full.PO_NO);
                 a += "</div>";
                 return a;
@@ -562,13 +562,9 @@ function loadTable_Intransit() {
             }
         }, */{
             mRender: function (data, type, full) {
-                if (full.ROWSPAN == 'YES'){
-                    a = "<div class='col-md-12 text-center rowspan'>";
-                    a += (full.NO_SHIPMENT);
-                    a += "</div>";
-                } else {
-                    a = "";
-                }
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.NO_SHIPMENT);
+                a += "</div>";
                 return a;
             }
         },{
@@ -1065,53 +1061,53 @@ $('#modalDetailPo').on('show.bs.modal', function (event) {
     });
 });
 
-// $('#shipment').on('show.bs.modal', function (event) {
-//
-//
-//
-//     var button = $(event.relatedTarget)
-//     var teks = ''
-//
-//     //var pono = button.data('pono')
-//     //var kodeshipment = button.data('kodeshipment')
-//
-//     $("#reviewShipment").empty()
-//     for (var po = 0; po < items.length; po++) {
-//         teks += '<div class="row">'
-//         teks += '<div class="col-md-3">'
-//         teks += 'Nomor PO: '+items[po]+''
-//         teks += '</div>'
-//         teks += '<div class="col-md-9">'
-//         teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
-//         teks += '</div>'
-//         teks += '</div>'
-//         teks += '<div class="row">'
-//                 teks += '<div class="col-md-12">'
-//                 teks += '<table id="tablebody'+po+'" class="table table-striped nowrap" width="100%">'
-//                 teks += '<thead>'
-//                 teks += '<tr>'+
-//                             '<th class="text-center">Line Item</th>'+
-//                             '<th class="text-center">Deskripsi</th>'+
-//                             '<th class="text-center">QTY</th>'+
-//                             '<th class="text-center">UoM</th>'+
-//                             '<th class="text-center">Unit Price</th>'+
-//                             '<th class="text-center">Currency</th>'+
-//                             '<th class="text-center">Total Value</th>'+
-//                             '<th class="text-center">Ship To</th>'+
-//                             '<th class="text-center">Expired Date</th>'+
-//                             '<th class="text-center">QTY Shipment</th>'+
-//                             '<th class="text-center"></th>'+
-//                         '</tr>'
-//                 teks += '</thead>'
-//                 teks += '<tbody id="body'+po+'">'
-//                 teks += '</tbody>'
-//                 teks += '</table>'
-//                 teks += '</div></div>'
-//                 teks += '<br><hr>'
-//         $("#reviewShipment").html(teks)
-//     }
-//     //showDetail();
-// });
+$('#shipment').on('show.bs.modal', function (event) {
+
+    
+
+    var button = $(event.relatedTarget)
+    var teks = ''
+    
+    //var pono = button.data('pono')
+    //var kodeshipment = button.data('kodeshipment')
+    
+    $("#reviewShipment").empty()
+    for (var po = 0; po < items.length; po++) {
+        teks += '<div class="row">'
+        teks += '<div class="col-md-3">'
+        teks += 'Nomor PO: '+items[po]+''
+        teks += '</div>'
+        teks += '<div class="col-md-9">'
+        teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
+        teks += '</div>'
+        teks += '</div>'
+        teks += '<div class="row">'
+                teks += '<div class="col-md-12">'
+                teks += '<table id="tablebody'+po+'" class="table table-striped nowrap" width="100%">'
+                teks += '<thead>'
+                teks += '<tr>'+
+                            '<th class="text-center">Line Item</th>'+
+                            '<th class="text-center">Deskripsi</th>'+
+                            '<th class="text-center">QTY</th>'+
+                            '<th class="text-center">UoM</th>'+
+                            '<th class="text-center">Unit Price</th>'+
+                            '<th class="text-center">Currency</th>'+
+                            '<th class="text-center">Total Value</th>'+
+                            '<th class="text-center">Ship To</th>'+
+                            '<th class="text-center">Expired Date</th>'+                            
+                            '<th class="text-center">QTY Shipment</th>'+
+                            '<th class="text-center"></th>'+
+                        '</tr>'
+                teks += '</thead>'
+                teks += '<tbody id="body'+po+'">'
+                teks += '</tbody>'
+                teks += '</table>'
+                teks += '</div></div>'
+                teks += '<br><hr>'
+        $("#reviewShipment").html(teks)  
+    }
+    //showDetail();  
+});
 
 var dt = 0;
 function showDetail() {
@@ -1477,7 +1473,7 @@ $(document).ready(function () {
     //     $('.datepicker').hide();
     // });
 
-    $('#setShipment2').click(function () {
+    $('#setShipment').click(function () {
         //items = []
         
         $(".items").each(function () {
@@ -1497,115 +1493,6 @@ $(document).ready(function () {
         }
         //accept(items)
     })
-
-    $('#setShipment').click(function () {
-        //items = []
-
-        $(".items").each(function () {
-            if ($(this).is(":checked"))
-                if (items.indexOf($(this).data("kodeshipment")) == -1)
-                    items.push(String($(this).data("kodeshipment")));
-        });
-        // dataitems = JSON.stringify(items)
-        // console.log(dataitems)
-
-        console.log(items);
-        if(items.length==0){
-            alert('pilih Item dulu');
-            // $('#receipt').modal('hide');
-        } else {
-            $('#shipment').modal('show');
-            $.ajax({
-                url: $("#base-url").val() + 'EC_Shipment/setShipment/',
-                type: 'POST',
-                data: {
-                    kode_shipment: items
-                },
-                dataType: 'json'
-            }).done(function (data) {
-                for (var a = 0; a < data.length; a++){
-                    console.log(a)
-                    for (var b = 0; b < data[a].length; b++){
-                        console.log(data[a][b]['CURRENCY']);
-                    }
-                }
-                console.log(data[0][0]);
-                var teks = ''
-                //var pono = button.data('pono')
-                //var kodeshipment = button.data('kodeshipment')
-                for (var x = 0; x < data.length; x++) {
-                    teks += '<div class="row">'
-                    teks += '<div class="col-md-3">'
-                    teks += 'Nomor PO: '+items[x]+''
-                    teks += '</div>'
-                    teks += '<div class="col-md-9">'
-                    teks += '</div>'
-                    teks += '</div>'
-                    teks += '<div class="row">'
-                    teks += '<div class="col-md-12">'
-                    teks += '<table id="tablebody'+x+'" class="table table-striped nowrap" width="100%">'
-                    teks += '<thead>'
-                    teks += '<tr>'+
-                        '<th class="text-center">Line Item</th>'+
-                        '<th class="text-center">Deskripsi</th>'+
-                        '<th class="text-center">QTY</th>'+
-                        '<th class="text-center">UoM</th>'+
-                        '<th class="text-center">Unit Price</th>'+
-                        '<th class="text-center">Currency</th>'+
-                        '<th class="text-center">Total Value</th>'+
-                        '<th class="text-center">Ship To</th>'+
-                        '<th class="text-center">Expired Date</th>'+
-                        '<th class="text-center">QTY Shipment</th>'+
-                        '<th class="text-center"></th>'+
-                        '</tr>'
-                    teks += '</thead>'
-                    teks += '<tbody id="body'+x+'">'
-                    for (var y = 0; y < data[x].length; y++){
-                        teks += "<tr>";
-                        //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['LINE_ITEM'] + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['MAKTX'] + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['QTY'] + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['MEINS'] + "</td>";
-                        teks += "<td class=\"text-center\">" + numberWithCommas(data[x][y]['PRICE']) + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['CURRENCY'] + "</td>";
-                        teks += "<td class=\"text-center\">" + numberWithCommas(data[x][y]['TOTAL']) + "</td>";
-                        teks += "<td class=\"text-center\">" + data[x][y]['PLANT'] +" - "+ data[x][y]['PLANT_NAME'] +"</td>";
-                        teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[x][y]['EXPIRED_DATE'] + "</strong></td>";
-                        teks += "<td class=\"text-center\"><input style=\"width: 50px;\" type=\"text\" placeholder=\"Qty\" id=\""+x+"_"+data[x][y]['LINE_ITEM']+"\"></td>";
-                        teks += "<td class=\"text-center\"><input type='checkbox' data-kodeship=" + data[x][y]['KODE_SHIPMENT'] + " data-kode=" + data[x][y]['ID_CHART'] + " data-po=" + x + " data-lineitem=" + data[x][y]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+x+","+data[x][y]['LINE_ITEM']+","+data[x][y]['QTY']+")'>"
-                        teks += "</tr>";
-                    }
-                    // for (var x = 0; x < data[po].length; x++){
-                    //     teks += "<tr>";
-                    //     //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
-                    //     teks += "<td class=\"text-center\">" + data[po][x]['LINE_ITEM'] + "</td>";
-                    //     teks += "<td class=\"text-center\">" + data[po][x]['MAKTX'] + "</td>";
-                    //     teks += "<td class=\"text-center\">" + qty + "</td>";
-                    //     teks += "<td class=\"text-center\">" + data[po][x]['MEINS'] + "</td>";
-                    //     teks += "<td class=\"text-center\">" + numberWithCommas(data[po][x]['PRICE']) + "</td>";
-                    //     teks += "<td class=\"text-center\">" + data[po][x]['CURRENCY'] + "</td>";
-                    //     teks += "<td class=\"text-center\">" + numberWithCommas(value) + "</td>";
-                    //     teks += "<td class=\"text-center\">" + data[po][x]['PLANT'] +" - "+ data[po][x]['PLANT_NAME'] +"</td>";
-                    //     teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[po][x]['EXPIRED_DATE'] + "</strong></td>";
-                    //     teks += "<td class=\"text-center\"><input "+disable+" onkeyup='myFunction(this.value,"+qty+","+po+","+data[po][x]['LINE_ITEM']+")' style=\"width: 50px;background-color:#ddd;\" type=\"text\" placeholder=\"Qty\" id=\"qty"+items[po]+"_"+data[po][x]['LINE_ITEM']+"\" value="+ qty +" readonly></td>";
-                    //     teks += "<td class=\"text-center\"><input "+disable+" type='checkbox' data-kodeship=" + data[po][x]['KODE_SHIPMENT'] + " data-kode=" + data[po][x]['ID_CHART'] + " data-po=" + items[po] + " data-lineitem=" + data[po][x]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+items[po]+","+data[po][x]['LINE_ITEM']+","+data[po][x]['QTY']+")'>"
-                    //     teks += "</tr>";
-                    // }
-                    teks += '</tbody>'
-                    teks += '</table>'
-                    teks += '</div></div>'
-                    teks += '<br><hr>'
-                }
-                $("#reviewShipment").html(teks)
-            }).fail(function () {
-                // console.log("error");
-            }).always(function (data) {
-                // console.log(data);
-
-            });
-        }
-    });
 	
     $('#saveShipment').click(function () {
         //items = []
