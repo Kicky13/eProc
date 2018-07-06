@@ -38,7 +38,7 @@ class EC_Shipment extends CI_Controller
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
         $this->layout->add_js('pages/EC_shipment.js');
-
+        $this->layout->add_js('pages/rowsgroup.js');
         $this->layout->render('list', $data);
     }
 
@@ -173,21 +173,42 @@ class EC_Shipment extends CI_Controller
     {
         header('Content-Type: application/json');
         $this->load->model('ec_shipment_m');
-        echo json_encode(array('data' => $this->compileIntransitData($this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO']))));
+        echo json_encode(array('data' => $this->compileIntransit($this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO']))));
         // echo json_encode($this->ec_shipment_m->detailIntransit());
     }
 
-    public function compileIntransitData($data)
+    public function detailIntransit2()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        echo json_encode(array('data' => $this->compileIntransit($this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO']))));
+        // echo json_encode($this->ec_shipment_m->detailIntransit());
+    }
+
+    public function compileIntransit($data)
     {
         $shipment = '';
         for ($i = 0; $i < count($data); $i++){
             if ($data[$i]['NO_SHIPMENT'] == $shipment){
-                $data[$i]['ROWSPAN'] = 'NO';
-                $shipment = $data[$i]['NO_SHIPMENT'];
+                $data[$i]['ROWSPAN_STATUS'] = 'NO';
+                $data[$i]['ROWSPAN_ROW'] = 1;
             } else {
-                $data[$i]['ROWSPAN'] = 'YES';
-                $shipment = $data[$i]['NO_SHIPMENT'];
+                $data[$i]['ROWSPAN_STATUS'] = 'YES';
             }
+            if ($data[$i]['ROWSPAN_STATUS'] == 'YES'){
+                $rowspan = 1;
+                $j = $i+1;
+                while ($j < count($data)){
+                    if ($data[$i]['NO_SHIPMENT'] == $data[$j]['NO_SHIPMENT']){
+                        $rowspan++;
+                        $j++;
+                    } else {
+                        break;
+                    }
+                }
+                $data[$i]['ROWSPAN_ROW'] = $rowspan;
+            }
+            $shipment = $data[$i]['NO_SHIPMENT'];
         }
         return $data;
     }

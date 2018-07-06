@@ -539,20 +539,23 @@ function loadTable_Intransit() {
             "targets": 0
         }],*/
         // "order": [[ 1, 'asc' ]],
-        "fnInitComplete": function () {
-            $('#table_Intransit tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');
-                // $(this).find('td').addClass('text-center');
-            });
-        },
-        /*"fnCreatedRow": function (row, data, index) {
-            $('td', row).eq(0).html("<div class='col-md-12 text-center'>"+(index + 1)+"</div>");
-        },*/
-        "drawCallback": function (settings) {
-            $('#table_Intransit tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');
-            });
-        },
+        // "fnInitComplete": function () {
+        //     $('#table_Intransit tbody tr').each(function (key, val) {
+        //         $(this).find('td').attr('nowrap', 'nowrap');
+        //
+        //         $(this).find('td').attr('rowspan', '1');
+        //         // $(this).find('td').addClass('text-center');
+        //     });
+        // },
+        // /*"fnCreatedRow": function (row, data, index) {
+        //     $('td', row).eq(0).html("<div class='col-md-12 text-center'>"+(index + 1)+"</div>");
+        // },*/
+        // "drawCallback": function (settings) {
+        //     $('#table_Intransit tbody tr').each(function () {
+        //         $(this).find('td').attr('nowrap', 'nowrap');
+        //         $(this).find('td').attr('rowspan', '1');
+        //     });
+        // },
         "columns": [/*{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
@@ -561,6 +564,7 @@ function loadTable_Intransit() {
                 return a;
             }
         }, */{
+            name:'first',
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += (full.NO_SHIPMENT);
@@ -612,6 +616,7 @@ function loadTable_Intransit() {
             }
         },{
             mRender: function (data, type, full) {
+                $('#table_Intransit tbody tr').find('td').attr('nowrap', 'nowrap');
                 a = "<div class='col-md-12 text-center'>";
                 a += full.PLANT+" - "+full.PLANT_NAME;
                 a += "</div>";
@@ -660,7 +665,9 @@ function loadTable_Intransit() {
                 return a;
             }
         }],
-
+        rowsGroup: [
+            'first:name'
+        ]
     });
     mytable.on('click', '.btn-print', function (e) {
         e.preventDefault();
