@@ -104,6 +104,25 @@ class Layout
 		}
 		
 	}
+
+    public function set_table_js2()
+    {
+        $this->add_js("pages/dataTable.js");
+        $this->add_js("plugins/datatables/jquery.dataTables-conf.js");
+        $this->add_js("plugins/datatables/DT_bootstrap.js");
+        $this->add_js("plugins/jquery.redirect.js");
+        $this->add_js("plugins/simple_ajax_uploader.js");
+        $this->add_js("plugins/simple_ajax_uploader.min.js");
+        $this->add_js("plugins/jquery.ajaxfileupload.js");
+
+        if (($this->ci->uri->segment(2)=='store_tor' && $this->ci->uri->segment(3)==NULL)||$this->ci->uri->segment(2)=='detail_invitation'){
+            $this->add_js("sweetalert2.minub.js");
+        }else{
+            $this->add_js("sweetalert2.min.js");
+            $this->add_js("swal.js");
+        }
+
+    }
 	
 	public function set_table_cs()
 	{

@@ -517,7 +517,6 @@ function loadTable_Intransit() {
 
     $('#table_Intransit').DataTable().destroy();
     $('#table_Intransit tbody').empty();
-    var shipment = 0;
     mytable = $('#table_Intransit').DataTable({
         "bSort": true,
         "dom": 'rtpli',
@@ -539,23 +538,35 @@ function loadTable_Intransit() {
             "targets": 0
         }],*/
         // "order": [[ 1, 'asc' ]],
-        // "fnInitComplete": function () {
-        //     $('#table_Intransit tbody tr').each(function (key, val) {
-        //         $(this).find('td').attr('nowrap', 'nowrap');
-        //
-        //         $(this).find('td').attr('rowspan', '1');
-        //         // $(this).find('td').addClass('text-center');
-        //     });
-        // },
-        // /*"fnCreatedRow": function (row, data, index) {
-        //     $('td', row).eq(0).html("<div class='col-md-12 text-center'>"+(index + 1)+"</div>");
-        // },*/
-        // "drawCallback": function (settings) {
-        //     $('#table_Intransit tbody tr').each(function () {
-        //         $(this).find('td').attr('nowrap', 'nowrap');
-        //         $(this).find('td').attr('rowspan', '1');
-        //     });
-        // },
+        "fnInitComplete": function () {
+            var api = this.api("ajax").rows( {page:'current'} ).data()
+            var n = this.api();
+            var rows = api.rows({ page:'current' }).nodes();
+            var nomor = 1;
+            // var tabelku = $('#table_Intransit').DataTable()
+            // console.log(tabelku.row(this).index());
+            // for (i = 0; i < api.length; i++){
+            //     console.log(api[i].NO_SHIPMENT)
+            //     console.log(rows);
+            // }
+            $('#table_Intransit tbody tr').each(function (key, val) {
+                $(this).find('td').attr('nowrap', 'nowrap');
+                // $(this).find('td').attr('rowspan', '1');
+                // $(this).find('td').addClass('text-center');
+            });
+        },
+        // // /*"fnCreatedRow": function (row, data, index) {
+        // //     $('td', row).eq(0).html("<div class='col-md-12 text-center'>"+(index + 1)+"</div>");
+        // // },*/
+        "drawCallback": function (settings) {
+            // var api = this.api("ajax").rows( {page:'current'}).data()
+            // var tabelku = $('#table_Intransit').DataTable()
+            // console.log(tabelku.row(this));
+            // console.log(data);
+            $('#table_Intransit tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
         "columns": [/*{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
@@ -564,7 +575,9 @@ function loadTable_Intransit() {
                 return a;
             }
         }, */{
-            name:'first',
+            className: "no_shipment",
+            data: 'NO_SHIPMENT',
+            name: "first",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += (full.NO_SHIPMENT);
@@ -572,6 +585,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "no_po",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += (full.PO_NO);
@@ -579,6 +593,7 @@ function loadTable_Intransit() {
                 return a;
             }
         }, {
+            data: "line_item",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += full.LINE_ITEM;
@@ -586,6 +601,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "matno",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += "<strong><a href='javascript:void(0)' data-backdrop='true' data-toggle='modal' data-target='#modaldetail' data-produk='"+full.MATNO+"'>"+full.MAKTX+"</a></strong>";
@@ -593,6 +609,7 @@ function loadTable_Intransit() {
                 return a;
             }
         }, {
+            data: "qty_order",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += numberWithCommas(full.QTY_ORDER);
@@ -600,6 +617,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "qty_intransit",
             mRender: function (data, type, full) {
                 var qty = parseInt(full.QTY)-(parseInt(full.QTY_RECEIPT)+parseInt(full.QTY_REJECT))
                 a = "<div class='col-md-12 text-center'>";
@@ -608,6 +626,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "meins",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += full.MEINS;
@@ -615,14 +634,16 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "plant",
             mRender: function (data, type, full) {
-                $('#table_Intransit tbody tr').find('td').attr('nowrap', 'nowrap');
+                $(this).find('td').attr('nowrap', 'nowrap');
                 a = "<div class='col-md-12 text-center'>";
                 a += full.PLANT+" - "+full.PLANT_NAME;
                 a += "</div>";
                 return a;
             }
         }, {
+            data: "date_order",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += full.DATE_ORDER;
@@ -630,6 +651,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "expired_date",
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center' style='color: red;'>";
                 a += "<strong>"+full.EXPIRED_DATE+"</strong>";
@@ -637,6 +659,7 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
+            data: "status",
             mRender: function (data, type, full) {
                 status = '';                
                 if(full.STATUS==1){
@@ -654,20 +677,21 @@ function loadTable_Intransit() {
         },{
             mRender: function (data, type, full) {                
                 a = "<div class='col-md-12 text-center'>";
-                if(shipment != full.NO_SHIPMENT){
-                    a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
-                    shipment = full.NO_SHIPMENT;                    
-                } else {
-                    a += '<p> </p>';
-                    shipment = full.NO_SHIPMENT;
-                }
+                a += '<p hidden>' + full.NO_SHIPMENT + '</p>'
+                a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
+                // if(shipment != full.NO_SHIPMENT){
+                //     a += '<p hidden>' + full.NO_SHIPMENT + '</p>'
+                //     a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
+                //     shipment = full.NO_SHIPMENT;
+                // } else {
+                //     a += '<p> </p>';
+                //     shipment = full.NO_SHIPMENT;
+                // }
                 a += "</div>";
                 return a;
             }
         }],
-        rowsGroup: [
-            'first:name'
-        ]
+        rowsGroup: [0, 11]
     });
     mytable.on('click', '.btn-print', function (e) {
         e.preventDefault();
@@ -693,7 +717,6 @@ function loadTable_Intransit() {
             }
         });
     });
-
     $('#table_Intransit').find("th").off("click.DT");
     /*$('.ts0').on('dblclick', function () {
         if (t0) {

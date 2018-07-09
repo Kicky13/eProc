@@ -38,6 +38,7 @@ class EC_Shipment extends CI_Controller
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
         $this->layout->add_js('pages/EC_shipment.js');
+//        $this->layout->add_js('pages/jquery.rowspanizer.js');
         $this->layout->add_js('pages/rowsgroup.js');
         $this->layout->render('list', $data);
     }
