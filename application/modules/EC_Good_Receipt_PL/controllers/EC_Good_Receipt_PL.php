@@ -24,7 +24,7 @@ class EC_Good_Receipt_PL extends MX_Controller
         $data['title'] = "Good Receipt Pembelian Langsung";
         // $data['brhasil'] = $brhasil;
 //        $data['cheat'] = $cheat;
-        $this->layout->set_table_js();
+        $this->layout->set_table_js2();
         $this->layout->set_table_cs();
         $this->layout->set_validate_css();
         $this->layout->set_validate_js();
@@ -42,6 +42,7 @@ class EC_Good_Receipt_PL extends MX_Controller
         $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
+        $this->layout->add_js('pages/rowsgroup.js');
         $this->layout->add_js('pages/EC_good_receipt.js');
 
         $this->layout->render('list', $data);

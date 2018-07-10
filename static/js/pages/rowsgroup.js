@@ -1,11 +1,12 @@
-/*! RowsGroup for DataTables v1.0.0
- * 2015 Alexey Shildyakov ashl1future@gmail.com
+/*! RowsGroup for DataTables v2.0.0
+ * 2015-2016 Alexey Shildyakov ashl1future@gmail.com
+ * 2016 Tibor Wekerle
  */
 
 /**
  * @summary     RowsGroup
  * @description Group rows by specified columns
- * @version     1.0.0
+ * @version     2.0.0
  * @file        dataTables.rowsGroup.js
  * @author      Alexey Shildyakov (ashl1future@gmail.com)
  * @contact     ashl1future@gmail.com
@@ -57,25 +58,77 @@
         this.columnsForGrouping = columnsForGrouping;
         // set to True when new reorder is applied by RowsGroup to prevent order() looping
         this.orderOverrideNow = false;
+        this.mergeCellsNeeded = false; // merge after init
         this.order = []
 
-        self = this;
-        $(document).on('order.dt', function ( e, settings) {
+        var self = this;
+        dt.on('order.dt', function ( e, settings) {
             if (!self.orderOverrideNow) {
+                self.orderOverrideNow = true;
                 self._updateOrderAndDraw()
+            } else {
+                self.orderOverrideNow = false;
             }
-            self.orderOverrideNow = false;
         })
 
-        $(document).on('draw.dt', function ( e, settings) {
-            self._mergeCells()
+        dt.on('preDraw.dt', function ( e, settings) {
+            if (self.mergeCellsNeeded) {
+                self.mergeCellsNeeded = false;
+                self._mergeCells()
+            }
+        })
+
+        dt.on('column-visibility.dt', function ( e, settings) {
+            self.mergeCellsNeeded = true;
+        })
+
+        dt.on('search.dt', function ( e, settings) {
+            // This might to increase the time to redraw while searching on tables
+            //   with huge shown columns
+            self.mergeCellsNeeded = true;
+        })
+
+        dt.on('page.dt', function ( e, settings) {
+            self.mergeCellsNeeded = true;
+        })
+
+        dt.on('length.dt', function ( e, settings) {
+            self.mergeCellsNeeded = true;
+        })
+
+        dt.on('xhr.dt', function ( e, settings) {
+            self.mergeCellsNeeded = true;
         })
 
         this._updateOrderAndDraw();
+
+        /* Events sequence while Add row (also through Editor)
+         * addRow() function
+         *   draw() function
+         *     preDraw() event
+         *       mergeCells() - point 1
+         *     Appended new row breaks visible elements because the mergeCells() on previous step doesn't apllied to already processing data
+         *   order() event
+         *     _updateOrderAndDraw()
+         *       preDraw() event
+         *         mergeCells()
+         *       Appended new row now has properly visibility as on current level it has already applied changes from first mergeCells() call (point 1)
+         *   draw() event
+         */
     };
 
 
     RowsGroup.prototype = {
+        setMergeCells: function(){
+            this.mergeCellsNeeded = true;
+        },
+
+        mergeCells: function()
+        {
+            this.setMergeCells();
+            this.table.draw();
+        },
+
         _getOrderWithGroupColumns: function (order, groupedColumnsOrderDir)
         {
             if (groupedColumnsOrderDir === undefined)
@@ -173,7 +226,7 @@
 
         _updateOrderAndDraw: function()
         {
-            this.orderOverrideNow = true;
+            this.mergeCellsNeeded = true;
 
             var currentOrder = this.table.order();
             currentOrder = this._getInjectedMonoSelectWorkaround(currentOrder);
@@ -201,16 +254,22 @@
             options = settings.oInit.rowsGroup?
                 settings.oInit.rowsGroup:
                 $.fn.dataTable.defaults.rowsGroup;
-            new RowsGroup( api, options );
+            var rowsGroup = new RowsGroup( api, options );
+            $.fn.dataTable.Api.register( 'rowsgroup.update()', function () {
+                rowsGroup.mergeCells();
+                return this;
+            } );
+            $.fn.dataTable.Api.register( 'rowsgroup.updateNextDraw()', function () {
+                rowsGroup.setMergeCells();
+                return this;
+            } );
         }
     } );
 
 }(jQuery));
 
 /*
-
 TODO: Provide function which determines the all <tr>s and <td>s with "rowspan" html-attribute is parent (groupped) for the specified <tr> or <td>. To use in selections, editing or hover styles.
-
 TODO: Feature
 Use saved order direction for grouped columns
 	Split the columns into grouped and ungrouped.

@@ -11,7 +11,7 @@ function loadTable_App() {
         "dom": 'rtpli',
         "deferRender": true,
         "colReorder": true,
-        "pageLength": 25, 
+        "pageLength": 25,
         "order": [],
         // "fixedHeader" : true,
         // "scrollX" : true,
@@ -113,7 +113,7 @@ function loadTable_App() {
             }
         },{
             mRender: function (data, type, full) {
-                status = '';                
+                status = '';
                 if(full.STATUS==1){
                     status = 'Waiting Approve'
                 }
@@ -334,7 +334,7 @@ function loadTable_() {
             }
         }, {
             mRender: function (data, type, full) {
-                status = ''; 
+                status = '';
                 if(full.STOCK_COMMIT==full.QTY_SHIPMENT){
                     status = 'Complete'
                 }else{
@@ -354,14 +354,14 @@ function loadTable_() {
                 /*if(full.STOCK_COMMIT==full.QTY_SHIPMENT){
                     hidden = 'hidden';
                 }*/
-               /* a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:send(' + (full.KODE_SHIPMENT) + ')" '+hidden+'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +                    
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
-                    '</div>';*/
-					a = "<div class='col-md-12 text-center'>" +
+                /* a = "<div class='col-md-12 text-center'>" +
+                     '<a href="javascript:send(' + (full.KODE_SHIPMENT) + ')" '+hidden+'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
+                     '</div>';*/
+                a = "<div class='col-md-12 text-center'>" +
                     //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +                    
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+                    
+                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
                 return a;
@@ -378,7 +378,7 @@ function loadTable_() {
                 return a;
             }
         },{
-            mRender: function (data, type, full) {                
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 if(full.QTY_SHIPMENT > 0){
                     if(shipment != full.PO_NO){
@@ -404,13 +404,13 @@ function loadTable_() {
         var shipment = $(this).data('shipment');
         var vendor = $(this).data('vendor');
         var _data = {
-            po_no: po,            
+            po_no: po,
             vendor: vendor
         };
 
         $.redirect($('#base-url').val() + 'EC_Good_Receipt_PL/CetakPO', _data, 'POST', '_blank');
-    }); 
-    
+    });
+
     mytable.columns().every(function () {
         var that = this;
         $('.srch', this.header()).on('keyup change', function () {
@@ -661,7 +661,7 @@ function loadTable_Intransit() {
         },{
             data: "status",
             mRender: function (data, type, full) {
-                status = '';                
+                status = '';
                 if(full.STATUS==1){
                     status = 'Sent'
                 }else if(full.STATUS==2){
@@ -675,7 +675,9 @@ function loadTable_Intransit() {
                 return a;
             }
         },{
-            mRender: function (data, type, full) {                
+            className: 'button_po',
+            data: 'NO_SHIPMENT',
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += '<p hidden>' + full.NO_SHIPMENT + '</p>'
                 a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-shipment=' + full.NO_SHIPMENT + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
@@ -902,7 +904,7 @@ $('#modalHistory').on('show.bs.modal', function (event) {
             teks += "<td class=\"text-center\">" + data[i]['SEND_DATE'] + "</td>"
             teks += "<td class=\"text-center\">" + status + "</td>"
             teks += "<td class=\"text-center\">USER</td>"
-            
+
             teks += "</tr>"
         }
         $("#bodyTableHistory").html(teks)
@@ -917,7 +919,6 @@ $('#modalHistory').on('show.bs.modal', function (event) {
 /*$('#modalHistory').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var pono = button.data('pono')
-
     $.ajax({
         url: $("#base-url").val() + 'EC_PO_PL_Approval/history/' + pono,
         type: 'POST',
@@ -925,7 +926,6 @@ $('#modalHistory').on('show.bs.modal', function (event) {
     }).done(function (data) {
         var teks = ""
         $("#bodyTableHistory").empty()
-
         teks += "<tr>";
         teks += "<td class=\"text-center\">1</td>";
         teks += "<td class=\"text-center\">" + data[0]['TANGGAL'] + "</td>"
@@ -945,46 +945,44 @@ $('#modalHistory').on('show.bs.modal', function (event) {
         // console.log("error");
     }).always(function (data) {
         // console.log(data);
-
     });
 });*/
 
 var infoStok = [];
 var dataStok = [];
 
-$('#modalShipment').on('hidden.bs.modal', function(e) { 
+$('#modalShipment').on('hidden.bs.modal', function(e) {
     infoStok = [];
     dataStok = [];
-  console.log(infoStok);
-  //return this.render(); //DOM destroyer
-  //datepicker.clear();
-  $('#viewtglShipment').val('')
-  
+    console.log(infoStok);
+    //return this.render(); //DOM destroyer
+    //datepicker.clear();
+    $('#viewtglShipment').val('')
+
 });
 
 
 $('#modalShipment').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     //array.push({Group: group});
-	infoStok.push(button.data('stokcommit'));
+    infoStok.push(button.data('stokcommit'));
     infoStok.push(button.data('kodeshipment'));
 
-    
 
-   /* $("#viewcc").val(button.data('cc')).trigger("change");
-    $("#viewvalueFrom").val(button.data('valuefrom'))
-    $("#viewvalueTo").val(button.data('valueto'))
-    $("#viewusername").val(button.data('userid')+':'+button.data('username')).trigger("change");
-    $("#viewcnf").val(button.data('cnf'))
 
-    $("#costCenter").val(button.data('cc'))
-    $("#setCnf").val(button.data('cnf')) */
-	 $("#viewQtyShipment").val('');
-	//$("#viewQtyShipment").val('');
- $("#viewStockCommit").val(button.data('stokcommit'))	
- //$("#viewQtyShipmenttotal").val(button.data('qtyshipment'))	
- $("#kodeShipment").val(button.data('kodeshipment'))
-	/*if (button.data('stokcommit') != null && button.data('qtyshipment') != null && button.data('kodeshipment') != null) {
+    /* $("#viewcc").val(button.data('cc')).trigger("change");
+     $("#viewvalueFrom").val(button.data('valuefrom'))
+     $("#viewvalueTo").val(button.data('valueto'))
+     $("#viewusername").val(button.data('userid')+':'+button.data('username')).trigger("change");
+     $("#viewcnf").val(button.data('cnf'))
+     $("#costCenter").val(button.data('cc'))
+     $("#setCnf").val(button.data('cnf')) */
+    $("#viewQtyShipment").val('');
+    //$("#viewQtyShipment").val('');
+    $("#viewStockCommit").val(button.data('stokcommit'))
+    //$("#viewQtyShipmenttotal").val(button.data('qtyshipment'))
+    $("#kodeShipment").val(button.data('kodeshipment'))
+    /*if (button.data('stokcommit') != null && button.data('qtyshipment') != null && button.data('kodeshipment') != null) {
             $("#viewStockCommit").val(button.data('stokcommit'))    
              $("#viewQtyShipmenttotal").val(button.data('qtyshipment')) 
              $("#kodeShipment").val(button.data('kodeshipment'))
@@ -1020,7 +1018,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
                     status = 'Accept'
                 }else if(data[i]['STATUS']==3){
                     status = 'Reject'
-                } 
+                }
                 teks += "<tr>"
                 teks += "<td class=\"text-center\">" + data[i]['NO_SHIPMENT'] + "</td>"
                 teks += "<td class=\"text-center\">" + data[i]['PO_NO'] + "</td>"
@@ -1034,7 +1032,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
                 teks += "<td class=\"text-center\">" + data[i]['DATE_SEND'] +"</td>"
                 teks += "<td class=\"text-center\">" + status +"</td>"
 //                teks += "<td class=\"text-center\"><input type='checkbox' data-kodeshipment=" + data[i]['KODE_DETAIL_SHIPMENT'] + " class='itemship'></td>"
-                
+
                 teks += "</tr>"
             }
             $("#bodyTableDetail").html(teks)
@@ -1045,7 +1043,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
             teks += "</div>"
             $("#bodyTableDetail").html(teks)
         }
-        
+
     }).fail(function () {
         // console.log("error");
     }).always(function (data) {
@@ -1058,7 +1056,7 @@ $('#modalDetailPo').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var pono = button.data('pono')
     //var kodeshipment = button.data('kodeshipment')
-    
+
     console.log("tes");
     $.ajax({
         url: $("#base-url").val() + 'EC_Shipment/getPODetail/' + pono,
@@ -1093,14 +1091,14 @@ $('#modalDetailPo').on('show.bs.modal', function (event) {
 
 $('#shipment').on('show.bs.modal', function (event) {
 
-    
+
 
     var button = $(event.relatedTarget)
     var teks = ''
-    
+
     //var pono = button.data('pono')
     //var kodeshipment = button.data('kodeshipment')
-    
+
     $("#reviewShipment").empty()
     for (var po = 0; po < items.length; po++) {
         teks += '<div class="row">'
@@ -1108,33 +1106,33 @@ $('#shipment').on('show.bs.modal', function (event) {
         teks += 'Nomor PO: '+items[po]+''
         teks += '</div>'
         teks += '<div class="col-md-9">'
-        teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
+        // teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
         teks += '</div>'
         teks += '</div>'
         teks += '<div class="row">'
-                teks += '<div class="col-md-12">'
-                teks += '<table id="tablebody'+po+'" class="table table-striped nowrap" width="100%">'
-                teks += '<thead>'
-                teks += '<tr>'+
-                            '<th class="text-center">Line Item</th>'+
-                            '<th class="text-center">Deskripsi</th>'+
-                            '<th class="text-center">QTY</th>'+
-                            '<th class="text-center">UoM</th>'+
-                            '<th class="text-center">Unit Price</th>'+
-                            '<th class="text-center">Currency</th>'+
-                            '<th class="text-center">Total Value</th>'+
-                            '<th class="text-center">Ship To</th>'+
-                            '<th class="text-center">Expired Date</th>'+                            
-                            '<th class="text-center">QTY Shipment</th>'+
-                            '<th class="text-center"></th>'+
-                        '</tr>'
-                teks += '</thead>'
-                teks += '<tbody id="body'+po+'">'
-                teks += '</tbody>'
-                teks += '</table>'
-                teks += '</div></div>'
-                teks += '<br><hr>'
-        $("#reviewShipment").html(teks)  
+        teks += '<div class="col-md-12">'
+        teks += '<table id="tablebody'+po+'" class="table table-striped nowrap" width="100%">'
+        teks += '<thead>'
+        teks += '<tr>'+
+            '<th class="text-center">Line Item</th>'+
+            '<th class="text-center">Deskripsi</th>'+
+            '<th class="text-center">QTY</th>'+
+            '<th class="text-center">UoM</th>'+
+            '<th class="text-center">Unit Price</th>'+
+            '<th class="text-center">Currency</th>'+
+            '<th class="text-center">Total Value</th>'+
+            '<th class="text-center">Ship To</th>'+
+            '<th class="text-center">Expired Date</th>'+
+            '<th class="text-center">QTY Shipment</th>'+
+            '<th class="text-center"></th>'+
+            '</tr>'
+        teks += '</thead>'
+        teks += '<tbody id="body'+po+'">'
+        teks += '</tbody>'
+        teks += '</table>'
+        teks += '</div></div>'
+        teks += '<br><hr>'
+        $("#reviewShipment").html(teks)
     }
     //showDetail();  
 });
@@ -1148,30 +1146,30 @@ function showDetail() {
             type: 'POST',
             dataType: 'json'
         }).done(function (data) {
-                for (var a = 0; a < data.length; a++) {
-                    //console.log("masuk");
-                    teksin += "<tr>";
-                    //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['LINE_ITEM'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['MAKTX'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['QTY'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['MEINS'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['PRICE']) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['CURRENCY'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['TOTAL']) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['PLANT'] +" - "+ data[a]['DESC'] +"</td>";
-                    teksin += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[a]['EXPIRED_DATE'] + "</strong></td>";                    
-                    teksin += "<td class=\"text-center\"><input style=\"width: 50px;\" type=\"text\" placeholder=\"Qty\" id=\""+po+"_"+data[a]['LINE_ITEM']+"\"></td>";
-                    teksin += "<td class=\"text-center\"><input type='checkbox' data-kodeship=" + data[a]['KODE_SHIPMENT'] + " data-kode=" + data[a]['ID_CHART'] + " data-po=" + po + " data-lineitem=" + data[a]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+po+","+data[a]['LINE_ITEM']+","+data[a]['QTY']+")'>"
-                    teksin += "</tr>";
-                }                
-                $('#body'+dt).html(teksin);
-                teksin = '';  
-                dt++;              
+            for (var a = 0; a < data.length; a++) {
+                //console.log("masuk");
+                teksin += "<tr>";
+                //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['LINE_ITEM'] + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['MAKTX'] + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['QTY'] + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['MEINS'] + "</td>";
+                teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['PRICE']) + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['CURRENCY'] + "</td>";
+                teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['TOTAL']) + "</td>";
+                teksin += "<td class=\"text-center\">" + data[a]['PLANT'] +" - "+ data[a]['DESC'] +"</td>";
+                teksin += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[a]['EXPIRED_DATE'] + "</strong></td>";
+                teksin += "<td class=\"text-center\"><input style=\"width: 50px;\" type=\"text\" placeholder=\"Qty\" id=\""+po+"_"+data[a]['LINE_ITEM']+"\"></td>";
+                teksin += "<td class=\"text-center\"><input type='checkbox' data-kodeship=" + data[a]['KODE_SHIPMENT'] + " data-kode=" + data[a]['ID_CHART'] + " data-po=" + po + " data-lineitem=" + data[a]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+po+","+data[a]['LINE_ITEM']+","+data[a]['QTY']+")'>"
+                teksin += "</tr>";
+            }
+            $('#body'+dt).html(teksin);
+            teksin = '';
+            dt++;
         }).fail(function () {
             // console.log("error");
         }).always(function (data) {
-           // console.log("error");
+            // console.log("error");
         });
     }
 }
@@ -1188,50 +1186,50 @@ $('#shipment').on('hidden.bs.modal', function (event) {
 function showItems(id, po) {
     var teksin = '';
     $.ajax({
-            url: $("#base-url").val() + 'EC_Shipment/getPODetail/' + po,
-            type: 'POST',
-            dataType: 'json'
-        }).done(function (data) {
-                for (var a = 0; a < data.length; a++) {
-                    var disable = '';
-                    var qty = (parseInt(data[a]['QTY']) - parseInt(data[a]['QTY_RECEIPT']))-parseInt(data[a]['QTY_INTRANSIT']);
-                    var value = qty*parseInt(data[a]['PRICE']);
-                    if(qty==0){
-                        disable = 'disabled';
-                    }
-                    //console.log("masuk");
-                    teksin += "<tr>";
-                    //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['LINE_ITEM'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['MAKTX'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + qty + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['MEINS'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['PRICE']) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['CURRENCY'] + "</td>";
-                    teksin += "<td class=\"text-center\">" + numberWithCommas(value) + "</td>";
-                    teksin += "<td class=\"text-center\">" + data[a]['PLANT'] +" - "+ data[a]['PLANT_NAME'] +"</td>";
-                    teksin += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[a]['EXPIRED_DATE'] + "</strong></td>";                    
-                    teksin += "<td class=\"text-center\"><input "+disable+" onkeyup='myFunction(this.value,"+qty+","+po+","+data[a]['LINE_ITEM']+")' style=\"width: 50px;background-color:#ddd;\" type=\"text\" placeholder=\"Qty\" id=\"qty"+po+"_"+data[a]['LINE_ITEM']+"\" value="+ qty +" readonly></td>";
-                    teksin += "<td class=\"text-center\"><input "+disable+" type='checkbox' data-kodeship=" + data[a]['KODE_SHIPMENT'] + " data-kode=" + data[a]['ID_CHART'] + " data-po=" + po + " data-lineitem=" + data[a]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+po+","+data[a]['LINE_ITEM']+","+data[a]['QTY']+")'>"
-                    teksin += "</tr>";
-                }                
-                $('#body'+id).html(teksin);
-                teksin = '';                
-        }).fail(function () {
-            // console.log("error");
-        }).always(function (data) {
-           // console.log("error");
-        });
+        url: $("#base-url").val() + 'EC_Shipment/getPODetail/' + po,
+        type: 'POST',
+        dataType: 'json'
+    }).done(function (data) {
+        for (var a = 0; a < data.length; a++) {
+            var disable = '';
+            var qty = (parseInt(data[a]['QTY']) - parseInt(data[a]['QTY_RECEIPT']))-parseInt(data[a]['QTY_INTRANSIT']);
+            var value = qty*parseInt(data[a]['PRICE']);
+            if(qty==0){
+                disable = 'disabled';
+            }
+            //console.log("masuk");
+            teksin += "<tr>";
+            //teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
+            teksin += "<td class=\"text-center\">" + data[a]['LINE_ITEM'] + "</td>";
+            teksin += "<td class=\"text-center\">" + data[a]['MAKTX'] + "</td>";
+            teksin += "<td class=\"text-center\">" + qty + "</td>";
+            teksin += "<td class=\"text-center\">" + data[a]['MEINS'] + "</td>";
+            teksin += "<td class=\"text-center\">" + numberWithCommas(data[a]['PRICE']) + "</td>";
+            teksin += "<td class=\"text-center\">" + data[a]['CURRENCY'] + "</td>";
+            teksin += "<td class=\"text-center\">" + numberWithCommas(value) + "</td>";
+            teksin += "<td class=\"text-center\">" + data[a]['PLANT'] +" - "+ data[a]['PLANT_NAME'] +"</td>";
+            teksin += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[a]['EXPIRED_DATE'] + "</strong></td>";
+            teksin += "<td class=\"text-center\"><input "+disable+" onkeyup='myFunction(this.value,"+qty+","+po+","+data[a]['LINE_ITEM']+")' style=\"width: 50px;background-color:#ddd;\" type=\"text\" placeholder=\"Qty\" id=\"qty"+po+"_"+data[a]['LINE_ITEM']+"\" value="+ qty +" readonly></td>";
+            teksin += "<td class=\"text-center\"><input "+disable+" type='checkbox' data-kodeship=" + data[a]['KODE_SHIPMENT'] + " data-kode=" + data[a]['ID_CHART'] + " data-po=" + po + " data-lineitem=" + data[a]['LINE_ITEM'] + " class='itemspo' onclick='enableQTY(this,"+po+","+data[a]['LINE_ITEM']+","+data[a]['QTY']+")'>"
+            teksin += "</tr>";
+        }
+        $('#body'+id).html(teksin);
+        teksin = '';
+    }).fail(function () {
+        // console.log("error");
+    }).always(function (data) {
+        // console.log("error");
+    });
 }
 
-function myFunction(val, qty, po, lineitem) { 
+function myFunction(val, qty, po, lineitem) {
     if(val==0){
         if(val==''){
-            
+
         }else{
             alert('Qty Shipment minimal 1');
-            $('#qty'+po+'_'+lineitem).val('');             
-        }        
+            $('#qty'+po+'_'+lineitem).val('');
+        }
     }
     if(val<0){
         alert('Qty Shipment minimal 1');
@@ -1242,7 +1240,6 @@ function myFunction(val, qty, po, lineitem) {
         $('#qty'+po+'_'+lineitem).val('');
     }/*else if(val!=''){
         //alert(val);
-
         $('#qtyReject'+kode).val((parseInt(qty)-parseInt(val)));
     }else{
         $('#qtyReject'+kode).val('');
@@ -1250,10 +1247,10 @@ function myFunction(val, qty, po, lineitem) {
 
 }
 
-function enableQTY(elm, po, lineItem, qty) { 
+function enableQTY(elm, po, lineItem, qty) {
     var qtyInput = $("#qty"+po+"_"+lineItem).val();
     if ($(elm).is(':checked')) {
-        if(qtyInput>qty){   
+        if(qtyInput>qty){
             alert("Qty yg dimasukkan melebihi Qty Order");
             $(elm).prop('checked', false);
         }else if(qtyInput==''){
@@ -1261,8 +1258,8 @@ function enableQTY(elm, po, lineItem, qty) {
             $(elm).prop('checked', false);
         }else{
             itemShipment = []
-            $("#"+po+"_"+lineItem).prop('disabled', true);    
-        } 
+            $("#"+po+"_"+lineItem).prop('disabled', true);
+        }
     }else{
         itemShipment = []
         $("#"+po+"_"+lineItem).prop('disabled', false);
@@ -1273,20 +1270,20 @@ function simpan_shipment() {
     $.ajax({
         url: $("#base-url").val() + 'EC_Shipment/cekQty/' + infoStok[1],
         data: {
-                   
+
         },
         type: 'POST',
         dataType: 'json'
-    }).done(function (data) { 
-                    
+    }).done(function (data) {
+
     }).fail(function (data) {
-                   
+
     }).always(function (data) {
         dataStok.push(infoStok[0]);
         dataStok.push(data[0]['TOTAL']);
         dataStok.push(infoStok[1]);
         console.log(dataStok);
-                                
+
         var stock_commit = dataStok[0];
         var qty_shipment_total = dataStok[1];
         var qty_shipment = $('#viewQtyShipment').val();
@@ -1294,10 +1291,10 @@ function simpan_shipment() {
         console.log('qty_shipment_total:'+qty_shipment_total);
         console.log('qty_shipment:'+qty_shipment);
 
-            if((parseInt(qty_shipment)+parseInt(qty_shipment_total))>stock_commit){
-                alert('Stok melebihi');
-            }else{
-                $.ajax({
+        if((parseInt(qty_shipment)+parseInt(qty_shipment_total))>stock_commit){
+            alert('Stok melebihi');
+        }else{
+            $.ajax({
                 url: $("#base-url").val() + 'EC_Shipment/simpan_shipment/',
                 data: {
                     "qtyShipment": $('#viewQtyShipment').val(),
@@ -1306,70 +1303,70 @@ function simpan_shipment() {
                 },
                 type: 'POST',
                 dataType: 'json'
-                }).done(function (data) { 
-                    //
-                   // alert(data.responseText);
-                    //$('#modalShipment').modal('hide');
-                    //location.reload(true);
-                    
-                }).fail(function (data) {
-                   // alert(data.responseText);
-                    // console.log("error");
-                    // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
-                }).always(function (data) {
-                   // if(data.responseText=='Success'){
-                        location.reload();
-                  //  }                
-                    // console.log(data)
-                    //$("#statsPO").text(data)
-                });
-            }
-                
-    });
-
-			/*var stock_commit = $('#viewStockCommit').val();
-			var qty_shipment_total = $('#viewQtyShipmenttotal').val();
-			var qty_shipment = $('#viewQtyShipment').val();*/
-            //console.log(infoStok);
-            
-            
-            // console.log((parseInt(qty_shipment)+parseInt(qty_shipment_total)));
-            
-
-			/*if ((parseInt(qty_shipment_total) + parseInt(qty_shipment))<= parseInt(stock_commit))
-			{
-				
-			    $.ajax({
-                url: $("#base-url").val() + 'EC_Shipment/simpan_shipment/',
-                data: {
-                    "qtyShipment": $('#viewQtyShipment').val(),
-                    "tglShipment": $('#viewtglShipment').val(),
-					"kodeShipment": $('#kodeShipment').val()
-                },
-                type: 'POST',
-                dataType: 'json'
-            }).done(function (data) { 
+            }).done(function (data) {
                 //
-               // alert(data.responseText);
-				$('#modalShipment').modal('hide');
-				//location.reload(true);
-                
+                // alert(data.responseText);
+                //$('#modalShipment').modal('hide');
+                //location.reload(true);
+
             }).fail(function (data) {
-               // alert(data.responseText);
+                // alert(data.responseText);
                 // console.log("error");
                 // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
             }).always(function (data) {
-               // if(data.responseText=='Success'){
-                    location.reload(true);
-              //  }                
+                // if(data.responseText=='Success'){
+                location.reload();
+                //  }
                 // console.log(data)
                 //$("#statsPO").text(data)
             });
-		}
-		else
-		{
-			alert('Stock Melebihi');
-		}*/
+        }
+
+    });
+
+    /*var stock_commit = $('#viewStockCommit').val();
+    var qty_shipment_total = $('#viewQtyShipmenttotal').val();
+    var qty_shipment = $('#viewQtyShipment').val();*/
+    //console.log(infoStok);
+
+
+    // console.log((parseInt(qty_shipment)+parseInt(qty_shipment_total)));
+
+
+    /*if ((parseInt(qty_shipment_total) + parseInt(qty_shipment))<= parseInt(stock_commit))
+    {
+
+        $.ajax({
+        url: $("#base-url").val() + 'EC_Shipment/simpan_shipment/',
+        data: {
+            "qtyShipment": $('#viewQtyShipment').val(),
+            "tglShipment": $('#viewtglShipment').val(),
+            "kodeShipment": $('#kodeShipment').val()
+        },
+        type: 'POST',
+        dataType: 'json'
+    }).done(function (data) {
+        //
+       // alert(data.responseText);
+        $('#modalShipment').modal('hide');
+        //location.reload(true);
+
+    }).fail(function (data) {
+       // alert(data.responseText);
+        // console.log("error");
+        // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
+    }).always(function (data) {
+       // if(data.responseText=='Success'){
+            location.reload(true);
+      //  }
+        // console.log(data)
+        //$("#statsPO").text(data)
+    });
+}
+else
+{
+    alert('Stock Melebihi');
+}*/
     // }
 
 }
@@ -1471,21 +1468,21 @@ $(document).ready(function () {
             e.preventDefault();
         });
     }
-    
-	var d = new Date();
 
-	var currDate = d.getDate();
-	var currMonth = d.getMonth();
-	var currYear = d.getFullYear();
+    var d = new Date();
 
-	var dateStr = currDate + "-" + currMonth + "-" + currYear;
+    var currDate = d.getDate();
+    var currMonth = d.getMonth();
+    var currYear = d.getFullYear();
+
+    var dateStr = currDate + "-" + currMonth + "-" + currYear;
 
     // $(".date").datepicker().on('show.bs.modal', function(event) {
     // // prevent datepicker from firing bootstrap modal "show.bs.modal"
     //     event.stopPropagation(); 
     // });
 
-	$('.date').datepicker({
+    $('.date').datepicker({
         format: 'dd-mm-yyyy',
         defaultDate: new Date(),
         autoclose: true,
@@ -1493,8 +1490,8 @@ $(document).ready(function () {
     }).on('change', function(){
         $('.datepicker').hide();
     }).on('show.bs.modal', function(event) {
-    // prevent datepicker from firing bootstrap modal "show.bs.modal"
-        event.stopPropagation(); 
+        // prevent datepicker from firing bootstrap modal "show.bs.modal"
+        event.stopPropagation();
     });
 
     // $('.date').datepicker({
@@ -1505,7 +1502,7 @@ $(document).ready(function () {
 
     $('#setShipment').click(function () {
         //items = []
-        
+
         $(".items").each(function () {
             if ($(this).is(":checked"))
                 if (items.indexOf($(this).data("kodeshipment")) == -1)
@@ -1513,41 +1510,45 @@ $(document).ready(function () {
         });
         // dataitems = JSON.stringify(items)
         // console.log(dataitems)
-        
+
         console.log(items);
         if(items.length==0){
             alert('pilih Item dulu');
             // $('#receipt').modal('hide');
-        }else{
+        } else {
             $('#shipment').modal('show');
+            for (var i = 0; i < items.length; i++){
+                console.log(i + ' - ' + items[i]);
+                showItems(i, items[i]);
+            }
         }
         //accept(items)
     })
-	
+
     $('#saveShipment').click(function () {
         //items = []
-        
+
         $(".itemspo").each(function () {
             if ($(this).is(":checked"))
-                // if (itemShipment.indexOf($(this).data("po")) == -1)
-                    itemShipment.push(String($(this).data("po"))+"_"+String($(this).data("lineitem"))+"_"+String($(this).data("kode"))+"_"+$("#qty"+String($(this).data("po"))+"_"+String($(this).data("lineitem"))).val()+"_"+String($(this).data("kodeship")));
+            // if (itemShipment.indexOf($(this).data("po")) == -1)
+                itemShipment.push(String($(this).data("po"))+"_"+String($(this).data("lineitem"))+"_"+String($(this).data("kode"))+"_"+$("#qty"+String($(this).data("po"))+"_"+String($(this).data("lineitem"))).val()+"_"+String($(this).data("kodeship")));
         });
 
-        if(itemShipment.length>0){ 
+        if(itemShipment.length>0){
             dataitems = JSON.stringify(itemShipment)
             console.log(dataitems)
-        
+
             console.log(itemShipment);
             save(dataitems, $('#shipmentCode').val(), $('#tglShipment').val());
         }else{
             alert('check terlebih dahulu item yg akan di shipment');
         }
-        
+
     })
 
     $('#deleteShipment').click(function () {
         itemship = []
-        
+
         $(".itemship").each(function () {
             if ($(this).is(":checked"))
                 if (itemship.indexOf($(this).data("kodeshipment")) == -1)
@@ -1555,7 +1556,7 @@ $(document).ready(function () {
         });
         dataitems = JSON.stringify(itemship)
         console.log(dataitems)
-        
+
         // console.log(itemship);
         deleteShipment(dataitems)
     })
@@ -1563,26 +1564,26 @@ $(document).ready(function () {
 
 function save(data, no_shipment, tglShipment) {
     $.ajax({
-            url: $("#base-url").val() + 'EC_Shipment/save',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                dataall: data,
-                nomor: no_shipment,
-                tanggal: tglShipment
-            },
-        }).done(function (data) {
+        url: $("#base-url").val() + 'EC_Shipment/save',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            dataall: data,
+            nomor: no_shipment,
+            tanggal: tglShipment
+        },
+    }).done(function (data) {
 
-            window.location.href = $("#base-url").val() + 'EC_Shipment/index/' + data.sukses +'/'+data.nomor
-            // $('#shipment').modal('hide');
-            // console.log(data.sukses)
-            // console.log(data.nomor)
-        }).always(function (data) {
-            // alert('Data telah disimpan');
-            // location.reload(true);
-            // $('#enddate').val('');
+        window.location.href = $("#base-url").val() + 'EC_Shipment/index/' + data.sukses +'/'+data.nomor
+        // $('#shipment').modal('hide');
+        // console.log(data.sukses)
+        // console.log(data.nomor)
+    }).always(function (data) {
+        // alert('Data telah disimpan');
+        // location.reload(true);
+        // $('#enddate').val('');
 
-        });
+    });
 }
 
 function deleteShipment(data) {
@@ -1604,7 +1605,7 @@ function deleteShipment(data) {
 
             });
         }
-    });        
+    });
 }
 var t0 = true,
     t1 = true,
@@ -1620,7 +1621,7 @@ var t0 = true,
     t11 = true,
     t12 = true,
     t13 = true,
-    t14 = true,    
+    t14 = true,
 
     tt1 = true,
     tt2 = true,
@@ -1654,22 +1655,22 @@ var t0 = true,
 var ss4 = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15];
 $(".seargr").hide();
 for (var i = 0; i < ss4.length; i++) {
-        $(".s" + i).on("click", function (e) {
-            clicks++;
-            if (clicks === 1) {
-                timer = setTimeout(function () {
-                    $(".seargr").toggle();
-                    clicks = 0;
-                }, 300);
-            } else {
-                clearTimeout(timer);
-                $(".seargr").hide();
+    $(".s" + i).on("click", function (e) {
+        clicks++;
+        if (clicks === 1) {
+            timer = setTimeout(function () {
+                $(".seargr").toggle();
                 clicks = 0;
-            }
-        }).on("dblclick", function (e) {
-            e.preventDefault();
-        });
-    }
+            }, 300);
+        } else {
+            clearTimeout(timer);
+            $(".seargr").hide();
+            clicks = 0;
+        }
+    }).on("dblclick", function (e) {
+        e.preventDefault();
+    });
+}
 function loadTable_detailGR(pono, lineitem) {
     var s1 = true,
         s2 = true,
@@ -1697,23 +1698,23 @@ function loadTable_detailGR(pono, lineitem) {
         "deferRender": true,
         "colReorder": true,
         "pageLength": 25,
-        "order": [],        
+        "order": [],
         "language": {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data List PO...</b></center>"
-        },        
+        },
         "ajax": {
-                url: $("#base-url").val() + 'EC_Good_Receipt_PL/detailHistoryGR/' + pono,
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    line_item: lineitem
-                }
-            },        
+            url: $("#base-url").val() + 'EC_Good_Receipt_PL/detailHistoryGR/' + pono,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                line_item: lineitem
+            }
+        },
         "fnInitComplete": function () {
             $('#table_detailGR tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');                
+                $(this).find('td').attr('nowrap', 'nowrap');
             });
-        },        
+        },
         "drawCallback": function (settings) {
             $('#table_detailGR tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
@@ -1779,7 +1780,7 @@ function loadTable_detailGR(pono, lineitem) {
                 return a;
             }
         },{
-            mRender: function (data, type, full) {                
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += (full.ALASAN_REJECT==null?'-':full.ALASAN_REJECT);
                 a += "</div>";
@@ -1844,7 +1845,7 @@ function loadTable_detailGR(pono, lineitem) {
         }],
 
     });
-    
+
     mytableGR.columns().every(function () {
         var that = this;
         $('.srchgr', this.header()).on('keyup change', function () {
@@ -1852,9 +1853,9 @@ function loadTable_detailGR(pono, lineitem) {
                 that.search(this.value).draw();
             }
         });
-    });    
+    });
 
-    $('#table_detailGR').find("th").off("click.DT");    
+    $('#table_detailGR').find("th").off("click.DT");
     $('.s1').on('dblclick', function () {
         if (s1) {
             mytableGR.order([0, 'asc']).draw();
@@ -2002,12 +2003,12 @@ function loadTable_detailGR(pono, lineitem) {
     });
 }
 $('#modalDetilGR').on('hidden.bs.modal', function (event) {
-    
-    
+
+
 });
 $('#modalDetilGR').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var pono = button.data('pono')
-    var lineitem = button.data('lineitem')    
-    loadTable_detailGR(pono, lineitem);  
+    var lineitem = button.data('lineitem')
+    loadTable_detailGR(pono, lineitem);
 });

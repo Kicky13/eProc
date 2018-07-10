@@ -57,14 +57,12 @@ function loadTable_Unprocessed() {
                 return a;
             }
         }, {
+            className: 'no_shipment',
+            data: 'NO_SHIPMENT',
             mRender: function (data, type, full) {
-                if (full.ROWSPAN == "YES"){
-                    a = "<div class='col-md-12 text-center'>";
-                    a += full.NO_SHIPMENT;
-                    a += "</div>";
-                } else {
-                    a = "";
-                }
+                a = "<div class='col-md-12 text-center'>";
+                a += full.NO_SHIPMENT;
+                a += "</div>";
                 return a;
             }
         },{
@@ -139,19 +137,17 @@ function loadTable_Unprocessed() {
                 return a;
             }
         },{
+            className: 'button_shipment',
+            data: 'NO_SHIPMENT',
             mRender: function (data, type, full) {                
                 a = "<div class='col-md-12 text-center'>";
-                if(shipment != full.NO_SHIPMENT){
-                    a += '<button class="btn btn-sm btn-success btn-print" data-shipment=' + full.NO_SHIPMENT + ' data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
-                    shipment = full.NO_SHIPMENT;
-                } else {
-                    shipment = full.NO_SHIPMENT;
-                }
+                a += '<p hidden>'+ full.NO_SHIPMENT +'</p>'
+                a += '<button class="btn btn-sm btn-success btn-print" data-shipment=' + full.NO_SHIPMENT + ' data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak Shipment</button>';
                 a += "</div>";
                 return a;
             }
         }],
-
+        rowsGroup: [1, 11]
     });
 
     mytableUnprocessed.on('click', '.btn-print', function (e) {
@@ -368,14 +364,12 @@ function loadTable_App() {
                 return a;
             }
         }, {
+            className: 'no_po',
+            data: 'PO_NO',
             mRender: function (data, type, full) {
-                if (full.ROWSPAN == "YES"){
-                    a = "<div class='col-md-12 text-center'>";
-                    a += full.PO_NO;
-                    a += "</div>";
-                } else {
-                    a = "";
-                }
+                a = "<div class='col-md-12 text-center'>";
+                a += full.PO_NO;
+                a += "</div>";
                 return a;
             }
         }, {
@@ -456,22 +450,18 @@ function loadTable_App() {
                 return a;
             }
         },{
-        mRender: function (data, type, full) {   
-            var shipment;
+            className: 'button_po',
+            data: 'PO_NO',
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";   
                 if(full.QTY_SHIPMENT > 0){
-                    if(shipment != full.PO_NO){
-                        a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';                         
-                        shipment = full.PO_NO;
-                    } else {
-                        shipment = full.PO_NO;
-                    }           
+                    a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';
                 }     
                 a += "</div>";
                 return a;
             }
         }],
-
+        rowsGroup: [1, 13]
     });                
     mytable.on('click', '.btn-print', function (e) {
         e.preventDefault();

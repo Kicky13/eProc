@@ -22,7 +22,7 @@ class EC_Shipment extends CI_Controller
         $data['title'] = "Pembelian Langsung";
         $data['brhasil'] = $brhasil;
 //        $data['cheat'] = $cheat;
-        $this->layout->set_table_js();
+        $this->layout->set_table_js2();
         $this->layout->set_table_cs();
         $this->layout->set_validate_css();
         $this->layout->set_validate_js();
