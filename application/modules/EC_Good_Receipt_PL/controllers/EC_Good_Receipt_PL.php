@@ -44,7 +44,10 @@ class EC_Good_Receipt_PL extends MX_Controller
         $this->layout->add_js('bootbox.js');
         $this->layout->add_js('pages/rowsgroup.js');
         $this->layout->add_js('pages/EC_good_receipt.js');
-
+        $this->load->library('sap_handler');
+        $this->load->model('ec_ecatalog_m');
+        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);        
+        $data['anggaran'] = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0,1), $data['CCC']["COSTCENTER"], false);
         $this->layout->render('list', $data);
     }
 

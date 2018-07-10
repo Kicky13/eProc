@@ -147,7 +147,7 @@ function loadTable_Unprocessed() {
                 return a;
             }
         }],
-        rowsGroup: [1, 11]
+        rowsGroup: [11]
     });
 
     mytableUnprocessed.on('click', '.btn-print', function (e) {
@@ -280,11 +280,11 @@ function loadTable_Unprocessed() {
 function myFunction(val, qty, kode) { 
     if(val==0){
         if(val==''){
-            
+
         }else{
             alert('Qty Receipt minimal 1');
-            $('#qtyReceipt'+kode).val('');             
-        }        
+            $('#qtyReceipt'+kode).val('');
+        }
     }
     if(val<0){
         alert('Qty Receipt minimal 1');
@@ -293,7 +293,8 @@ function myFunction(val, qty, kode) {
     if(val>qty){
         alert('Nilai tidak boleh melebihi QTY Shipment');
         $('#qtyReceipt'+kode).val('');
-    }/*else if(val!=''){
+    }
+    /*else if(val!=''){
         //alert(val);
 
         $('#qtyReject'+kode).val((parseInt(qty)-parseInt(val)));
@@ -461,7 +462,7 @@ function loadTable_App() {
                 return a;
             }
         }],
-        rowsGroup: [1, 13]
+        rowsGroup: [13]
     });                
     mytable.on('click', '.btn-print', function (e) {
         e.preventDefault();
@@ -1789,7 +1790,7 @@ $(document).ready(function () {
             $($(this)).prop('checked', false);
             $('#qtyReceipt'+kode).val('');
         }else{
-            var cek = String($(this).data("po"))+"_"+String($(this).data("noshipment"));
+            var cek = String($(this).data("po"));
             if ($(this).is(":checked")){
                 if(itemCheck==cek){
                     console.log(itemCheck)
@@ -1797,7 +1798,7 @@ $(document).ready(function () {
                     if(itemCheck==''){
                         itemCheck=cek;
                     }else if(itemCheck!=cek){
-                        alert('Nomor shipment dan PO tidak boleh berbeda');
+                        alert('Nomor PO tidak boleh berbeda');
                         $($(this)).prop('checked', false);
                         $('#qtyReceipt'+kode).val('');
                     }else{

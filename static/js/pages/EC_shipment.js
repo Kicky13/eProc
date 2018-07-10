@@ -1,6 +1,6 @@
 function numberWithCommas(x) {
     return x == null || x == "0" ? "0" : x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+} 
 
 function loadTable_App() {
 
@@ -693,7 +693,7 @@ function loadTable_Intransit() {
                 return a;
             }
         }],
-        rowsGroup: [0, 11]
+        rowsGroup: [11]
     });
     mytable.on('click', '.btn-print', function (e) {
         e.preventDefault();
@@ -1106,7 +1106,7 @@ $('#shipment').on('show.bs.modal', function (event) {
         teks += 'Nomor PO: '+items[po]+''
         teks += '</div>'
         teks += '<div class="col-md-9">'
-        // teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
+        teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
         teks += '</div>'
         teks += '</div>'
         teks += '<div class="row">'
