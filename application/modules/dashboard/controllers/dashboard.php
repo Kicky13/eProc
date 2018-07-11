@@ -389,7 +389,7 @@ class Dashboard extends CI_Controller {
 
 	private function isShowInvoice($companyid){
 		$showInvoice = array(
-			2000,5000,7000
+			2000,5000,7000,4000
 		);
 		return in_array($companyid,$showInvoice);
 	}

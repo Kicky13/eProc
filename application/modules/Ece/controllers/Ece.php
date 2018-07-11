@@ -169,7 +169,22 @@ class Ece extends CI_Controller {
 						//--LOG DETAIL--//
 					$this->log_data->detail($LM_ID,'Ece/save','prc_ece_change','update',array('STATUS_APPROVAL'=>1), array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
 						//--END LOG DETAIL--//
-				} else {	
+				} else {
+					$this->prc_tender_item->where_titid($key);
+					$pti = $this->prc_tender_item->get();
+					$ptm = $this->prc_tender_main->ptm($ptm);
+					$emp = $this->adm_employee->get(array('ID'=>$atasan['ID']));
+					$emp1 = $this->adm_employee->get(array('ID'=>$this->authorization->getEmployeeId()));
+				// echo "<pre>";
+				// print_r($ptm);die;
+					$user['EMAIL'] = $emp[0]['EMAIL'];
+					$user['data']['judul'] = 'Approval Evaluasi ECE';
+					$user['data']['nama_pengadaan'] = $ptm[0]['PTM_SUBJECT_OF_WORK'];
+					$user['data']['no_pengadaan'] = $ptm[0]['PTM_PRATENDER'];
+					$user['data']['no_pr'] = $pti[0]['PPI_PRNO'];
+				// $user['data']['tipe'] = $tipe;
+					$user['data']['evaluator'] = $emp1[0]['FULLNAME'];
+
 					$set = array();
 					$set['PRICE_AFTER'] = $value;
 					// $set['CREATED_AT'] = date(timeformat());
@@ -180,6 +195,8 @@ class Ece extends CI_Controller {
 					$set['USER_APPROVAL'] = $atasan['ID'];
 					$where = array('EC_ID'=>$ece_id[$key]);
 					$this->prc_ece_change->update($set, $where);
+
+					$this->kirim_email($user);
 						//--LOG DETAIL--//
 					$set2 = array_merge($set, array('TIT_ID'=>$key));
 					$this->log_data->detail($LM_ID,'Ece/save','prc_ece_change','update',$set2,$where);
@@ -198,6 +215,21 @@ class Ece extends CI_Controller {
 					'USER_APPROVAL' => $atasan['ID'],
 					);
 				$this->prc_ece_change->update($data, array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
+
+				$ptm = $this->prc_tender_main->ptm($ptm);
+				$emp = $this->adm_employee->get(array('ID'=>$atasan['ID']));
+				$emp1 = $this->adm_employee->get(array('ID'=>$this->authorization->getEmployeeId()));
+				// echo "<pre>";
+				// print_r($ptm);die;
+				$user['EMAIL'] = $emp[0]['EMAIL'];
+				$user['data']['judul'] = 'Approval Evaluasi ECE';
+				$user['data']['nama_pengadaan'] = $ptm[0]['PTM_SUBJECT_OF_WORK'];
+				$user['data']['no_pengadaan'] = $ptm[0]['PTM_PRATENDER'];
+				$user['data']['no_pr'] = $$pti[0]['PPI_PRNO'];
+				// $user['data']['tipe'] = $tipe;
+				$user['data']['evaluator'] = $emp1[0]['FULLNAME'];
+
+				$this->kirim_email($user);
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Ece/save','prc_ece_change','update',$data,array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
 					//--END LOG DETAIL--//
@@ -390,10 +422,13 @@ class Ece extends CI_Controller {
 	}
 
 	public function save_approval(){
-		$this->load->model(array('prc_ece_change','prc_ece_change_comment','prc_tender_item','prc_nego_hist','adm_employee'));
+		$this->load->model(array('prc_ece_change','prc_ece_change_comment','prc_tender_item','prc_nego_hist','adm_employee','prc_tender_main'));
 		$ptm = $this->input->post("ptm");
 		$next_process = $this->input->post("next_process");
 		$group_id = $this->input->post("ec_id_group");
+		$ece = $this->prc_ece_change->get(array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
+		// echo "<pre>";
+		// print_r($ece);die;
 
 		$action = 'Approval ECE';
 		if($next_process == -1){
@@ -425,7 +460,22 @@ class Ece extends CI_Controller {
 		$atasan = $atasan[0];
 
 		if($next_process == 1){
-			$this->prc_ece_change->update(array('USER_APPROVAL'=>$atasan['ID']), array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));	
+			$ptm = $this->prc_tender_main->ptm($ptm);
+			$emp = $this->adm_employee->get(array('ID'=>$atasan['ID']));
+			// $ece = $this->prc_ece_change->get(array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
+			$emp1 = $this->adm_employee->get(array('ID'=>$ece[0]['PPR_ASSIGNEE']));
+			// echo "<pre>";
+			// print_r($ptm);die;
+			$user['EMAIL'] = $emp[0]['EMAIL'];
+			$user['data']['judul'] = 'Approval Evaluasi ECE';
+			$user['data']['nama_pengadaan'] = $ptm[0]['PTM_SUBJECT_OF_WORK'];
+			$user['data']['no_pengadaan'] = $ptm[0]['PTM_PRATENDER'];
+			$user['data']['no_pr'] = $$pti[0]['PPI_PRNO'];
+				// $user['data']['tipe'] = $tipe;
+			$user['data']['evaluator'] = $emp1[0]['FULLNAME'];
+
+			$this->prc_ece_change->update(array('USER_APPROVAL'=>$atasan['ID'], 'PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));	
+			$this->kirim_email($user);
 				//--LOG DETAIL--//
 			$this->log_data->detail($LM_ID,'Ece/save_approval','prc_ece_change','update',array('USER_APPROVAL'=>$atasan['ID']), array('PTM_NUMBER'=>$ptm, 'EC_ID_GROUP'=>$group_id));
 				//--END LOG DETAIL--//		
@@ -473,6 +523,21 @@ class Ece extends CI_Controller {
 
 		$this->session->set_flashdata('success', 'Data Berhasil Disimpan.');
 		redirect('Ece/approval');
+	}
+
+	public function kirim_email($user){	
+		$this->load->library('email');
+		$this->config->load('email'); 
+		$semenindonesia = $this->config->item('semenindonesia'); 
+		$this->email->initialize($semenindonesia['conf']);
+		$this->email->from($semenindonesia['credential'][0],$semenindonesia['credential'][1]);
+		// $this->email->to($user['EMAIL']);				
+		$this->email->to('archie.putra@sisi.id');				
+		$this->email->cc('pengadaan.semenindonesia@gmail.com');				
+		$this->email->subject("Approval Evaluasi ECE eProcurement ".$this->session->userdata['COMPANYNAME'].".");
+		$content = $this->load->view('email/approval_evaluator_ece',$user['data'],TRUE);
+		$this->email->message($content);
+		$this->email->send();
 	}
 
 

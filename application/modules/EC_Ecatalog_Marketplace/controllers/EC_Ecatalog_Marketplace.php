@@ -2269,7 +2269,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //        if (isset($dataa)){
 //            $json_data = array('page' => $page, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
 //        } else {
-            $json_data = array('page' => $page, 'n' => $this->testPaging($dataa, $limitMin, $limitMax), 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
+            $json_data = array('page' => count($this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax)), 'data' => $this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax), 'data1' => $this->compileDataPage_PL($dataa), 'totalItem' => count($this->compileDataPage_PL($dataa)));
 //        }
 
         //$this->getALL_lgsg($dataa));
@@ -2326,12 +2326,12 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $this->layout->render('history_pl', $data);
     }
 
-    public function compileDataPage_PL($data = array(), $min, $max)
+    public function compileDataPage_PL($data = array())
     {
         $matno = '';
         $plant = '';
         $item = array();
-        for ($i = $min; $i < count($data); $i++){
+        for ($i = 0; $i < count($data); $i++){
             if ($matno == $data[$i]['MATNO']){
                 if ($plant !== $data[$i]['PLANT']){
                     array_push($item, $data[$i]);
@@ -2347,21 +2347,12 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 
     public function testPaging($data = array(), $min, $max)
     {
-        $matno = '';
-        $plant = '';
-        $i = $min;
         $item = array();
-        while (count($item) < $max && $i <count($data)){
-            if ($matno == $data[$i]['MATNO']){
-                if ($plant !== $data[$i]['PLANT']){
-                    array_push($item, $data[$i]);
-                }
-            } else {
-                array_push($item, $data[$i]);
-            }
-            $plant = $data[$i]['PLANT'];
-            $matno = $data[$i]['MATNO'];
-            $i++;
+        if ($max > count($data)){
+            $max = count($data);
+        }
+        for ($i = $min; $i < $max; $i++){
+            array_push($item, $data[$i]);
         }
         return $item;
     }

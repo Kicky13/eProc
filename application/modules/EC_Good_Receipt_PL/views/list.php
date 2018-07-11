@@ -452,53 +452,84 @@
                 <h4 class="modal-title text-center"><strong><u>Review Good Receipt</u></strong></h4>
             </div>
             <div class="modal-body">
-                <div class="row" style="padding: 2px; display: none;" >
-                    <div class="col-sm-2 col-md-2 col-lg-2">
-                        Kode Shipment
-                    </div>
-                   <!-- <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
-                    </div>-->
-                    <div class="col-md-5">
-                        <input type="text" id="shipmentCode" name="">
-                    </div>
-                </div>
-                <div class="row" style="padding: 2px;">
-                    <div class="col-sm-2 col-md-2 col-lg-2">
-                        Document Date
-                    </div>
-                   <!-- <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
-                    </div>-->
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <div class="input-group date"><input readonly id="docdate" type="text" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+                <div class="row">                    
+                    <div class="col-md-7">                    
+                        <div class="row" style="padding: 2px; display: none;" >
+                            <div class="col-md-4">
+                                Kode Shipment
+                            </div>
+                           <!-- <div class="col-sm-4 col-md-4 col-lg-4">
+                                <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
+                            </div>-->
+                            <div class="col-md-8">
+                                <input type="text" id="shipmentCode" name="">
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row" style="padding: 2px;">
-                    <div class="col-sm-2 col-md-2 col-lg-2">
-                        Posting Date
-                    </div>
-                   <!-- <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
-                    </div>-->
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <div class="input-group date"><input readonly id="postdate" type="text" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+                        <div class="row" style="padding: 2px;">
+                            <div class="col-md-4">
+                                Document Date
+                            </div>
+                           <!-- <div class="col-sm-4 col-md-4 col-lg-4">
+                                <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
+                            </div>-->
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <div class="input-group date"><input readonly id="docdate" type="text" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row" style="padding: 2px;">
+                            <div class="col-md-4">
+                                Posting Date
+                            </div>
+                           <!-- <div class="col-sm-4 col-md-4 col-lg-4">
+                                <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
+                            </div>-->
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <div class="input-group date"><input readonly id="postdate" type="text" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 2px;">
+                            <div class="col-md-4">
+                                Feedback
+                            </div>
+                           <!-- <div class="col-sm-4 col-md-4 col-lg-4">
+                                <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
+                            </div>-->
+                            <div class="col-md-8">
+                                <input id="rating-input" name="rating-input" type="number"/>
+                                <textarea class="form-control" rows="4" id="comment" name="comment"></textarea>
+                            </div>
+                        </div>
+                    </div>                                        
                 </div>
-                <div class="row" style="padding: 2px;">
-                    <div class="col-sm-2 col-md-2 col-lg-2">
-                        Feedback
-                    </div>
-                   <!-- <div class="col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" name="viewtglShipment" id="viewtglShipment" placeholder="Tanggal">
-                    </div>-->
-                    <div class="col-md-5">
-                        <input id="rating-input" name="rating-input" type="number"/>
-                        <textarea class="form-control" rows="4" id="comment" name="comment"></textarea>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 style="text-align:center;text-decoration: underline;margin-top:20px;">Informasi Anggaran</h4>
+                        <table class="table table-striped nowrap" width="100%">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Cost Center</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Avalaible Budget</th>
+                                <th class="text-center">G/L Acount / Keterangan</th>                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                            foreach ($anggaran as $a){                            
+                                echo
+                                "<tr>"
+                                      . "<td class='text-center'>".$a['FICTR']." </td>"
+                                      . "<td class='text-center'>".$a['BESCHR']." </td>"
+                                      . "<td class='text-center'> Rp ".ribuan($a['AVAILBUDGET'])." </td>"                                     
+                                      . "<td class='text-center'> ".$a['FIPEX']." / ".$a['BEZEI']." </td>"
+                               . "</tr>";                                                                            
+                            }?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <hr>
@@ -507,6 +538,7 @@
                 </div> -->
                 <div class="row">
                     <div class="col-md-12">
+                        <h4 style="text-align:center;text-decoration: underline;margin-top:20px;">Informasi Good Reciept (GR)</h4>
                         <table id="tableShipment" class="table table-striped nowrap" width="100%">
                             <thead>
                             <tr>

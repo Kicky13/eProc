@@ -477,26 +477,30 @@ class Auction extends CI_Controller {
 
 				}
 				//penambahan bobot archie//
-				foreach ($vnd_ikut as $vnd) {
-					$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd);
-					$min_harga = $this->prc_auction_detail->get_min_harga($paqhID);
-					// echo "<pre>";
-					// print_r($min_harga);die;
-					foreach ($vendor1 as $nilai) {
-						$bobot_teknis = $nilai['PQI_TECH_VAL'] * $data['BOBOT_TEKNIS'] / 100;
-						$bobot_harga = $min_harga['MINHARGA'] / $harga_vendor[$vnd] * $data['BOBOT_HARGA'];
-						$nilai_gabung = $bobot_teknis + $bobot_harga;
-						$data3['NILAI_GABUNG'] = number_format($nilai_gabung,2);
-						$where1['PAQH_ID']= $paqhID;
-						$where1['PTV_VENDOR_CODE']= $vnd;
+				// $coba = $this->input->post('tender_item');
+				foreach ($this->input->post('tender_item') as $key => $tit) {
+					foreach ($vnd_ikut as $vnd) {
+
+						$vendor1= $this->prc_tender_quo_item->get_ptm_tit($id_ptm,$vnd,$tit);
+						$min_harga = $this->prc_auction_detail->get_min_harga($paqhID);
+						// echo "<pre>";
+						// print_r($vendor1);
+						foreach ($vendor1 as $nilai) {
+							$bobot_teknis = $nilai['PQI_TECH_VAL'] * $data['BOBOT_TEKNIS'] / 100;
+							$bobot_harga = $min_harga['MINHARGA'] / $harga_vendor[$vnd] * $data['BOBOT_HARGA'];
+							$nilai_gabung = $bobot_teknis + $bobot_harga;
+							$data3['NILAI_GABUNG'] = number_format($nilai_gabung,2);
+							$where1['PAQH_ID']= $paqhID;
+							$where1['PTV_VENDOR_CODE']= $vnd;
 						// echo "<pre>";
 						// print_r($nilai_gabung);
+						}
+						// echo "<pre>";
+						// print_r($vendor1);
+						$this->prc_auction_detail->update($data3, $where1);
 					}
-					// echo "<pre>";
-					// print_r($vendor1);
-					$this->prc_auction_detail->update($data3, $where1);
-				}
 						//end penambahan bobot//
+				}
 			}
 
 			

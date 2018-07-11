@@ -431,7 +431,7 @@
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="input-group date">
-                                                <input required type="text" name="ptp_reg_opening_date" id="ptp_reg_opening_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                                <input required type="text" name="ptp_reg_opening_date" id="ptp_reg_opening_date" class="form-control" value="<?php echo $today; ?>"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
                                      <div class="col-md-7 text-right">
@@ -448,7 +448,7 @@
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="input-group date">
-                                                <input required type="text" name="ptp_reg_closing_date" id="ptp_reg_closing_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                                <input required type="text" name="ptp_reg_closing_date" id="ptp_reg_closing_date" class="form-control" value="<?php echo $qd; ?>"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
                                    <div class="col-md-7 text-right">
@@ -464,7 +464,7 @@
                                     <div class="row">
                                         <div class="col-md-5">
                                             <div class="input-group date">
-                                                <input required type="text" name="ptp_delivery_date" id="ptp_delivery_date" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                                <input required type="text" name="ptp_delivery_date" id="ptp_delivery_date" class="form-control" value="<?php echo $dd; ?>"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
                                      <div class="col-md-7 text-right">

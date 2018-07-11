@@ -228,7 +228,7 @@ function loadTable_loted() {
                     a += "</div>";
                     return a;
                 }
-            },{
+            }, {
                 mRender: function (data, type, full) {
                    if(full.BSART=='ZPL'){
                         z = "Pembelian Langsung";
@@ -247,14 +247,7 @@ function loadTable_loted() {
                     a += "</div>";
                     return a;
                 }
-            }, {
-                mRender: function (data, type, full) {
-                    a = "<div class='col-md-12 text-center'>";
-                    a += full.CREATE_DATE;
-                    a += "</div>";
-                    return a;
-                }
-            }, {
+            },  {
                 mRender: function (data, type, full) {
                     a = "<div class='col-md-12 text-center'>";
                     a += full.GR_YEAR;
@@ -262,6 +255,13 @@ function loadTable_loted() {
                     return a;
                 }
             }, {
+                mRender: function (data, type, full) {
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.CREATE_DATE;
+                    a += "</div>";
+                    return a;
+                }
+            },{
                 mRender: function (data, type, full) {
                     a = "<div class='col-md-12 text-center'>";
                     a += full.VENDOR;
@@ -340,29 +340,36 @@ $(document).ready(function () {
         $(this).val('');
     });
 
-    // $.fn.dataTable.ext.search.push(
-    //         function (settings, data, dataIndex) {
-    //             var min = $('.dr').data('daterangepicker').startDate._d;
-    //             var max = $('.dr').data('daterangepicker').endDate._d;
-    //             var temp = data[5].split('/');
+    $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var check = $('#tes').val();
 
-    //             var startDate = new Date(temp[2], temp[1] - 1, temp[0]);
+                var min = $('.dr').data('daterangepicker').startDate._d;
+                var max = $('.dr').data('daterangepicker').endDate._d;
+                var temp = data[6].split('/');
 
-    //             if (min == null && max == null) {
-    //                 return true;
-    //             }
-    //             if (min == null && startDate <= max) {
-    //                 return true;
-    //             }
-    //             if (max == null && startDate >= min) {
-    //                 return true;
-    //             }
-    //             if (startDate <= max && startDate >= min) {
-    //                 return true;
-    //             }
-    //             return false;
-    //         }
-    // );
+                var startDate = new Date(temp[2], temp[1] - 1, temp[0]);
+
+                console.log(check);
+                if(check == 'Y'){
+                    if (min == null && max == null) {
+                        return true;
+                    }
+                    if (min == null && startDate <= max) {
+                        return true;
+                    }
+                    if (max == null && startDate >= min) {
+                        return true;
+                    }
+                    if (startDate <= max && startDate >= min) {
+                        return true;
+                    }
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+    );
 
     $('.dr').on('apply.daterangepicker', function (ev, picker) {
         mytable.draw();
@@ -380,8 +387,8 @@ $(document).ready(function () {
         var _po_no = _tds.eq(1).text();
         var _rr = _tds.eq(4).text();
         var _year = _tds.eq(5).text().substring(6, 10);
-        var _desc = _tds.eq(7).text();
-        var _vendor = _tds.eq(8).text();
+        var _desc = _tds.eq(6).text();
+        var _vendor = _tds.eq(7).text();
         var _item = $(this).data('item');
         var _jenispo = $(this).data('jenispo');
         var _data = {
@@ -403,7 +410,7 @@ $(document).ready(function () {
         var _tr = $(this).closest('tr');
         var _tds = _tr.find('td');
         var _po_no = _tds.eq(2).text();
-        var _year = _tds.eq(5).text();
+        var _year = _tds.eq(4).text();
         var _vendor = _tds.eq(6).text();
         var _lot = $(this).data('lot_number');
         var _jenispo = $(this).data('jenispo');

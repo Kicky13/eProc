@@ -4,7 +4,7 @@
   $totalPO=0;
     $no = 1;
     foreach ($po as $key => $value) {         
-    $barang=$value['QTY']-($value['QTY_RECEIPT']+$value['QTY_REJECT']);
+    $barang=$value['QTY'];
     $tr = '<tr>
           <td style="height:'.$tinggi.'" align="center">'.$no++.'</td>                  
           <td style="height:'.$tinggi.'" align="center">'.$value['MATNO'].'</td>
@@ -102,6 +102,10 @@
           <hr style="width:101%;border : 1px solid black"/>
           <div style="margin:0px">
             <table class="noborder" width="100%">
+              <tr>
+                <td>PEMBELI/PEMINTA</td>                
+                <td> : <?=$detail[0]['FULLNAME']?></td>                
+              </tr> 
               <tr>
                 <td>NO. PO</td>                
                 <td> : <?=$detail[0]['PO_NO']?></td>                

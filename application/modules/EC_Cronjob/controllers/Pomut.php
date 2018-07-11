@@ -21,7 +21,7 @@ class Pomut extends MX_Controller {
 
 		$period = substr($tglUD,0,6); // set data period
 
-		$company = array(2000,5000,7000); // Data Company yang ditarik
+		$company = array(2000,5000,7000,4000); // Data Company yang ditarik
 
 		$data = array();
 
@@ -46,7 +46,7 @@ class Pomut extends MX_Controller {
 		$formula = array();
 		$no_ba = array();
 
-//		var_dump($data);die();
+		// var_dump($data);die();
 
 		$i = 0;
 		foreach ($data['HEADER1'] as $val) {

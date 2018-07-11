@@ -191,6 +191,14 @@ class Procurement_pengadaan extends CI_Controller {
 			$this->prc_tender_vendor->join_vnd_header();
 			$data['vendor_tambahan'] = (array) $this->prc_tender_vendor->get(array('PTM_NUMBER' => $id, 'PTV_NON_DIRVEN' => 1));
 
+			$data['today'] = date('d-M-y 00:00:00');
+			$data['qd'] = date("d-M-Y 00:00:00",strtotime($date."+7 day"));
+			$data['dd'] = date("d-M-Y 00:00:00",strtotime($date."+30 day"));
+			// echo '<pre>';
+			// print_r($today);
+			// print_r($qd);
+			// print_r($dd);die;
+
 			$this->layout->set_table_js();
 			$this->layout->set_table_cs();
 			$this->layout->set_datetimepicker();
@@ -282,6 +290,11 @@ class Procurement_pengadaan extends CI_Controller {
 			$ptp['PTP_DELIVERY_DATE'] = $this->input->post('ptp_delivery_date') != '' ? date('d-M-Y g.i.s A', strtotime($this->input->post('ptp_delivery_date'))) : '';
 			$ptp['PTP_VALIDITY_HARGA'] = $this->input->post('ptp_validity_harga') != '' ? date('d-M-Y g.i.s A', strtotime($this->input->post('ptp_validity_harga'))) : '';
 			$ptp['PTP_PREBID_LOCATION'] = $this->input->post('ptp_prebid_location');
+
+			// echo '<pre>';
+			// print_r($ptp['PTP_REG_OPENING_DATE']);
+			// print_r($ptp['PTP_REG_CLOSING_DATE']);
+			// print_r($ptp['PTP_DELIVERY_DATE']);die;
 
 			if($this->input->post('ptp_justification') == 5){ //Penunjukan Langsung - Repeat Order (RO) 
 				$ptp['PTP_BATAS_PENAWARAN'] = 0;

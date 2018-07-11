@@ -142,6 +142,11 @@ class prc_tender_quo_item extends CI_Model {
 		return $this->get(array('PRC_TENDER_QUO_MAIN.PTM_NUMBER' => $ptm, 'PRC_TENDER_QUO_MAIN.PTV_VENDOR_CODE' => $vnd), $is_jasa);
 	}
 
+	function get_ptm_tit($ptm, $vnd, $tit, $is_jasa = false){
+		$this->join_pqm();
+		return $this->get(array('PRC_TENDER_QUO_MAIN.PTM_NUMBER' => $ptm, 'PRC_TENDER_QUO_MAIN.PTV_VENDOR_CODE' => $vnd, 'PRC_TENDER_QUO_ITEM.TIT_ID' => $tit), $is_jasa);
+	}
+
 	function get_by_ptm($ptm, $is_jasa = false){
 		//$this->join_pqm();
 		return $this->get(array('PRC_TENDER_QUO_MAIN.PTM_NUMBER' => $ptm), $is_jasa);

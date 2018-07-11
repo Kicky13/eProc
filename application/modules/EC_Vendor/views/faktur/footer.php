@@ -6,7 +6,6 @@
         	<br>
         	<br>
             <br>
-            <H3><?php if(!empty($sap[0]['STATUS'])) echo $sap[0]['STATUS']."<br>"; ?></H3>
             <!-- <br> -->
             <br>
             <br>

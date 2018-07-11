@@ -97,17 +97,18 @@ class ec_approval_invoice extends MY_Model {
                 ,AI.APPROVAL_1 AS APPROVAL, EGS.BSART 
                 FROM EC_APPROVAL_INVOICE AI
                 JOIN EC_INVOICE_HEADER EIH
-                    ON AI.ID_INVOICE = EIH.ID_INVOICE AND STATUS_HEADER = 5
+                    ON AI.ID_INVOICE = EIH.ID_INVOICE AND STATUS_HEADER = 5                
                 JOIN (SELECT max(".'"DATE"'.") LAST_UPDATE,ID_INVOICE FROM EC_TRACKING_INVOICE GROUP BY ID_INVOICE) TT
                         ON TT.ID_INVOICE = EIH.ID_INVOICE
                 JOIN EC_TRACKING_INVOICE ETI
                     ON ETI.ID_INVOICE = EIH.ID_INVOICE AND POSISI = 'VERIFIKASI' AND STATUS_DOC = 'BELUM KIRIM' AND ETI.".'"DATE"'." = TT.LAST_UPDATE
                 LEFT JOIN VND_HEADER VH 
-                    ON EIH.VENDOR_NO = lpad(VH.VENDOR_NO,10,0)
-                LEFT JOIN EC_GR_SAP EGS ON EGS.EBELN=EIH.NO_SP_PO
+                    ON EIH.VENDOR_NO = lpad(VH.VENDOR_NO,10,0)                
+                LEFT JOIN EC_GR_SAP EGS ON EGS.EBELN=EIH.NO_SP_PO AND EGS.BELNR=EIH.FI_NUMBER_SAP
                 $where_str
                 $order 
         ";
+//        echo $this->db->last_query($sql);die();
         $result = $this->db->query($sql);
         return (array) $result->result_array();
     }

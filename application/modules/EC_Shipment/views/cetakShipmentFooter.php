@@ -1,6 +1,6 @@
 <?php  
 foreach($po as $d => $v){
-  $totalOp+=$v['PRICE']*($v['QTY']-($v['QTY_RECEIPT']+$v['QTY_REJECT']));
+  $totalOp+=$v['PRICE']*($v['QTY']);
 }
 ?>
 <hr>

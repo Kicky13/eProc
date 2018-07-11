@@ -18,9 +18,9 @@
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="max-width:98%;overflow:auto">
                                     <form id="etor-form" enctype="multipart/form-data" method="post" >
-                                            <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
                                             <button class="btn btn-info pull-right" type="submit" style="margin:auto;display:block;" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approveFaktur">APPROVE</button>
                                             <button class="btn btn-info pull-right" type="cancel" style="margin:auto;display:block;" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectFaktur">REJECT</button>
+                                            <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
                                         <table id="table_inv" class="table table-striped nowrap" width="100%">
                                             <thead>
                                                 <tr>
@@ -31,12 +31,14 @@
                                                     <th class="text-center ts"><a href="javascript:void(0)">FAKTUR PAJAK</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">PPN</th>
+                                                    <th class="text-center ts"><a href="javascript:void(0)">FILE FP</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">TGL TERIMA</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">ACTION</a></th>
                                                 </tr>
                                                 <tr class="sear">
                                                     <th></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
+                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>

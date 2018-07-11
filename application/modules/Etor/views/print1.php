@@ -2,19 +2,201 @@
 // echo "<pre>";
 // print_r($data_tor);die;
 ?>
+<style>
+    .kecilkan{
+        font-size:6pt;
+        font-family: Courier,verdana,arial;
+    }
 
-<style type="text/css">
+    body,p,table td{
+        font-size:8pt;
+        font-family: Courier,verdana,arial;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
 
-	.text-right{
-		text-align: right;
-	}
+    table.bordered tr td, table.bordered th {
+        border: 1px solid black;
+        font-size:8pt;
+    }
+    .Kanan{
+        border-right:1px solid black;
+    }
+    .Kiri{
+        border-left: 1px solid black;
+    }
+    .Bawah{
+        border-bottom:1px solid black;
+    }
+    .Atas{
+        border-top:1px solid black;
+    }
+    .border{
+        border: 1px solid black;
+    }
 
-	.text-center{
-		text-align: center;
-	}
+    .bordered td{
+        border: 1px solid black;
+        margin-left: 10px;
+    }
 
-	.equalDivide tr td { width:33%; }
+    .tableheader{
+        margin:100px;
+    }
+    .col-md-3{
+        width:25%;
+    }
+    .vendorsupply{
+        width:20%;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .item{
+        width:6%;
+    }
+
+    .title p{
+        font-size: 12pt;
+        text-align: center;
+    }
+
+    .shorttext{
+        width:25%;   
+    }
+    .text-center, .centered{
+        text-align: center;
+    }
+    .text-top{
+        vertical-align: top;
+    }
+
+    .text-right{
+        text-align: right;
+    }
+
+    .text-left{
+        text-align: left;
+    }
+
+    .side-right{
+        margin-left: 500px;
+        /*border: solid 1px black;*/
+    }
+
+    .side-left{
+        margin-left: 0px;
+        /*border: solid 1px black;*/
+    }
+
+    .middle-right{
+        margin-left: 450px;
+        /*border: solid 1px black;*/
+    }
+
+    .middle-center{
+        margin-left: 25%;
+        /*border: solid 1px black;*/
+    }
+
+    .width-100{
+        width: 100px;
+    }
+
+    .width-200{
+        width: 200px;
+    }
+
+    .width-300{
+        width: 300px;
+    }
+
+    .width-200{
+        width: 200px;
+    }
+
+    .height-100{
+        height: 100px;
+    }
+
+    .height-200{
+        height: 200px;
+    }
+
+    .height-300{
+        height: 300px;
+    }
+
+    .padding-100{
+        padding-left: 100px;
+    }
+
+    .padding-200{
+        padding-left: 200px;
+    }
+
+    .padding-300{
+        padding-left: 300px;
+    }
+
+    .underline{
+        text-decoration: underline;
+    }
+
+    .blok{
+        display:inline;
+    }
+
+    .font16{
+        font-size: 16px;
+    }
+
+    .font12{
+        font-size: 8px;
+    }
+
+    .font14{
+        font-size: 14px;
+    }
+
+    .kecil12{
+        font-size: 12px;
+    }
+
+    .tebalkepala{
+        border: 2px solid black;
+    }
+
+
+    .setting_bold{
+        font-weight: bold;
+    }
+
+    .footer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .spasisijisetengah{
+        line-height: 1.5em;
+    }
+
+    #footer {
+        position: relative;
+        margin-bottom: 90px;
+        /*bottom: 1px !important;*/
+        /* negative value of footer height */
+        clear: both;
+    }
+
 </style>
+
 <div class="daftarisi">
 	<h2 class="text-center">DAFTAR ISI</h2><br>
 	<table>

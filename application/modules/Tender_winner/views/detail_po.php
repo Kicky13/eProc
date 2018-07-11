@@ -205,7 +205,7 @@
                                                         <td rowspan="<?php echo count($item) ?>" nowrap><?php echo $po_header['VND_NAME'] ?></td>
                                                         <td class="text-center"><?php echo $val['PR_ITEM'] ?></td>
                                                         <td rowspan="<?php echo count($item) ?>" class="text-center no_po"><?php echo $val['PPR_PRNO'] ?></td>
-                                                        <td nowrap><?php echo $val['POD_DECMAT'] ?><br><?php if(!is_null($val['ITEM_TEXT'])){?><i>Note: <?php echo $val['ITEM_TEXT'] ?></i><?php } ?></td>
+                                                        <td nowrap><?php echo $val['POD_DECMAT'] ?><br><?php if(!is_null($val['ITEM_TEXT'])){?><i>Note: <?php echo $val['ITEM_TEXT'].$val['ITEM_TEXT2'].$val['ITEM_TEXT3'].$val['ITEM_TEXT4'].$val['ITEM_TEXT5'].$val['ITEM_TEXT6'] ?></i><?php } ?></td>
                                                         <td class="text-right"><?php echo $val['POD_QTY'] ?></td>
                                                         <td class="text-center"><?php echo $val['UOM'] ?></td>
                                                         <td class="text-right"><?php echo number_format($val['POD_PRICE'],2,",",".") ?></td>
@@ -215,7 +215,7 @@
                                                 <?php else: ?>
                                                     <tr>
                                                         <td class="text-center"><?php echo $val['PR_ITEM'] ?></td>
-                                                        <td nowrap><?php echo $val['POD_DECMAT'] ?><br><?php if(!is_null($val['ITEM_TEXT'])){?><i>Note: <?php echo $val['ITEM_TEXT'] ?></i><?php } ?></td>
+                                                        <td nowrap><?php echo $val['POD_DECMAT'] ?><br><?php if(!is_null($val['ITEM_TEXT'])){?><i>Note: <?php echo $val['ITEM_TEXT'].$val['ITEM_TEXT2'].$val['ITEM_TEXT3'].$val['ITEM_TEXT4'].$val['ITEM_TEXT5'].$val['ITEM_TEXT6'] ?></i><?php } ?></td>
                                                         <td class="text-right"><?php echo $val['POD_QTY'] ?></td>
                                                         <td class="text-center"><?php echo $val['UOM'] ?></td>
                                                         <td class="text-right"><?php echo number_format($val['POD_PRICE'],2,",",".") ?></td>

@@ -147,11 +147,15 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
         // $this -> db -> where("EC_M_STRATEGIC_MATERIAL.MATNR", $matno, true);
         $this->db->where("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "'");
         // $this -> db -> where("(EC_M_STRATEGIC_MATERIAL.MATNR = '" . $matno . "' AND EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "')");
+        $this->db->or_where("VND_HEADER.VENDOR_NO IS NOT NULL");
+        $this->db->where("PL.VENDORNO IS NULL");
         $this->db->group_by($slc);
         $this->db->order_by('PL.VENDORNO');
+//        $this->db->get();
+//        echo $this->db->last_query();die();
         $result = $this->db->get();
         return (array)$result->result_array();
-    }
+    }        
 
     public function getVndMatnoOld($matno = '', $matnogrp = '')
     {

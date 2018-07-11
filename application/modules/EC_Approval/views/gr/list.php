@@ -27,7 +27,7 @@
                                     <a class='btn btn-warning' href='javascript:void(0)' onClick='createLot()' title='Create Lot'><span class='glyphicon glyphicon-file' aria-hidden='true'> CREATE LOT</span></a>
                                 </div>
                                 <div class='col-xs-2 col-sm-2 col-md-2 col-lg-2 pull-right'>
-                                    <a data-hariini='". date('Ymd'). "' data-href='". base_url('EC_Cronjob/refrshGR_landed') ."' onclick='manualRefreshGR_landed(this); return false' class='btn btn-info'>REFRESH DATA</a>
+                                    <a data-hariini='". date('Ymd'). "' data-href='". base_url('EC_Cronjob/refrshGR_landed') ."' onclick='manualRefreshGR_landed(this); return false' class='btn btn-info'>REFRESH GR</a>
                                 </div>
                                     ";
                                 }
@@ -48,22 +48,22 @@
                                                 <tr>
                                                     <th class="text-center ts"><a href="javascript:void(0)">NO</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">PO NO</a></th>                                                    
-                                                    <th class="text-center ts"><a href="javascript:void(0)">ITM NO</a></th>
+                                                    <th class="text-center ts"><a href="javascript:void(0)">ITM NO</a></th>                                                    
                                                     <th class="text-center ts"><a href="javascript:void(0)">TIPE PO</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">CREATOR BY</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">NO RR</a></th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">DOC DATE</a></th>                                                    
+                                                    <th class="text-center ts"><a href="javascript:void(0)">DOC DATE</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">MATERIAL</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">VENDOR</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">ACTION</a></th>
 
                                                 </tr>
                                                 <tr class="sear">
-                                                    <th></th>
+                                                    <th><input type="text" class="hide" id="tes" value="Y"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>                                                    
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch dr" readonly style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -78,19 +78,19 @@
                                                     <th class="text-center ts"><a href="javascript:void(0)">PO NO</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">TIPE PO</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">LOT CREATED BY</a></th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">LOT CREATED AT</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">GR YEAR</a></th>
+                                                    <th class="text-center ts"><a href="javascript:void(0)">LOT CREATED AT</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">VENDOR</a></th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">ACTION</a></th>
 
                                                 </tr>
                                                 <tr class="sear">
-                                                    <th><input type="text" class="hide dr"></th>
+                                                    <th><input type="text" class="hide" id="tes" value="N"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch dr" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>

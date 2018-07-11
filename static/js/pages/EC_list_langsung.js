@@ -68,7 +68,7 @@ function loadDataList() {
             pageMaxOld = pageMax
         }
         $('.pagination').append('<li><a href="javascript:paginationPrev(this)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>')
-        for (var i = 0; i < Math.ceil(data.page / 12); i++) {
+        for (var i = 0; i < Math.ceil(data.totalItem / 12); i++) {
             $('.pagination').append('<li class="' + (i == (limitMin / 12) ? "active" : "") + '"><a href="javascript:pagination(this,' + (i * 12) + ',' + ((i + 1) * 12) + ')">' + (i + 1) + '</a></li>')
         }
         $('.pagination').append('<li><a href="javascript:paginationNext(this)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>')
@@ -77,7 +77,7 @@ function loadDataList() {
         if (data.data.length == 0)
             $("#divAttributes").append('<div class="row text-center">Data Tidak Ditemukan!!</div>')
         else
-            for (var i = limitMin; i < data.data.length; i++) {
+            for (var i = 0; i < data.data.length; i++) {
                 if (mode == 'list') {
                     if (i == data.data.length - 1) {
                         teks = ('<div class="row" style=" margin:3px;">')

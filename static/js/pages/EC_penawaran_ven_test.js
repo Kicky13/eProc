@@ -132,7 +132,7 @@ function loadDataList() {
 						teks +=	"" +
 							"<td>" + data.data[i].ISI[0].PLANT + "</td>" +
 							"<td>" + data.data[i].ISI[0].DESC + "</td>" +
-							"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[0].PLANT + "' name='plant[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+"0]'></td>" +
+							"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[0].PLANT + "' name='plant[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[0].DESC + "' name='desc[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].MAKTX + "' name='nama_material[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+"0]'></td>" +
 							"<td><center><input type='text' value='" + data.data[i].ISI[0].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+"0]'"+diselm+"></center></td>" +
 							"<td><center><input type='text' value='" + data.data[i].ISI[0].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+"0]'"+diselm+">&nbsp;day(s)</center></td>" +
 							"<td><center>" + data.data[i].ISI[0].LASTUPDATE + "</center></td>" +
@@ -172,7 +172,7 @@ function loadDataList() {
 							teks +=	"<tr>" +
 										"<td>" + data.data[i].ISI[j].PLANT + "</td>" +
 										"<td>" + data.data[i].ISI[j].DESC + "</td>" +
-										"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[j].PLANT + "' name='plant[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+j+"]'></td>" +
+										"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[j].PLANT + "' name='plant[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].DESC + "' name='desc[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].MAKTX + "' name='nama_material[D"+i+j+"]'></td>" +
 										"<td><center><input type='text' value='" + data.data[i].ISI[j].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+j+"]'"+diselm+"></center></td>" +
 										"<td><center><input type='text' value='" + data.data[i].ISI[j].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+j+"]'"+diselm+">&nbsp;day(s)</center></td>" +
 										"<td><center>" + data.data[i].ISI[j].LASTUPDATE + "</center></td>" +
@@ -931,7 +931,7 @@ function ubahTab(elm1, elm2) {
 }
 
 function konfirmasiSimpan() {
-	bootbox.confirm('Konfirmasi Update Harga?', function (hasil) {
+	bootbox.confirm('Konfirmasi Update Harga? <br> Harga dan delivery time hanya bisa dilakukan perubahan kembali saat sudah melewati <span style="font-weight:bold">next update</span>', function (hasil) {
 		if(hasil) {
 			$("#form_simpan").submit();
 		}

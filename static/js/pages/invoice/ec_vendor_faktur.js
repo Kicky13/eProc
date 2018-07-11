@@ -137,7 +137,9 @@ return a;
 }
 },{
   mRender : function(data, type, full) {
-    return '<a href="#" data-ekspedisi="'+full.NO_EKSPEDISI+'" data-company="'+full.COMPANYCODE +'" onclick="cetakDocument(this)" class="btn btn-success">Cetak</a>';          
+      a = '<a href="#" data-ekspedisi="'+full.NO_EKSPEDISI+'" data-company="'+full.COMPANYCODE +'" data-fp="'+full.NO_FAKTUR+'" onclick="cetakDocument(this)" class="btn btn-success">Cetak</a>&nbsp;&nbsp;&nbsp;';
+  a += '<a href="#" data-ekspedisi="'+full.NO_EKSPEDISI+'" data-company="'+full.COMPANYCODE +'" data-fp="'+full.NO_FAKTUR+'" data-vn="'+full.NO_VENDOR+'" onclick="batalDocument(this)" class="btn btn-danger">Batal</a>';
+  return a;
 }
 }],
 
@@ -386,4 +388,39 @@ function cetakDocument(elm){
     };
 
     $.redirect($('#base-url').val()+'EC_Vendor/Faktur/cetakDocument',_data,'POST','_blank');
+}
+
+function batalDocument(elm){
+    var ekspedisi = $(elm).data('ekspedisi');    
+    var company = $(elm).data('company');
+    var fp = $(elm).data('fp');
+    var vn = $(elm).data('vn');
+
+    var _data = {
+        id : ekspedisi,
+        company : company,
+        vn : vn,
+        fp : fp
+    };
+
+    $.ajax({
+        url : $("#base-url").val() + 'EC_Vendor/Faktur/batalDocument',  // Controller URL
+        type : 'POST',
+        data : _data,
+        dataType : 'json',
+        success : function(data) {
+            if (data.success===true) {
+                var _tmpMessage = [
+                data.pesan
+                ];
+            } else {
+                var _tmpMessage = [
+                data.pesan
+                ];
+            }
+            bootbox.alert(_tmpMessage.join('<br />'));
+        }
+    });
+
+    // $.redirect($('#base-url').val()+'EC_Vendor/Faktur/cetakDocument',_data,'POST','_blank');
 }

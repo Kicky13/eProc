@@ -19,7 +19,7 @@ class Monitoring_prc extends CI_Controller {
 		// $this->layout->set_table_cs();
 		$this->layout->set_validate_css();
 		$this->layout->set_validate_js();
-		$this->layout->add_js('pages/monitor_prc.js?6');		
+		$this->layout->add_js('pages/monitor_prc.js?9');		
 		$this->layout->add_js("strTodatetime.js");
 		$this->layout->render('list_pr', $data);
 	}

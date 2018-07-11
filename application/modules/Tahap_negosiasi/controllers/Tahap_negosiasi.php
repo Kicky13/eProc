@@ -430,16 +430,31 @@ class Tahap_negosiasi extends CI_Controller {
 
 	public function accept_pilih_status_item($id, $LM_ID) {
 		$this->load->model('prc_tender_item');
-		$this->load->model('prc_ece_change');
+		$this->load->model('prc_ece_change');	
+		$this->load->model('prc_tender_main');
 
 		// ngambil item item yang masih terpilih metode nego (belom di ACC)
 		$this->prc_tender_item->where_status_in();
 		$this->prc_tender_item->join_pr();
 		$items = (array) $this->prc_tender_item->ptm($id);
+		// echo "<pre>";
+		// print_r($items);die;
 
 		$nego = array();
 		$ec_id_group = $this->prc_ece_change->get_id_group();
 		foreach ($items as $tit) {
+			$ptm = $this->prc_tender_main->ptm($id);
+			$emp = $this->adm_employee->get(array('ID'=>$tit['ECE_ASSIGN']));
+				// echo "<pre>";
+				// print_r($ptm);die;
+			$user['EMAIL'] = $emp[0]['EMAIL'];
+			$user['data']['judul'] = 'Evaluasi ECE';
+			$user['data']['nama_pengadaan'] = $ptm[0]['PTM_SUBJECT_OF_WORK'];
+			$user['data']['no_pengadaan'] = $ptm[0]['PTM_PRATENDER'];
+			$user['data']['no_pr'] = $tit['PPI_PRNO'];
+				// $user['data']['tipe'] = $tipe;
+			$user['data']['evaluator'] = $emp[0]['FULLNAME'];
+
 			$status = intval($tit['TIT_STATUS']);
 			if ($status == 16) {
 				$nego[] = $tit['TIT_ID'];
@@ -467,6 +482,10 @@ class Tahap_negosiasi extends CI_Controller {
 					'EC_ID_GROUP' => $ec_id_group,
 					);
 				$this->prc_ece_change->insert($data);
+
+				// $ptm = $this->prc_tender_main->ptm($id);
+				
+				$this->kirim_email($user);
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Tahap_negosiasi/accept_pilih_status_item','prc_ece_change','insert',$data);
 					//--END LOG DETAIL--//
@@ -715,6 +734,21 @@ class Tahap_negosiasi extends CI_Controller {
 
 		$data = $this->load->view('analisa_kewajaran', $data, FALSE);
 		echo $data;		
+	}
+
+	public function kirim_email($user){	
+		$this->load->library('email');
+		$this->config->load('email'); 
+		$semenindonesia = $this->config->item('semenindonesia'); 
+		$this->email->initialize($semenindonesia['conf']);
+		$this->email->from($semenindonesia['credential'][0],$semenindonesia['credential'][1]);
+		$this->email->to($user['EMAIL']);				
+		// $this->email->to('archie.putra@sisi.id');				
+		$this->email->cc('pengadaan.semenindonesia@gmail.com');				
+		$this->email->subject("Evaluasi ECE eProcurement ".$this->session->userdata['COMPANYNAME'].".");
+		$content = $this->load->view('email/evaluator_ece',$user['data'],TRUE);
+		$this->email->message($content);
+		$this->email->send();
 	}
 
 }

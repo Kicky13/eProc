@@ -360,6 +360,13 @@ function loadTable_invoice() {
 			}
 		},{
 			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+        		a += "<a href="+$("#base-url").val() + 'upload/fp_ekspedisi/'+full.FILE_FP+" target=_blank>"+full.FILE_FP+"</a>";
+        		a += "</div>";
+        		return a;
+			}
+		},{
+			mRender : function(data, type, full) {
         		if (full.KET == 'Belum diterima') {
         		  TGL_TERIMA ='-';
         		} else if (full.KET == 'Diterima') {

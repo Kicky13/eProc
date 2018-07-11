@@ -319,9 +319,9 @@ class EC_Penawaran_Vendor extends CI_Controller
 			if($_POST["price"][$cb] != "" && $_POST["dlvtime"][$cb] != "") {
 				$q = $this->ec_penawaran_vnd_test->saveDetail($_POST["matno"][$cb], $_POST["plant"][$cb], $_POST["price"][$cb], $_POST["dlvtime"][$cb], $venno, $_POST["currency"][$cb]);
 				if($q) {
-					$pesan .= "Berhasil menyimpan data untuk matno = \"".$_POST["matno"][$cb]."\" &amp; plant = \"".$_POST["plant"][$cb]."\"<br/>";
+					$pesan .= "Berhasil menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
 				} else {
-					$pesan .= "Gagal menyimpan data untuk matno = \"".$_POST["matno"][$cb]."\" &amp; plant = \"".$_POST["plant"][$cb]."\"<br/>";
+					$pesan .= "Gagal menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
 				}
 			}
 			// if($_POST["price"][$cb] != "" && $_POST["dlvtime"][$cb] != "") {

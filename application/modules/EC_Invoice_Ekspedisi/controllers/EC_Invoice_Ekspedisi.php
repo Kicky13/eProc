@@ -69,6 +69,7 @@ class EC_Invoice_Ekspedisi extends MX_Controller {
             $dt['NO_INVOICE'] = $dataa[$i]['NO_INVOICE'];
             $dt['VEND_NAME'] = $dataa[$i]['VEND_NAME'];
             $dt['NO_SP_PO'] = $dataa[$i]['NO_SP_PO'];
+            $dt['BSART'] = $dataa[$i]['EGS.BSART'];
             $dt['TOTAL_AMOUNT'] = $dataa[$i]['TOTAL_AMOUNT'];
             $dt['CHDATE'] = $dataa[$i]['CHDATE2'];
             $dt['STATUS_HEADER'] = $dataa[$i]['STATUS_HEADER'];

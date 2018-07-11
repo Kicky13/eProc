@@ -232,7 +232,7 @@ class Tender_winner extends CI_Controller {
 		}
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
 			$this->authorization->getCurrentRole(),'Approval LP3',$action,$this->input->ip_address()
-			);
+		);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
 
@@ -312,8 +312,8 @@ class Tender_winner extends CI_Controller {
 							'doc_date'=>date('d M Y', oraclestrtotime($data[0]['DOC_DATE'])),
 							'ddate'=>date('d M Y', oraclestrtotime($data[0]['DDATE'])),
 							'total'=>number_format($data[0]['TOTAL_HARGA'],2,",",".")." ".$po_detail[0]['CURR'],
-							)
-						);
+						)
+					);
 					$this->kirim_email_po($data_email);
 
 					// kriim ke evaluator 31 januari
@@ -332,8 +332,8 @@ class Tender_winner extends CI_Controller {
 							'doc_date'=>date('d M Y', oraclestrtotime($data[0]['DOC_DATE'])),
 							'ddate'=>date('d M Y', oraclestrtotime($data[0]['DDATE'])),
 							'total'=>number_format($data[0]['TOTAL_HARGA'],2,",",".")." ".$po_detail[0]['CURR'],
-							)
-						);
+						)
+					);
 					$this->kirim_email_po($data_email);
 
 					//kirim ke buyer 27 februari
@@ -349,8 +349,8 @@ class Tender_winner extends CI_Controller {
 							'doc_date'=>date('d M Y', oraclestrtotime($data[0]['DOC_DATE'])),
 							'ddate'=>date('d M Y', oraclestrtotime($data[0]['DDATE'])),
 							'total'=>number_format($data[0]['TOTAL_HARGA'],2,",",".")." ".$po_detail[0]['CURR'],
-							)
-						);
+						)
+					);
 					$this->kirim_email_po($data_email);
 					
 					echo json_encode(array('state'=>true,'data'=>$tbody));
@@ -408,7 +408,7 @@ class Tender_winner extends CI_Controller {
 			"PHC_ACTIVITY" => "'Pembuatan LP3'",
 			"PHC_START_DATE" => "'".$current_date."'",
 			// "PTC_ATTACHMENT" => '\''.$_FILES["ptc_attachment"]["name"].'\''
-			);
+		);
 		$this->po_header_comment->insert($dataComment);
 			//--LOG DETAIL--//
 		$this->log_data->detail($LM_ID,'Tender_winner/approve','po_header_comment','insert',$dataComment);
@@ -730,7 +730,7 @@ class Tender_winner extends CI_Controller {
 
     	$data = array(
     		'data' 	=> $data
-    		);
+    	);
     	echo json_encode($data);
     }
 
@@ -833,7 +833,7 @@ class Tender_winner extends CI_Controller {
 			//--LOG MAIN--//
     	$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
     		$this->authorization->getCurrentRole(),'Rejected LP3','RENEGO',$this->input->ip_address()
-    		);
+    	);
     	$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
 
@@ -899,7 +899,7 @@ class Tender_winner extends CI_Controller {
 			//--LOG MAIN--//
     	$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
     		$this->authorization->getCurrentRole(),'Rejected LP3','BATAL',$this->input->ip_address()
-    		);
+    	);
     	$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
 
@@ -1061,7 +1061,7 @@ class Tender_winner extends CI_Controller {
 			2 => 'sg',
 			3 => 'pa',
 			4 => 'to'
-			);
+		);
 		$barang_or_jasa = $data['ptm']['IS_JASA']==1?'jasa':'barang';
 		$apg = $this->adm_purch_grp->get(array("PURCH_GRP_CODE"=>$data['po']['PGRP']));	
 		$data['apg'] = $apg[0];
@@ -1074,9 +1074,9 @@ class Tender_winner extends CI_Controller {
 		if($cekfile=="po_barang_si"){
 			$this->m_pdf->pdf->SetHTMLHeader('
 				<table>
-					<tr>
-						<td class="text-right"><b>Halaman {PAGENO} dari {nb}</b></td>
-					</tr>
+				<tr>
+				<td class="text-right"><b>Halaman {PAGENO} dari {nb}</b></td>
+				</tr>
 				</table>
 				');
 		}
@@ -1400,7 +1400,7 @@ class Tender_winner extends CI_Controller {
 			2 => 'sg',
 			3 => 'pa',
 			4 => 'to'
-			);
+		);
 		$apg = $this->adm_purch_grp->get(array("PURCH_GRP_CODE"=>$data['po_header']['PGRP']));	
 		// echo "<pre>";
 		// print_r($apg);die;
@@ -1540,6 +1540,7 @@ class Tender_winner extends CI_Controller {
 	}
 
 	public function submit() {	
+
 		// error_reporting(E_ALL);	
 		$this->load->model('po_detail');
 		$this->load->model('po_header');
@@ -1579,7 +1580,7 @@ class Tender_winner extends CI_Controller {
 		}
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
 			$this->authorization->getCurrentRole(),$prosess,$action,$this->input->ip_address()
-			);
+		);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
 		$satu = 0;
@@ -1607,13 +1608,14 @@ class Tender_winner extends CI_Controller {
 			foreach ($winner as $key => $each_winner) {
 				$data = array (
 					'PO_STATUS' => '1',
-					);
+				);
 				$this->prc_tender_winner->update($data, array('PTW_ID' => $each_winner));
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Tender_winner/submit','prc_tender_winner','update',$data,array('PTW_ID' => $each_winner));
 					//--END LOG DETAIL--//
 
 				$data = $this->prc_tender_winner->get($each_winner);
+
 				$ptm_number = $data[0]['PTM_NUMBER'];
 				$lp3no = $this->get_no_LP3($data[0]['PPR_PGRP']);
 				if($satu == 0){
@@ -1642,7 +1644,7 @@ class Tender_winner extends CI_Controller {
 						'FIX_DDATE' => $fixddate,
 						'IS_APPROVE' => 0,
 						'LINK' => $idhash
-						);
+					);
 					$this->po_header->insert($po);
 						//--LOG DETAIL--//
 					$this->log_data->detail($LM_ID,'Tender_winner/submit','po_header','insert',strip_tags($po));
@@ -1657,7 +1659,7 @@ class Tender_winner extends CI_Controller {
 								'PO_ID' => $po_id,
 								'DESC' => $dsc,
 								'TIME' => $time[$key]
-								);
+							);
 							$this->po_delivery->insert($datas);
 								//--LOG DETAIL--//
 							$this->log_data->detail($LM_ID,'Tender_winner/submit','po_delivery','insert',$datas);
@@ -1692,16 +1694,75 @@ class Tender_winner extends CI_Controller {
 					'PPR_PRNO' => $data[0]['PPI_PRNO'],
 					'EBELP' => $data[0]['EBELP'],
 					'RFQ_NO' => $data[0]['PTV_RFQ_NO'],
-					'ITEM_TEXT' =>str_replace("\n",'&#10;',$itemtext[$data[0]['PTW_ID']]),
+					// 'ITEM_TEXT' =>str_replace("\n",'&#10;',$itemtext[$data[0]['PTW_ID']]),
 					'PTW_ID' => $data[0]['PTW_ID'],
 					'UOM' => $pritem['PPI_UOM'],
 					'PLANT' => $pritem['PPI_PLANT'],
 					'CURR' => $pqi[0]['PQI_CURRENCY'],
 					'SERVICE_ID' => $data[0]['SERVICE_ID'],
-					);
+				);
 				$subtot = intval($data[0]['PQI_PRICE']) * intval($data[0]['TIT_QUANTITY']);
 				$total = $total + $subtot;
 				$this->po_detail->insert($pod);
+				
+				// cluster item text
+				$MASTER_ITEM_TEXT = str_replace("\n",'&#10;',$itemtext[$data[0]['PTW_ID']]);
+
+				$PANJANG_ITEM_TEXT1 =  strlen(substr($MASTER_ITEM_TEXT,0,4000));
+				$ITEM_TEXT1 = substr($MASTER_ITEM_TEXT,0,4000);
+				if($ITEM_TEXT1=="0"){
+					$ITEM_TEXT1 = "";
+				}
+				
+				$PANJANG_ITEM_TEXT2 =  strlen(substr($MASTER_ITEM_TEXT,4001,4000));
+				$ITEM_TEXT2 =  substr($MASTER_ITEM_TEXT,4001,4000);
+				if($ITEM_TEXT2=="0"){
+					$ITEM_TEXT2 = "";
+				}
+
+				$PANJANG_ITEM_TEXT3 =  strlen(substr($MASTER_ITEM_TEXT,8001,4000));
+				$ITEM_TEXT3 =  substr($MASTER_ITEM_TEXT,8001,4000);
+				if($ITEM_TEXT3=="0"){
+					$ITEM_TEXT3 = "";
+				}
+
+				$PANJANG_ITEM_TEXT4 =  strlen(substr($MASTER_ITEM_TEXT,12001,4000));
+				$ITEM_TEXT4 =  substr($MASTER_ITEM_TEXT,12001,4000);
+				if($ITEM_TEXT4=="0"){
+					$ITEM_TEXT4 = "";
+				}
+
+				$PANJANG_ITEM_TEXT5 =  strlen(substr($MASTER_ITEM_TEXT,16001,4000));
+				$ITEM_TEXT5 =  substr($MASTER_ITEM_TEXT,16001,4000);
+				if($ITEM_TEXT5=="0"){
+					$ITEM_TEXT5 = "";
+				}
+
+				$PANJANG_ITEM_TEXT6 =  strlen(substr($MASTER_ITEM_TEXT,20001,4000));
+				$ITEM_TEXT6 =  substr($MASTER_ITEM_TEXT,20001,4000);
+				if($ITEM_TEXT6=="0"){
+					$ITEM_TEXT6 = "";
+				}
+				// echo "<br>";				
+				// echo " - ".$PANJANG_ITEM_TEXT1."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT2."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT3."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT4."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT5."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT6."<br>";
+				// die;
+				$hanya_item_text = array(
+					'ITEM_TEXT'  =>$ITEM_TEXT1,
+					'ITEM_TEXT2' =>$ITEM_TEXT2,
+					'ITEM_TEXT3' =>$ITEM_TEXT3,
+					'ITEM_TEXT4' =>$ITEM_TEXT4,
+					'ITEM_TEXT5' =>$ITEM_TEXT5,
+					'ITEM_TEXT6' =>$ITEM_TEXT6,
+				);
+				$this->po_detail->update($hanya_item_text, array('POD_ID'=>$pod_id));
+				// cluster item text
+
+
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Tender_winner/submit','po_detail','insert',strip_tags($pod));
 					//--END LOG DETAIL--//
@@ -1741,7 +1802,7 @@ class Tender_winner extends CI_Controller {
 							'NAMA' => $value['FULLNAME'],
 							'IS_APPROVE' => 0,
 							'REL_CODE' => $value['REL_CODE'],
-							);
+						);
 						$this->po_approval->insert($datas);
 							//--LOG DETAIL--//
 						$this->log_data->detail($LM_ID,'Tender_winner/submit','po_approval','insert',$datas);
@@ -1759,7 +1820,7 @@ class Tender_winner extends CI_Controller {
 							'NAMA' => $value['FULLNAME'],
 							'IS_APPROVE' => 0,
 							'REL_CODE' => $value['REL_CODE'],
-							);
+						);
 						$this->po_approval->insert($datas);
 							//--LOG DETAIL--//
 						$this->log_data->detail($LM_ID,'Tender_winner/submit','po_approval','insert',$datas);
@@ -1796,7 +1857,7 @@ class Tender_winner extends CI_Controller {
 				'FIX_DDATE' => $fixddate,
 				'REAL_STAT' => 0,
 				'IS_APPROVE' => 0						
-				);
+			);
 			$this->po_header->update($po_update,array('PO_ID'=>$po_id));
 
 			$ph = $this->po_header->get(array('PO_ID'=>$po_id));
@@ -1812,12 +1873,75 @@ class Tender_winner extends CI_Controller {
 			$po_detail = $this->po_detail->get();
 			$total=0;
 			foreach ($po_detail as $key_pod => $value_pod) {			
+				// $pod = array(
+				// 	'ITEM_TEXT' => str_replace("\n",'&#10;',$itemtext[$value_pod['PTW_ID']])					
+				// );
+				// $this->po_detail->update($pod,array('POD_ID'=>$value_pod['POD_ID']));	
+
+
+				// cluster item text
+				$MASTER_ITEM_TEXT = str_replace("\n",'&#10;',$itemtext[$value_pod['PTW_ID']]);
+
+				$PANJANG_ITEM_TEXT1 =  strlen(substr($MASTER_ITEM_TEXT,0,4000));
+				$ITEM_TEXT1 = substr($MASTER_ITEM_TEXT,0,4000);
+				if($ITEM_TEXT1=="0"){
+					$ITEM_TEXT1 = "";
+				}
+				
+				$PANJANG_ITEM_TEXT2 =  strlen(substr($MASTER_ITEM_TEXT,4001,4000));
+				$ITEM_TEXT2 =  substr($MASTER_ITEM_TEXT,4001,4000);
+				if($ITEM_TEXT2=="0"){
+					$ITEM_TEXT2 = "";
+				}
+
+				$PANJANG_ITEM_TEXT3 =  strlen(substr($MASTER_ITEM_TEXT,8001,4000));
+				$ITEM_TEXT3 =  substr($MASTER_ITEM_TEXT,8001,4000);
+				if($ITEM_TEXT3=="0"){
+					$ITEM_TEXT3 = "";
+				}
+
+				$PANJANG_ITEM_TEXT4 =  strlen(substr($MASTER_ITEM_TEXT,12001,4000));
+				$ITEM_TEXT4 =  substr($MASTER_ITEM_TEXT,12001,4000);
+				if($ITEM_TEXT4=="0"){
+					$ITEM_TEXT4 = "";
+				}
+
+				$PANJANG_ITEM_TEXT5 =  strlen(substr($MASTER_ITEM_TEXT,16001,4000));
+				$ITEM_TEXT5 =  substr($MASTER_ITEM_TEXT,16001,4000);
+				if($ITEM_TEXT5=="0"){
+					$ITEM_TEXT5 = "";
+				}
+
+				$PANJANG_ITEM_TEXT6 =  strlen(substr($MASTER_ITEM_TEXT,20001,4000));
+				$ITEM_TEXT6 =  substr($MASTER_ITEM_TEXT,20001,4000);
+				if($ITEM_TEXT6=="0"){
+					$ITEM_TEXT6 = "";
+				}
+				// echo "<br>";				
+				// echo " - ".$PANJANG_ITEM_TEXT1."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT2."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT3."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT4."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT5."<br>";
+				// echo " - ".$PANJANG_ITEM_TEXT6."<br>";
+				// die;
 				$pod = array(
-					'ITEM_TEXT' => str_replace("\n",'&#10;',$itemtext[$value_pod['PTW_ID']])					
-					);				
-				$this->po_detail->update($pod,array('POD_ID'=>$value_pod['POD_ID']));	
+					'ITEM_TEXT'  =>$ITEM_TEXT1,
+					'ITEM_TEXT2' =>$ITEM_TEXT2,
+					'ITEM_TEXT3' =>$ITEM_TEXT3,
+					'ITEM_TEXT4' =>$ITEM_TEXT4,
+					'ITEM_TEXT5' =>$ITEM_TEXT5,
+					'ITEM_TEXT6' =>$ITEM_TEXT6,
+				);
+				$this->po_detail->update($pod, array('POD_ID'=>$value_pod['POD_ID']));
+				// cluster item text				
 					//--LOG DETAIL--//
-				$this->log_data->detail($LM_ID,'Tender_winner/submit','po_detail','update',$pod,array('POD_ID' => $value_pod['POD_ID']));
+				if(strlen($MASTER_ITEM_TEXT)>4000){
+
+				} else{
+
+					$this->log_data->detail($LM_ID,'Tender_winner/submit','po_detail','update',$pod,array('POD_ID' => $value_pod['POD_ID']));
+				}
 					//--END LOG DETAIL--//
 				$subtot = intval($value_pod['POD_PRICE']) * intval($value_pod['POD_QTY']);
 				$total += $subtot;
@@ -1857,7 +1981,7 @@ class Tender_winner extends CI_Controller {
 							'NAMA' => $value['FULLNAME'],
 							'IS_APPROVE' => 0,
 							'REL_CODE' => $value['REL_CODE'],
-							);
+						);
 						$this->po_approval->insert($datas);
 							//--LOG DETAIL--//
 						$this->log_data->detail($LM_ID,'Tender_winner/submit','po_approval','insert',$datas);
@@ -1875,7 +1999,7 @@ class Tender_winner extends CI_Controller {
 							'NAMA' => $value['FULLNAME'],
 							'IS_APPROVE' => 0,
 							'REL_CODE' => $value['REL_CODE'],
-							);
+						);
 						$this->po_approval->insert($datas);
 							//--LOG DETAIL--//
 						$this->log_data->detail($LM_ID,'Tender_winner/submit','po_approval','insert',$datas);
@@ -1901,7 +2025,7 @@ class Tender_winner extends CI_Controller {
 			"PHC_ACTIVITY" => "'Pembuatan LP3'",
 			"PHC_START_DATE" => "'".$current_date."'",
 			// "PTC_ATTACHMENT" => '\''.$_FILES["ptc_attachment"]["name"].'\''
-			);
+		);
 
 		$this->po_header_comment->insert($dataComment);
 			//--LOG DETAIL--//
@@ -1964,7 +2088,7 @@ class Tender_winner extends CI_Controller {
         	$phc = $this->po_header_comment->get_from_po_id($po_id);
         	foreach ($po_detail as $key_po => $value_po) {
         		$winner[]=$value_po['PTW_ID'];
-        		$itemtext[$value_po['PTW_ID']]=$value_po['ITEM_TEXT'];
+        		$itemtext[$value_po['PTW_ID']]=$value_po['ITEM_TEXT'].$value_po['ITEM_TEXT2'].$value_po['ITEM_TEXT3'].$value_po['ITEM_TEXT4'].$value_po['ITEM_TEXT5'].$value_po['ITEM_TEXT6'];
         	}
         	$data['po_id'] = $po_id;
         	$data['DOC_TYPE'] = $po_header['DOC_TYPE'];
@@ -2147,7 +2271,7 @@ class Tender_winner extends CI_Controller {
     		$pr = $data[0]['PPI_PRNO'];
     		$this->po_detail->get_item($each_winner);
     		$data_item = $this->po_detail->get();
-    		$item_text = strip_tags($data_item[0]['ITEM_TEXT']);
+    		$item_text = strip_tags($data_item[0]['ITEM_TEXT'].$data_item[0]['ITEM_TEXT2'].$data_item[0]['ITEM_TEXT3'].$data_item[0]['ITEM_TEXT4'].$data_item[0]['ITEM_TEXT5'].$data_item[0]['ITEM_TEXT6']);
     		$poitem[] = compact('po_item', 'rfq_no', 'rfq_item','item_pr','pr','item_text');
 
     		$pod_number += 10;
@@ -2277,8 +2401,8 @@ class Tender_winner extends CI_Controller {
     			'doc_date'=>date('d M Y', oraclestrtotime($data[0]['DOC_DATE'])),
     			'ddate'=>date('d M Y', oraclestrtotime($data[0]['DDATE'])),
     			'total'=>number_format($data[0]['TOTAL_HARGA'],2,",",".")." ".$po_detail[0]['CURR'],
-    			)
-    		);
+    		)
+    	);
     	$this->kirim_email_po_approve($data_email);
     	
     }

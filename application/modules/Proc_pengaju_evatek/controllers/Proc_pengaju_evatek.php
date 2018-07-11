@@ -358,8 +358,8 @@ class Proc_pengaju_evatek extends CI_Controller {
 		if($submit == '1'){
 			$ptm = $this->prc_tender_main->ptm($id);
 			$pti = $this->prc_tender_item->get(array('PTM_NUMBER'=>$ptm['PTM_NUMBER']));
-			echo "<pre>";
-			print_r($pti);die;
+			// echo "<pre>";
+			// print_r($pti);die;
 			$pri = $this->prc_pr_item->where_ppiId($pti[0]['PPI_ID']);
 			$emp = $this->adm_employee->get(array('ID'=>$evaluator));
 
@@ -376,8 +376,8 @@ class Proc_pengaju_evatek extends CI_Controller {
 			$new_status = $ptm[0]['PTM_STATUS']+1;
 			$this->app_process->where_unique($klplpr, $smpl, $jst, $new_status);
 			$app = $this->app_process->get();
-			echo "<pre>";
-			print_r($app);die;
+			// echo "<pre>";
+			// print_r($app);die;
 			if($app[0]['PROCESS_MASTER_ID']=='Proc_pengaju_evatek/approval'){
 				$this->process->next_process($id, 'NEXT', $LM_ID);
 			}else{

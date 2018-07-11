@@ -20,11 +20,15 @@
 			<!--<div id="stokOnly">-->
                          <div class="panel-group">
                     <div class="panel panel-default">
-                    <div class="panel-heading" style="font-weight:600;">Informasi Ketentuan Harga Barang (PPN, PPH, Ongkos Kirim)</div>
+                    <div class="panel-heading" style="font-weight:600;">INFORMASI DAN KETENTUAN</div>
 
                       <div class="panel-body">
-                        1. Harga untuk produk yang dikirimkan sudah termasuk PPH dan ongkos kirim namun belum termasuk PPN <br/>
-                        2. Harga untuk produk pengambilan sendiri sudah termasuk PPH namun tidak termasuk PPH dan ongkos kirim
+                          <ol style="margin-left:50px;">
+                              <li>Harga untuk produk yang dikirimkan sudah termasuk <span style="font-weight:bold;">PPH</span> dan <span style="font-weight:bold;">ongkos kirim</span> namun belum termasuk <span style="font-weight:bold;">PPN</span></li>
+                              <li>Harga untuk produk pengambilan sendiri sudah termasuk <span style="font-weight:bold;">PPH</span> namun tidak termasuk <span style="font-weight:bold;">PPH</span> dan <span style="font-weight:bold;">ongkos kirim</span></li>
+                              <li>Update Harga dan Delivery Time hanya dapat dilakukan ketika <span style="font-weight:bold;">Tanggal Sekarang</span> sudah mencapai <span style="font-weight:bold;">Next Update</span></li>
+                              <li>Barang yang dikirimkan harus sesuai dengan informasi barang yang telah tertera (keterangan dan foto)</li>
+                          </ol>                                                                        
                     </div>
                 </div>
             </div>
