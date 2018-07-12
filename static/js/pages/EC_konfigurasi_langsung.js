@@ -145,7 +145,6 @@ $(document).ready(function () {
         //     	lamahari = '0';
         //     }
         // });
-
         lamahari = $('#lamahari').val()
         if(lamahari==''){
             lamahari = '0';
@@ -171,7 +170,25 @@ $(document).ready(function () {
         // console.log(datavnd)
         // console.log(startDate)
         // console.log(endDate)
-        simpan(dataitems, datavnd, startDate, endDate, kode_update, lamahari, currency, 'insert')
+        if (vnd.length == 0 || $('#activityCurrency').val() == 0 || $('#activitySelector').val() == 0){
+            if (vnd.length == 0){
+                alert('Vendor Harus dipilih');
+            } else if ($('#activityCurrency').val() == 0){
+                alert('Currency Harus dipilih');
+            } else if ($('#activitySelector').val() == 0){
+                alert('Jangka Waktu masih Kosong, Silahkan pilih jangka waktu');
+            }
+        } else {
+            if ($('#activitySelector').val() == 510){
+                if ($('#lamahari').val() == '' || $('#lamahari').val() == 0){
+                    alert('Lama Hari masih Kosong')
+                } else {
+                    simpan(dataitems, datavnd, startDate, endDate, kode_update, lamahari, currency, 'insert')
+                }
+            } else {
+                simpan(dataitems, datavnd, startDate, endDate, kode_update, lamahari, currency, 'insert')
+            }
+        }
     }) 
 
     $('#saveItm').click(function () {

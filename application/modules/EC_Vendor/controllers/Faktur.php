@@ -37,15 +37,27 @@ class Faktur extends MX_Controller {
         // print_r($data);   
 // YANG LAMA END -------------
 		$this->load->library('sap_invoice');
+		$this->load->model('invoice/ec_faktur_ekspedisi','ef');
 		$vendor_id = $this->session->userdata('VENDOR_NO');
 		$act=$this->sap_invoice->getFakturPajakAll($vendor_id);
 		$data = array();
 
 		for ($i = 0; $i < count($act['output']); $i++) {
 			$cuk = $act['output'][$i]['XBLNR'];
+
+			$file_fp = "";
+			$ambil_faktur_header = $this->ef->getFakturByFaktur($cuk);
+			// echo "<pre>";
+			// print_r($ambil_faktur_header);
+			if(count($ambil_faktur_header)>0){
+				if(!empty($ambil_faktur_header[0]['FILE_FP'])){
+					$file_fp = $ambil_faktur_header[0]['FILE_FP'];
+				}
+			}
+
 			$cuk = substr($cuk, 0,3) .'.'. substr($cuk, 3,3 ) .'-'. substr($cuk, 6,2) .'.'. substr($cuk, 8,8);
 
-			$cuk1 = $act['output'][$i]['BLDAT'];
+			$cuk1 = $act['output'][$i]['TGL_EKSP'];
 			$cuk1 = substr($cuk1, 6,2).'-'.substr($cuk1, 4,2).'-'.substr($cuk1, 0,4);
 
 			$cuk2 = $act['output'][$i]['TGL_TRIMA'];
@@ -69,6 +81,8 @@ class Faktur extends MX_Controller {
 				'TGL_TERIMA' => $cuk2,
 				'POSISI'=>$act['output'][$i]['POS'],
 				'KET'=>$act['output'][$i]['KET'],
+				'FILE_FP'=>$file_fp,
+				'LINK_FILE_FP'=>$act['output'][$i]['LFILE'],
 				);
 			array_push($data, $data2);	
 		}
@@ -76,6 +90,7 @@ class Faktur extends MX_Controller {
 	}
 
 	public function ekspedisiFaktur(){   
+		// error_reporting(E_ALL);
 		$this->load->library('sap_invoice');
 
 // print_r($this->input->post('no_faktur'));
@@ -85,7 +100,7 @@ class Faktur extends MX_Controller {
 		$email=$this->input->post('email');
 		$email=$email[0];
 
-		$nama=$this->input>post('nama');
+		$nama=$this->input->post('nama');
 		$nama=$nama[0];
 		$jumlah=count($this->input->post('no_faktur'));
 		$company=$this->input->post('company');
@@ -97,6 +112,7 @@ class Faktur extends MX_Controller {
 		$bast=$this->input->post('tgl_bast');
 		$po=$this->input->post('po');  
 		$file_gambar=$this->input->post('file_gambar');  
+		$link_file_gambar=$this->input->post('link_file_gambar');  
         // $input_param=array(        
         //     'BUKRS' => $company,
         //     'LIFNR' => $this->session->userdata('VENDOR_NO'),
@@ -117,7 +133,8 @@ class Faktur extends MX_Controller {
 				'BLDAT' => $tgl_faktur[$i],
 				'BEDAT' => $bast[$i],
 				'HWBAS'=>$dpp[$i],
-				'EBELN'=>$po[$i]            
+				'EBELN'=>$po[$i],            
+				'LFILE'=>$link_file_gambar[$i]            
 				);       
 			array_push($input, $input_sap);
 		}
@@ -277,7 +294,7 @@ class Faktur extends MX_Controller {
 
 	public function doInsertFp() {
         // print_r( $this->input->post());die;
-		error_reporting(E_ALL);
+		// error_reporting(E_ALL);
 		$GAMBAR             = $_FILES['GAMBAR']['tmp_name'];
 		$tes                = dirname(__FILE__);
 		$pet_pat            = str_replace('application/modules/EC_Vendor/controllers', '', $tes);
@@ -303,7 +320,7 @@ class Faktur extends MX_Controller {
 
 
 	public function batalDocument() {
-		error_reporting(E_ALL);
+		// error_reporting(E_ALL);
 		$this->load->config('ec');
 		$this->load->library('sap_invoice');
 		// echo "<pre>";

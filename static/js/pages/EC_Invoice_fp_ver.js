@@ -277,7 +277,7 @@ function loadTable_invoice() {
 		// "scrollX" : true,
 		// "lengthMenu" : [5, 10, 25, 50, 75, 100],
 		"language" : {
-			"loadingRecords" : "<center><b>Please wait - Updating and Loading Data List Contract...</b></center>"
+			"loadingRecords" : "<center><b>Please wait - Updating and Loading Data Tax Invoice List...</b></center>"
 		},
 		"ajax" : $("#base-url").val() + 'EC_Invoice_fp_ver/get_invoice_lanjut',
 

@@ -1,14 +1,14 @@
 var range_harga = ['-', '-'],
-    base_url = $("#base-url").val(),
-    kodeParent = $("#kodeParent").val(),
-    searctTag = $("#tag").val(),
-    urlll = '/get_data/',
-    compare = [],
-    limitMin = 0,
-    limitMax = 10,
-    pageMax = 1,
-    pageMaxOld = 0,
-    compareCntrk = [];
+base_url = $("#base-url").val(),
+kodeParent = $("#kodeParent").val(),
+searctTag = $("#tag").val(),
+urlll = '/get_data/',
+compare = [],
+limitMin = 0,
+limitMax = 10,
+pageMax = 1,
+pageMaxOld = 0,
+compareCntrk = [];
 function loadDataList() {
 	$.ajax({
 		url : $("#base-url").val() + 'EC_Invoice_ver' + urlll,
@@ -51,18 +51,18 @@ function loadDataList() {
 				// console.log(now);
 				// console.log(startdate);
 				var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-            	var firstDate = new Date(startdate);
-            	var secondDate = new Date(now);
-            	var diffDays = Math.round(Math.round((secondDate.getTime() - firstDate.getTime()) / (oneDay)));
+				var firstDate = new Date(startdate);
+				var secondDate = new Date(now);
+				var diffDays = Math.round(Math.round((secondDate.getTime() - firstDate.getTime()) / (oneDay)));
             	//$("#x_Date_Difference").val(diffDays);
 
-				teks = '<tr>'
-				teks += '<td>' + data.data[i][2] + '</td>'
-				teks += '<td style="text-align: center;">' + diffDays + '</td>'
-				teks += '<td><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modalInvoinceNo" data-invoince="' + data.data[i][6] + '">' + data.data[i][1] + '</a></td>'
-				teks += '<td><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modalFaktur" data-faktur="' + data.data[i][7] + '">' + data.data[i][3] + '</a></td>'
-				teks += '<td>' + data.data[i][5] + '</td>'
-				teks += '<td>' + data.data[i][4] + '</td>'
+            	teks = '<tr>'
+            	teks += '<td>' + data.data[i][2] + '</td>'
+            	teks += '<td style="text-align: center;">' + diffDays + '</td>'
+            	teks += '<td><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modalInvoinceNo" data-invoince="' + data.data[i][6] + '">' + data.data[i][1] + '</a></td>'
+            	teks += '<td><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modalFaktur" data-faktur="' + data.data[i][7] + '">' + data.data[i][3] + '</a></td>'
+            	teks += '<td>' + data.data[i][5] + '</td>'
+            	teks += '<td>' + data.data[i][4] + '</td>'
 				//teks += '<td><a href="javascript:void(0)"><i class="glyphicon glyphicon-arrow-right"></i></a></td>'
 				teks += '<td onclick="viewdetail(this,\'' + data.data[i][1] + '\',\'' + data.data[i][2] + '\')"><a href="javascript:void(0)">Detail</a></td>'
 				teks += '/<tr>'
@@ -137,7 +137,7 @@ function viewdetail(element, invoiceno, docdate){
 				$("#InvoiceDetail").append(teks);
 
 			}
-	}).fail(function(data) {
+		}).fail(function(data) {
 		// console.log("error");
 		// $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
 	}).always(function(data) {
@@ -174,14 +174,14 @@ function offer(element, matno, dateS, dateE, select) {
 		$('#'+select).removeAttr('disabled');
 		$('#'+dateS+' .startDate').datepicker({
 			format: "dd/mm/yyyy",
-		   	autoclose: true,
-		   	todayHighlight: true
+			autoclose: true,
+			todayHighlight: true
 		});
-    	$('#'+dateE+' .endDate').datepicker({
-    		format: "dd/mm/yyyy",
-        	autoclose: true,
-        	todayHighlight: true
-    	});
+		$('#'+dateE+' .endDate').datepicker({
+			format: "dd/mm/yyyy",
+			autoclose: true,
+			todayHighlight: true
+		});
 		// $(element).parent().parent().find(".startDate").on('.datepicker.data-api');
 		// $(element).parent().parent().find(".endDate").on('.datepicker.data-api');
 		// $(element).parent().parent().find(".startDate").data('provide', 'datepicker')//attr('data-provide', 'datepicker');
@@ -283,7 +283,6 @@ function loadTable_invoice() {
 
 		"columnDefs" : [{
 			"searchable" : false,
-			"visible" : true,
 			"orderable" : true,
 			"targets" : 0
 		}],
@@ -293,100 +292,95 @@ function loadTable_invoice() {
 				$(this).find('td').attr('nowrap', 'nowrap');
 			});
 		},
-                "fnCreatedRow": function (row, data, index) {
-                    $('td', row).eq(0).html(index + 1);
-                },
+		"fnCreatedRow": function (row, data, index) {
+			$('td', row).eq(0).html(index + 1);
+		},
 		"drawCallback" : function(settings) {
 			$('#table_inv tbody tr').each(function() {
 				$(this).find('td').attr('nowrap', 'nowrap');
 			});
 		},
 		"columns" : [
-                 {
+		{
 			mRender : function(data, type, full) {
 				a = "<div class='col-md-12 text-center'>";
-        		a += full.NO;
-       		 	a += "</div>";
-        		return a;
+				a += full.NO;
+				a += "</div>";
+				return a;
 			}
 		}, {
 			mRender : function(data, type, full) {
-			if(full.COMPANYCODE=='2000'){
-            	COMPANYCODE='PT. Semen Indonesia';  
-        	} else if(full.COMPANYCODE=='7000'){
-            	COMPANYCODE='PT. Semen Indonesia ';  
-       		} else if(full.COMPANYCODE=='5000'){
-            	COMPANYCODE='PT. Semen Gresik';
-        	}
-        	a = "<div class='col-md-12 text-center'>";
-        	a += '<input type="hidden" name="COMPANYCODE[]" value="'+COMPANYCODE+'">' + COMPANYCODE;
-        	a += "</div>";
-        	return a;
-			}
-		},{
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12 text-center'>";
-        		a += full.TGL_EKSPEDISI;
-        		a += "</div>";
-        		return a;
-			}
-		}, {
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12 text-center'>";
-        		a += full.NO_EKSPEDISI;
-        		a += "</div>";
-        		return a;
-			}
-		}, {
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12'>";
-        		a += full.NO_FAKTUR;
-        		a += "</div>";
-        		return a;
-			}
-		}, {
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12'>";
-        		a += full.DPP;
-        		a += "</div>";
-        		return a;
-			}
-		}, {
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12'>";
-        		a += full.PPN;
-        		a += "</div>";
-        		return a;
-			}
-		},{
-			mRender : function(data, type, full) {
-				a = "<div class='col-md-12'>";
-        		a += "<a href="+$("#base-url").val() + 'upload/fp_ekspedisi/'+full.FILE_FP+" target=_blank>"+full.FILE_FP+"</a>";
-        		a += "</div>";
-        		return a;
-			}
-		},{
-			mRender : function(data, type, full) {
-        		if (full.KET == 'Belum diterima') {
-        		  TGL_TERIMA ='-';
-        		} else if (full.KET == 'Diterima') {
-        		  TGL_TERIMA = full.TGL_TERIMA;
-        		}
-
-        		a = "<div class='col-md-12 text-center'>";
-        		a += TGL_TERIMA;
-        		a += "</div>";
-        		return a;
+				if(full.COMPANYCODE=='2000'){
+					COMPANYCODE='PT. Semen Indonesia';  
+				} else if(full.COMPANYCODE=='7000'){
+					COMPANYCODE='PT. Semen Indonesia ';  
+				} else if(full.COMPANYCODE=='5000'){
+					COMPANYCODE='PT. Semen Gresik';
 				}
+				a = "<div class='col-md-12 text-center'>";
+				a += COMPANYCODE;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.TGL_EKSPEDISI;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NO_EKSPEDISI;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				if(full.LINK_FILE_FP!=""){
+					a += "<a href="+full.LINK_FILE_FP+" target=_blank>"+full.NO_FAKTUR+"</a>";
+				} else {
+					a += full.NO_FAKTUR;
+				}
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.DPP;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.PPN;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.KET;
+				a += "</div>";
+				return a;
+			}
 		}, {
 			mRender : function(data, type, full) {
 				a = "<div class='col-md-12 '>";
-				
-				if (full.KET == 'Belum diterima') {
-					a += '<input type="checkbox" name="NOFAK[]" value="'+full.NO_FAKTUR+'">';
-				} else {
+				a += '<input type="hidden" name="COMPANYCODE['+full.NOMOR+']" value="'+full.COMPANYCODE+'">';
+				a += '<input type="hidden" name="NOEKS['+full.NOMOR+']" value="'+full.NO_EKSPEDISI+'">';
+				a += '<input type="hidden" name="NO_VENDOR['+full.NOMOR+']" value="'+full.NO_VENDOR+'">';
+				a += '<input type="hidden" name="NO_FAKTUR['+full.NOMOR+']" value="'+full.NO_FAKTUR+'">';
 
-				}
+				a += '<input type="checkbox" name="NOFAK['+full.NOMOR+']" value="'+full.NO_FAKTUR_LOS+'">';
+				// if (full.KET == 'Belum diterima') {
+				// } else {
+				// 	// a += '<input type="checkbox" disabled="disabled" name="NOFAK['+full.NOMOR+']" value="'+full.NO_FAKTUR_LOS+'">';
+				// }
 				a += "</div>";
 				return a;
 			}
@@ -502,25 +496,25 @@ function loadTable_invoice() {
 	 mytable.order([10, 'desc']).draw();
 	 t10 = true;
 	 }
-	 });*/
+	});*/
 }
 var t0 = true,
-    t1 = true,
-    t2 = true,
-    t3 = true,
-    t4 = true,
-    t5 = true,
-    t6 = true,
-    t7 = true,
-    t8 = true,
-    t9 = true,
-    clicks = 0,
-    timer = null;
+t1 = true,
+t2 = true,
+t3 = true,
+t4 = true,
+t5 = true,
+t6 = true,
+t7 = true,
+t8 = true,
+t9 = true,
+clicks = 0,
+timer = null;
 var t = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9];
 $(document).ready(function() {
 
 	loadTable_invoice();
-        $(".sear").hide();
+	$(".sear").hide();
 	for (var i = 0; i < t.length; i++) {
 		$(".ts" + i).on("click", function(e) {
 			clicks++;
@@ -538,10 +532,10 @@ $(document).ready(function() {
 			e.preventDefault();
 		});
 	};
-  
-  $('a:contains("File Attachment")').click(function(){
-    $(this).css({'color' : 'blue'});
-  });
+
+	$('a:contains("File Attachment")').click(function(){
+		$(this).css({'color' : 'blue'});
+	});
 /*
 
 	$('.tgll .startDate').datepicker({
@@ -549,5 +543,5 @@ $(document).ready(function() {
 		autoclose : true,
 		todayHighlight : true
 	});
-  */
+	*/
 });

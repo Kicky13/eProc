@@ -63,7 +63,7 @@ class ec_approval_invoice extends MY_Model {
                 ON AI.ID_INVOICE = IH.ID_INVOICE AND IH.STATUS_HEADER = 5
             LEFT JOIN VND_HEADER VH
                 ON IH.VENDOR_NO = VH.VENDOR_NO 
-            LEFT JOIN EC_GR_SAP EGS ON EGS.EBELN=IH.NO_SP_PO
+            LEFT JOIN EC_GR_SAP EGS ON EGS.EBELN=IH.NO_SP_PO AND EGS.BELNR=IH.FI_NUMBER_SAP
         ";
 
         $query = array();

@@ -76,7 +76,12 @@ return a;
 },{
   mRender : function(data, type, full) {
     a = "<div class='col-md-12 text-center'>";
-    a += full.NO_FAKTUR;
+    if(full.LINK_FILE_FP!=""){
+      a += "<a href="+full.LINK_FILE_FP+" target=_blank>"+full.NO_FAKTUR+"</a>";
+    } else {
+      a += full.NO_FAKTUR;
+    }
+    
     a += "</div>";
     return a;
 }
@@ -128,10 +133,10 @@ return a;
       TGL_TERIMA ='-';
   } else if (full.KET == 'Diterima') {
       TGL_TERIMA = full.TGL_TERIMA;
-  }
+  } 
 
   a = "<div class='col-md-12 text-center'>";
-  a += TGL_TERIMA;
+  a += full.TGL_TERIMA;
   a += "</div>";
   return a;
 }
@@ -344,7 +349,7 @@ function addFaktur(elm,tabel) {
     var _jmlTr = _tbody.find('tr').length + 1;
     var _numberPattern = /\d+/g;
     // var _fileDocAkhir = _tbody.find('input[name^=fileLampiranBast]:last');    
-    if (_noFaktur == '' || _tglFaktur =='' || _tglBAST =='' || _dasarPajak =='' || _po =='' || _nama =='' || _email =='') {
+    if (_noFaktur == '' || _tglFaktur =='' || _tglBAST =='' || _dasarPajak =='' || _po =='' || _nama =='' || _email =='' || _GAMBAR =='') {
         bootbox.alert('Form wajib diisi semua');
     } else {
         teks = '<tr>';
@@ -356,7 +361,7 @@ function addFaktur(elm,tabel) {
         teks += '<td class="text-center"><input type="text" readonly name="po[]" value="'+_po+'"> </td>';        
         teks += '<td class="text-center"><input type="text" readonly name="nama[]" value="'+_nama+'"> </td>';        
         teks += '<td class="text-center"><input type="text" readonly name="email[]" value="'+_email+'"> </td>';        
-        teks += '<td class="text-center">'+'<input type="hidden" name="file_gambar[]" value="'+_GAMBAR+'"><a href="'+$('#base-url').val()+'upload/fp_ekspedisi/'+_GAMBAR+'" target="_blank">'+_GAMBAR+'</a>'+'</td>';        
+        teks += '<td class="text-center">'+'<input type="hidden" name="file_gambar[]" value="'+_GAMBAR+'"><input type="hidden" name="link_file_gambar[]" value="'+$('#base-url').val()+'upload/fp_ekspedisi/'+_GAMBAR+'"><a href="'+$('#base-url').val()+'upload/fp_ekspedisi/'+_GAMBAR+'" target="_blank">'+_GAMBAR+'</a>'+'</td>';        
         teks += '<td class="text-center"><span  onclick="removeRow(this)" class="link glyphicon glyphicon-trash" aria-hidden="true"></span></td>';
         teks += '</tr>';
 

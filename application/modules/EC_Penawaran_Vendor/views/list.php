@@ -25,7 +25,7 @@
                       <div class="panel-body">
                           <ol style="margin-left:50px;">
                               <li>Harga untuk produk yang dikirimkan sudah termasuk <span style="font-weight:bold;">PPH</span> dan <span style="font-weight:bold;">ongkos kirim</span> namun belum termasuk <span style="font-weight:bold;">PPN</span></li>
-                              <li>Harga untuk produk pengambilan sendiri sudah termasuk <span style="font-weight:bold;">PPH</span> namun tidak termasuk <span style="font-weight:bold;">PPH</span> dan <span style="font-weight:bold;">ongkos kirim</span></li>
+                              <li>Harga untuk produk pengambilan sendiri sudah termasuk <span style="font-weight:bold;">PPH</span> namun tidak termasuk <span style="font-weight:bold;">PPN</span> dan <span style="font-weight:bold;">ongkos kirim</span></li>
                               <li>Update Harga dan Delivery Time hanya dapat dilakukan ketika <span style="font-weight:bold;">Tanggal Sekarang</span> sudah mencapai <span style="font-weight:bold;">Next Update</span></li>
                               <li>Barang yang dikirimkan harus sesuai dengan informasi barang yang telah tertera (keterangan dan foto)</li>
                           </ol>                                                                        

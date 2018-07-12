@@ -18,7 +18,7 @@
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="max-width:98%;overflow:auto">
                                     <form id="etor-form" enctype="multipart/form-data" method="post" action="<?php echo base_url()?>EC_Invoice_fp_ver/ekspedisiFaktur">
-                                        <?php
+<!--                                         <?php
                                         $first_day_this_month = date('Y-m-01');
                                         $five_day_this_month = date('Y-m-05');
                                         $twentyfive_day_this_month = date('Y-m-25');
@@ -34,12 +34,12 @@
                                         ?>
                                         <?php 
                                         if($muncul!=""){
-                                            ?>
+                                            ?> -->
                                             <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
                                             <button class="btn btn-info pull-right" type="submit" style="margin:auto;display:block;">Ekspedisikan</button>
-                                            <?php
+<!--                                             <?php
                                         }
-                                        ?>
+                                        ?> -->
                                         <table id="table_inv" class="table table-striped nowrap" width="100%">
                                             <thead>
                                                 <tr>

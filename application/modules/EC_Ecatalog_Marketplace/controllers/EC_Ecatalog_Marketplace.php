@@ -2269,7 +2269,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //        if (isset($dataa)){
 //            $json_data = array('page' => $page, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
 //        } else {
-            $json_data = array('page' => count($this->Paging($this->compileDataPage_PL($dataa), $limitMin, $limitMax)), 'data' => $this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax), 'data1' => $this->compileDataPage_PL($dataa), 'totalItem' => count($this->compileDataPage_PL($dataa)));
+            $json_data = array('page' => count($this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax)), 'data' => $this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax), 'data1' => $this->compileDataPage_PL($dataa), 'totalItem' => count($this->compileDataPage_PL($dataa)));
 //        }
 
         //$this->getALL_lgsg($dataa));
@@ -2345,7 +2345,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         return $item;
     }
 
-    public function Paging($data = array(), $min, $max)
+    public function testPaging($data = array(), $min, $max)
     {
         $item = array();
         if ($max > count($data)){

@@ -76,7 +76,7 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 				'VENDOR_NAME' => $vendor[0]['VENDOR_NAME'],
 				'VENDOR_NO' => $vendor[0]['VENDOR_NO'],
 				'VENDOR_TYPE' => $vendor[0]['VENDOR_TYPE']
-			);       
+				);       
 			array_push($vendor_semua, $input_vendor);
 		}
 		$vendor_semua = array_unique($vendor_semua);
@@ -91,7 +91,7 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 				'LIFNR' => $vs['VENDOR_NO'],
 				'EMAIL' => $email,
 				'PERSON' => $nama
-			);  
+				);  
 
 			$input=array();
 			foreach ($no_faktur as $i => $a) {
@@ -105,7 +105,7 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 						'BEDAT' => date('Ymd', oraclestrtotime($ambil_faktur_header['INVOICE_DATE'])), 
 						'HWBAS' => $ambil_faktur_header['TOTAL_AMOUNT'], 
 						'EBELN' => $ambil_faktur_header['NO_SP_PO']            
-					);       
+						);       
 					array_push($input, $input_sap);
 				}
 			}    
@@ -122,7 +122,7 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 						'NATION'        => $vs['VENDOR_TYPE'],
 						'NAMA_SETOR'    => $nama,
 						'STATUS_SETOR'  => 2,
-					);    
+						);    
 					$this->db->trans_start();
 					$this->db->set('TGL_EKSPEDISI',"to_date('".$tgl_sekarang."','YYYYMMDD')",false);  
 					$this->db->insert('EC_FAKTUR_EAEA', $data);       
@@ -136,7 +136,7 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 							'PPN'=>$act['output'][$i]['HWSTE'],
 							'TGL_BAST'=>date('Ymd', oraclestrtotime($ambil_faktur_header['INVOICE_DATE'])),
 							'PO'=>$ambil_faktur_header['NO_SP_PO']
-						);       
+							);       
 						$this->db->insert('EC_FAKTUR_DETAILS', $data_detail);
 					}
 					$this->db->trans_complete();
@@ -228,10 +228,11 @@ class EC_Invoice_fp_pjk extends MX_Controller {
         // echo "string";die();
 		$act=$this->sap_invoice->getFakturPajakPerCompany($era);
 		$data = array();
-
+		// echo "<pre>";
+		// print_r($act);die;
 		for ($i=0; $i < count($act['output']) ; $i++) {
 			$cuk99 = $act['output'][$i]['XBLNR'];
-			$file_fp = " - ";
+			$file_fp = "";
 			$ambil_faktur_header = $this->ef->getFakturByFaktur($cuk99);
 			// echo "<pre>";
 			// print_r($ambil_faktur_header);
@@ -242,17 +243,19 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 			}
 			$cuk99 = substr($cuk99, 0,3) .'.'. substr($cuk99, 3,3 ) .'-'. substr($cuk99, 6,2) .'.'. substr($cuk99, 8,8);
 
-			$cuk1 = $act['output'][$i]['BLDAT'];
+			$cuk1 = $act['output'][$i]['TGL_EKSP'];
 			$cuk1 = substr($cuk1, 6,2).'-'.substr($cuk1, 4,2).'-'.substr($cuk1, 0,4);
 
 			$cuk2 = $act['output'][$i]['TGL_TRIMA'];
 			$cuk2 = substr($cuk2, 6,2).'-'.substr($cuk2, 4,2).'-'.substr($cuk2, 0,4); 
 			$cuk = array(
+				'NOMOR' => $i,
 				'COMPANYCODE' => $act['output'][$i]['BUKRS'],
 				'TGL_EKSPEDISI' => $cuk1,
 				'NO_EKSPEDISI' => $act['output'][$i]['EKSPNO'],
 				'NO_FAKTUR' => $cuk99,
-				'NO_VENDOR' => $this->session->userdata('VENDOR_NO'),
+				'NO_FAKTUR_LOS' => $act['output'][$i]['XBLNR'],
+				'NO_VENDOR' => $act['output'][$i]['LIFNR'],
 				'NAMA_VENDOR' => $act['output'][$i]['NAME1'],
 				'NPWP'=>$act['output'][$i]['STCD1'],
 				'TGL_FAKTUR' => $act['output'][$i]['BLDAT'],
@@ -266,7 +269,8 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 				'POSISI'=>$act['output'][$i]['POS'],
 				'KET'=>$act['output'][$i]['KET'],
 				'FILE_FP'=>$file_fp,
-			);
+				'LINK_FILE_FP'=>$act['output'][$i]['LFILE'],
+				);
 			array_push($data, $cuk);
 		}
         // echo "<pre>";
@@ -295,4 +299,94 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 		}
 		return $result;
 	}
+
+
+	public function approvePajak(){
+				// error_reporting(E_ALL);
+		$this->load->config('ec');
+		$this->load->library('sap_invoice');
+		$this->load->model('invoice/ec_faktur_ekspedisi','ef');
+
+		// echo "<pre>";
+		// print_r($this->input->post());die;
+
+		$pesan = "";
+
+		$NOFAK =  $this->input->post('NOFAK');
+		$COMPANYCODE =  $this->input->post('COMPANYCODE');
+		$NOEKS =  $this->input->post('NOEKS');
+		$NO_VENDOR =  $this->input->post('NO_VENDOR');
+		$NO_FAKTUR =  $this->input->post('NO_FAKTUR');
+		$jumlah=count($this->input->post('NOFAK'));
+
+		foreach ($NOFAK as $i => $a) {
+			$fp = $NOFAK[$i];
+			$company = $COMPANYCODE[$i];
+			$vn = $NO_VENDOR[$i];
+			$ekspedisi = $NOEKS[$i];
+			$faktur = $NO_FAKTUR[$i];
+
+			$act=$this->sap_invoice->approveFakturPajak($company, $ekspedisi, $fp, $vn);
+
+			// echo "<pre>";
+			// print_r($act);die;
+			if($act){
+				if($act['pesan']['TYPE']==='S'){
+					$pesan .= '[SUCCESS] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+				} else {
+					$pesan .= '[ERROR] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+				}
+			} else {
+				$pesan .= '[ERROR] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+			}
+		}
+
+		$this->session->set_flashdata('message', $pesan);
+		redirect('EC_Invoice_fp_pjk');
+	}
+
+	public function rejectPajak(){
+				// error_reporting(E_ALL);
+		$this->load->config('ec');
+		$this->load->library('sap_invoice');
+		$this->load->model('invoice/ec_faktur_ekspedisi','ef');
+
+		// echo "<pre>";
+		// print_r($this->input->post());die;
+
+		$pesan = "";
+
+		$NOFAK =  $this->input->post('NOFAK');
+		$COMPANYCODE =  $this->input->post('COMPANYCODE');
+		$NOEKS =  $this->input->post('NOEKS');
+		$NO_VENDOR =  $this->input->post('NO_VENDOR');
+		$NO_FAKTUR =  $this->input->post('NO_FAKTUR');
+		$jumlah=count($this->input->post('NOFAK'));
+
+		foreach ($NOFAK as $i => $a) {
+			$fp = $NOFAK[$i];
+			$company = $COMPANYCODE[$i];
+			$vn = $NO_VENDOR[$i];
+			$ekspedisi = $NOEKS[$i];
+			$faktur = $NO_FAKTUR[$i];
+
+			$act=$this->sap_invoice->rejectFakturPajak($company, $ekspedisi, $fp, $vn);
+			// echo "<pre>";
+			// print_r($act);die;
+			if($act){
+				if($act['pesan']['TYPE']==='S'){
+					$pesan .= '[SUCCESS] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+				} else {
+					$pesan .= '[ERROR] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+				}
+			} else {
+				$pesan .= '[ERROR] '.$act['pesan']['MESSAGE'].' [ Faktur No.'.$faktur." ]<br>";
+			}
+		}
+
+		$this->session->set_flashdata('message', $pesan);
+		redirect('EC_Invoice_fp_pjk');
+	}
+
+
 }

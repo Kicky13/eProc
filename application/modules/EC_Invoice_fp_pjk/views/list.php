@@ -17,23 +17,29 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="max-width:98%;overflow:auto">
-                                    <form id="etor-form" enctype="multipart/form-data" method="post" >
-                                            <button class="btn btn-info pull-right" type="submit" style="margin:auto;display:block;" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approveFaktur">APPROVE</button>
-                                            <button class="btn btn-info pull-right" type="cancel" style="margin:auto;display:block;" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectFaktur">REJECT</button>
-                                            <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
+                                    <form id="etor-form" enctype="multipart/form-data" method="post">
+<!--                                         <select name="action">
+                                            <option value="">Pilih</option>
+                                            <option value="1">Approve</option>
+                                            <option value="0">Reject</option>
+                                        </select>
+                                        <button class="btn btn-info pull-right" type="submit" style="margin:auto;display:block;">Submit</button> -->
+                                        <button class="btn btn-info pull-right" type="submit" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approvePajak">TERIMA</button>&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-danger pull-right" style="margin-right: 10px" type="cancel" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectPajak">KEMBALIKAN</button>
+                                        <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
                                         <table id="table_inv" class="table table-striped nowrap" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">NO</a></th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">COMPANY</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">TANGGAL EKSPEDISI</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">NO EKSPEDISI</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">FAKTUR PAJAK</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">PPN</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">FILE FP</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">TGL TERIMA</th>
-                                                    <th class="text-center ts"><a href="javascript:void(0)">ACTION</a></th>
+                                                    <th class="text-center ts0"><a href="javascript:void(0)">NO</a></th>
+                                                    <th class="text-center ts1"><a href="javascript:void(0)">COMPANY</th>
+                                                    <th class="text-center ts2"><a href="javascript:void(0)">TANGGAL EKSPEDISI</th>
+                                                    <th class="text-center ts3"><a href="javascript:void(0)">NO EKSPEDISI</th>
+                                                    <th class="text-center ts4"><a href="javascript:void(0)">FAKTUR PAJAK</th>
+                                                    <th class="text-center ts5"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</th>
+                                                    <th class="text-center ts6"><a href="javascript:void(0)">PPN</th>
+                                                    <!-- <th class="text-center ts"><a href="javascript:void(0)">FILE FP</th> -->
+                                                    <th class="text-center ts7"><a href="javascript:void(0)">STATUS</th>
+                                                    <th class="text-center ts8"><a href="javascript:void(0)">ACTION</a></th>
                                                 </tr>
                                                 <tr class="sear">
                                                     <th></th>
@@ -43,50 +49,50 @@
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                    <!-- <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> -->
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </form>
-                                    </div>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <br><br>
                 </div>
-            </div >
+                <br><br>
+            </div>
         </div >
-    </section>
+    </div >
+</section>
 
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <center><h4>Create Invoice</h4></center>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12 col-lg-12 col-lg-12">
-                                <?php echo form_open_multipart('EC_Invoice_Management/createInvoice/', array('method' => 'POST', 'class' => 'form-horizontal formCreate')); ?>
-                                <div class="form-group">
-                                    <label for="Invoice Date" class="col-sm-3 control-label">Tanggal Invoice</label>
-                                    <div class="col-sm-4 tgll">
-                                        <div class="input-group date startDate">
-                                            <input readonly="" id="startdate" required=""  class="form-control start-date" name="invoice_date"  type="text">
-                                            <span class="input-group-addon">
-                                                <a href="javascript:void(0)">
-                                                    <i class="glyphicon glyphicon-calendar"></i>
-                                                </a>
-                                            </span>
-                                        </div>
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center><h4>Create Invoice</h4></center>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-12 col-lg-12">
+                            <?php echo form_open_multipart('EC_Invoice_Management/createInvoice/', array('method' => 'POST', 'class' => 'form-horizontal formCreate')); ?>
+                            <div class="form-group">
+                                <label for="Invoice Date" class="col-sm-3 control-label">Tanggal Invoice</label>
+                                <div class="col-sm-4 tgll">
+                                    <div class="input-group date startDate">
+                                        <input readonly="" id="startdate" required=""  class="form-control start-date" name="invoice_date"  type="text">
+                                        <span class="input-group-addon">
+                                            <a href="javascript:void(0)">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </a>
+                                        </span>
                                     </div>
+                                </div>
                             <!-- <div class="col-sm-3">
                               <input type="text" class="form-control" id="invoice_date" name="invoice_date" readonly>
                           </div> -->
@@ -396,85 +402,85 @@
             <div class="modal-body">
                 <div class="row">
                     <!-- <div class="form-group"> -->
-                        <!-- <label for="picure" class="col-sm-2 control-label">Picure</label> -->
-                        <div class="col-md-8 col-md-offset-2">
-                            <br><br>
-                            <img id="picInvoince" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
-                            src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
-                        </div>
-                        <!-- </div> -->
+                    <!-- <label for="picure" class="col-sm-2 control-label">Picure</label> -->
+                    <div class="col-md-8 col-md-offset-2">
+                        <br><br>
+                        <img id="picInvoince" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
+                        src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
                     </div>
-
                     <!-- </div> -->
                 </div>
+
+                <!-- </div> -->
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="modalFaktur">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title text-center"><strong><u>Faktur Pajak<!-- <?php //echo $baseLanguage ['principal_manufacturer_addTtl'] ;   ?> --></u></strong></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <br><br>
-                            <img id="picFaktur" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
-                            src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
-                        </div>
+<div class="modal fade" id="modalFaktur">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center"><strong><u>Faktur Pajak<!-- <?php //echo $baseLanguage ['principal_manufacturer_addTtl'] ;   ?> --></u></strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <br><br>
+                        <img id="picFaktur" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
+                        src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="modalTracking">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title text-center"><strong><u>Tracking Invoice</u></strong></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
-                            <table id="tableTrack" class="table table-striped nowrap" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center ts0"><a href="javascript:void(0)">No</a></th>
-                                        <th class="text-center ts1"><a href="javascript:void(0)">Tanggal</a></th>
-                                        <th class="text-center ts2"><a href="javascript:void(0)">Status</a></th>
-                                        <th class="text-center ts2"><a href="javascript:void(0)">Keterangan</a></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bodyTableTrack">
-                                    <tr>
-                                        <td class="text-center">1</td>
-                                        <td class="text-center">1-1-2011</td>
-                                        <td class="text-center">Draft</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">2</td>
-                                        <td class="text-center">2-1-2011</td>
-                                        <td class="text-center">Submitted</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">3</td>
-                                        <td class="text-center">3-1-2011</td>
-                                        <td class="text-center">Rejected</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+<div class="modal fade" id="modalTracking">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center"><strong><u>Tracking Invoice</u></strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <table id="tableTrack" class="table table-striped nowrap" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center ts0"><a href="javascript:void(0)">No</a></th>
+                                    <th class="text-center ts1"><a href="javascript:void(0)">Tanggal</a></th>
+                                    <th class="text-center ts2"><a href="javascript:void(0)">Status</a></th>
+                                    <th class="text-center ts2"><a href="javascript:void(0)">Keterangan</a></th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyTableTrack">
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center">1-1-2011</td>
+                                    <td class="text-center">Draft</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">2</td>
+                                    <td class="text-center">2-1-2011</td>
+                                    <td class="text-center">Submitted</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">3</td>
+                                    <td class="text-center">3-1-2011</td>
+                                    <td class="text-center">Rejected</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

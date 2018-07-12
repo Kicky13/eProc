@@ -385,10 +385,10 @@ $(document).ready(function () {
         var _tr = $(this).closest('tr');
         var _tds = _tr.find('td');
         var _po_no = _tds.eq(1).text();
-        var _rr = _tds.eq(4).text();
-        var _year = _tds.eq(5).text().substring(6, 10);
-        var _desc = _tds.eq(6).text();
-        var _vendor = _tds.eq(7).text();
+        var _rr = _tds.eq(5).text();
+        var _year = _tds.eq(6).text().substring(6, 10);
+        var _desc = _tds.eq(7).text();
+        var _vendor = _tds.eq(8).text();
         var _item = $(this).data('item');
         var _jenispo = $(this).data('jenispo');
         var _data = {

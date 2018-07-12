@@ -67,6 +67,7 @@ class Gr extends MX_Controller {
         $data['vendor'] = $this->input->post('vendor');
         $data['act'] = $this->input->post('act');
         $data['detail_type'] = $this->input->post('detail_type');
+//        var_dump($data);die();
         if ($listLevel[0] == 0 && $data['detail_type'] == 'rr') {
             
             $data['urlsubmit'] = '';
@@ -77,7 +78,7 @@ class Gr extends MX_Controller {
             switch ($data['jenispo']) {
                 case 'BAHAN':
                     $data['detail'] = $this->egs->detailGrBahan($data['rr'], $data['po_no']);
-//                    echo $this->db->last_query();die();
+//                    echo $this->db->last_query();die();                    
                     break;
                 default:
                     $data['detail'] = $this->egs->detailGrSparepart($data['rr'], $data['po_no']);
@@ -136,6 +137,7 @@ class Gr extends MX_Controller {
             }
             $data['detail'] = $gr;
         }
+//        var_dump($data);die();
         $this->layout->render('EC_Approval/gr/form', $data);
     }
 
