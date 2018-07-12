@@ -345,8 +345,9 @@ function loadTable_() {
                 a += "</div>";
                 return a;
             }
-        },{
+        }, {
             mRender: function (data, type, full) {
+                onhide = '';
                 // hidden = '';
                 /*if(full.STATUS!=1){
                     hidden = 'hidden';
@@ -359,8 +360,13 @@ function loadTable_() {
                      '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                      '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                      '</div>';*/
+                if (full.VENDOR_APP != 1){
+                    onhide = 'hidden';
+                }
                 a = "<div class='col-md-12 text-center'>" +
-                    //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +                    
+                    //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a ' + onhide + ' href="javascript:approveVendor(' + (full.NOMERPO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a ' + onhide + ' href="javascript:rejectVendor(' + (full.NOMERPO) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
@@ -369,11 +375,11 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 disable = '';
-                if(full.STOCK_COMMIT==full.QTY_SHIPMENT){
+                if(full.STOCK_COMMIT==full.QTY_SHIPMENT || full.VENDOR_APP == 1){
                     disable = 'disabled'
                 }
                 a = "<div class='col-md-12 text-center'>";
-                a += "<input "+disable+" type='checkbox' data-kodeshipment=" + full.PO_NO + " class='items'>";
+                a += "<input "+disable+" type='checkbox' data-kodeshipment=" + full.PO_NO + " data-vendorapp=" + full.VENDOR_APP + " class='items'>";
                 a += "</div>";
                 return a;
             }

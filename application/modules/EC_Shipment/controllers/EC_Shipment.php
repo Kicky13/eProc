@@ -178,14 +178,6 @@ class EC_Shipment extends CI_Controller
         // echo json_encode($this->ec_shipment_m->detailIntransit());
     }
 
-    public function detailIntransit2()
-    {
-        header('Content-Type: application/json');
-        $this->load->model('ec_shipment_m');
-        echo json_encode(array('data' => $this->compileIntransit($this->ec_shipment_m->detailIntransit($this->session->userdata['VENDOR_NO']))));
-        // echo json_encode($this->ec_shipment_m->detailIntransit());
-    }
-
     public function compileIntransit($data)
     {
         $shipment = '';
