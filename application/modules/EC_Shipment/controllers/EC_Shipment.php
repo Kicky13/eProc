@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Shipment extends CI_Controller
+class EC_Shipment extends MX_Controller
 {
 
     private $user;
@@ -204,6 +204,95 @@ class EC_Shipment extends CI_Controller
             $shipment = $data[$i]['NO_SHIPMENT'];
         }
         return $data;
+    }
+
+    public function approveVendor($po)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        if ($this->ec_shipment_m->approveVendor($po)){
+            $this->userNotification('Approve', $po);
+        }
+        redirect('EC_Shipment/index/');
+    }
+
+    public function rejectVendor($po)
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_shipment_m');
+        if ($this->ec_shipment_m->rejectVendor($po)){
+            $this->userNotification('Reject', $po);
+        }
+        redirect('EC_Shipment/index/');
+    }
+
+    public function userNotification($action, $po)
+    {
+        $this->load->model('ec_shipment_m');
+        $info = $this->ec_shipment_m->getPOHistory($po);
+        $vendor = $this->ec_shipment_m->getVendorInfo($po);
+        $tableData = $this->ec_shipment_m->detailHistory($po);
+        $send = 'kicky120@gmail.com';
+        if (isset($tableData)){
+            $table = $this->buildTableNotification($tableData, $vendor);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'Nomor PO ' . $po . ' Telah '.$action.' Oleh Vendor '.$vendor['VENDOR_NAME'].' Fwd To : '.$info['EMAIL'],
+                'title_header' => 'Nomor PO ' . $po . ' Telah di '.$action.' Oleh Vendor '.$vendor['VENDOR_NAME'],
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'PO No. '.$po.' Berhasil di '.$action.'.[E-Catalog Semen Indonesia] Fwd To : '.$info['EMAIL'];
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $send, $message, $subject);
+        }
+    }
+
+    private function buildTableNotification($tableData, $vendor) {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;" class="text-center"> No.</th>
+                <th style="font-weight:600;"> No. PO</th>
+                <th style="font-weight:600;"> Nama Vendor</th>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Plant</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        $no=1;
+        foreach ($tableData as $d) {
+            if (isset($d['MATNO'])){
+                $_tr = '<tr>
+                    <td> '.$no++.'</td>
+                    <td> '.$vendor['PO_NO'].'</td>                      
+                    <td> '.$vendor['VENDOR_NAME'].'</td>
+                    <td> '.$d['MATNO'].'</td>
+                    <td> '.$d['MAKTX'].'</td>                   
+                    <td> '.$d['QTY'].'</td>                      
+                    <td> '.$d['PLANT'].' - '.$d['PLANT_NAME'].'</td>                            
+                  </tr>';
+                array_push($tbody, $_tr);
+            }
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
+    }
+
+    public function testQuery()
+    {
+        $userid = '833';
+        $po = '4500001192';
+        $this->db->select('APR.*, VEN.VENDOR_NAME, VEN.EMAIL_ADDRESS');
+        $this->db->from('EC_PL_APPROVAL APR');
+        $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
+        $this->db->where('APR.PO_NO', $po);
+        $result = $this->db->get();
+        echo json_encode((array)$result->row_array());
     }
 
     public function send($kode_shipment)

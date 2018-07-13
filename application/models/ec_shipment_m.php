@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_shipment_m extends CI_Model
 {
-    protected $table = 'EC_T_CONTRACT', $tableTrackingPO = 'EC_TRACKING_PO', $tableApproval = 'EC_PL_APPROVAL', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tableShipment = 'EC_T_SHIPMENT', $tableDetailShipment = 'EC_T_DETAIL_SHIPMENT', $tableHeaderGr = 'EC_GR_MATERIAL';
+    protected $table = 'EC_T_CONTRACT', $tableTrackingPO = 'EC_TRACKING_PO', $tableApproval = 'EC_PL_APPROVAL', $tableCC = 'EC_M_COSTCENTER', $tableCart = 'EC_T_CHART', $tableVendor = 'VND_HEADER', $tablePrincipal = 'EC_PRINCIPAL_MANUFACTURER', $tableEC_R1 = 'EC_R1', $tableStrategic = 'EC_M_STRATEGIC_MATERIAL', $tableCompare = 'EC_T_PERBANDINGAN', $tableFeedback = 'EC_FEEDBACK', $tableAssign = 'EC_PL_ASSIGN', $tablePenawaran = 'EC_PL_PENAWARAN', $tableShipment = 'EC_T_SHIPMENT', $tableDetailShipment = 'EC_T_DETAIL_SHIPMENT', $tableEmployee = 'ADM_EMPLOYEE', $tableHeaderGr = 'EC_GR_MATERIAL';
 
     public function __construct()
     {
@@ -281,6 +281,13 @@ class ec_shipment_m extends CI_Model
         return $PROGRESS_APP == $MAX_APPROVE + 1;
     }
 
+    function approveVendor($po)
+    {
+        $this->db->where("PO_NO", $po);
+        $this->db->update($this->tableApproval, array('VENDOR_APP' => '0'));
+        return true;
+    }
+
     function reject($PO)
     {
         $this->db->where("PO_NO", $PO, TRUE);
@@ -292,6 +299,33 @@ class ec_shipment_m extends CI_Model
         $this->db->query($SQL);
     }
 
+    function rejectVendor($po)
+    {
+        $this->db->where("PO_NO", $po);
+        $this->db->update($this->tableApproval, array('VENDOR_APP' => '2'));
+        return true;
+    }
+
+    function getPOHistory($po)
+    {
+        $this->db->select($this->tableTrackingPO.'.*, '.$this->tableEmployee.'.EMAIL');
+        $this->db->from($this->tableTrackingPO);
+        $this->db->join($this->tableEmployee, $this->tableTrackingPO.'.USERID = '.$this->tableEmployee.'.ID');
+        $this->db->where('PO_NO', $po);
+        $this->db->order_by('INDATE', 'ASC');
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getVendorInfo($po)
+    {
+        $this->db->select('APR.*, VEN.VENDOR_NAME, VEN.EMAIL_ADDRESS');
+        $this->db->from('EC_PL_APPROVAL APR');
+        $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
+        $this->db->where('APR.PO_NO', $po);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
 
     function detail($kdshipment)
     {
@@ -309,6 +343,30 @@ class ec_shipment_m extends CI_Model
         return (array)$result->result_array();
     }
 
+    function getDetailPO($userid, $po)
+    {
+        $this->db->select('CT.PO_NO NOMERPO,TO_CHAR ((TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7), \'dd-mm-yyyy hh24:mi:ss\' ) COMMIT_DATE, CT.DATE_BUY,EC_PL_APPROVAL.CURR, VND_HEADER.VENDOR_NAME,  EC_PL_APPROVAL."VALUE",TDP.STOK_COMMIT, EC_PL_APPROVAL.VENDORNO,  EC_TRACKING_PO.*,TDP.DELIVERY_TIME',
+            false);
+        $this->db->from('(SELECT  PO_NO,  DATE_BUY FROM EC_T_CHART  WHERE CONTRACT_NO =  \'PL2018\' AND PO_NO IS NOT NULL GROUP BY  PO_NO, DATE_BUY ) CT');
+        $this->db->join('(SELECT P1.* FROM EC_TRACKING_PO P1 INNER JOIN (SELECT PO_NO,MAX(INDATE) DATE1 FROM EC_TRACKING_PO GROUP BY PO_NO) P2 ON P1.PO_NO=P2.PO_NO AND P1.INDATE=P2.DATE1 )EC_TRACKING_PO',
+            'EC_TRACKING_PO.PO_NO = CT.PO_NO', 'left');
+        $this->db->join('EC_PL_APPROVAL', 'CT.PO_NO = EC_PL_APPROVAL.PO_NO', 'inner');
+        $this->db->join('VND_HEADER', 'VND_HEADER.VENDOR_NO = EC_PL_APPROVAL.VENDORNO', 'left');
+        $this->db->join('EC_PL_CONFIG_APPROVAL', 'EC_PL_APPROVAL.PROGRESS_APP = EC_PL_CONFIG_APPROVAL.PROGRESS_CNF AND EC_PL_APPROVAL.COSCENTER = EC_PL_CONFIG_APPROVAL.UK_CODE', 'inner');
+        $this->db->join('(SELECT SUM(PRICE) PRICE,SUM(STOK_COMMIT) STOK_COMMIT,PO_NO,DELIVERY_TIME FROM EC_T_DETAIL_PENAWARAN 
+                            INNER JOIN EC_T_CHART CT ON CT.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN 
+                            GROUP BY PO_NO,DELIVERY_TIME) TDP ', 'CT.PO_NO = TDP.PO_NO', 'inner');
+        $this->db->where('EC_PL_CONFIG_APPROVAL.USERID', $userid, TRUE);
+        $this->db->where('CT.PO_NO', $po, TRUE);
+        //        $this->db->where('EC_PL_CONFIG_APPROVAL.UK_CODE', $userid, TRUE);
+        $this->db->where('EC_PL_APPROVAL.STATUS', '1', TRUE);
+        $this->db->where('EC_PL_APPROVAL.PROGRESS_APP_GUDANG', '0', TRUE);
+        // $this->db->where('EC_PL_APPROVAL.PROGRESS_APP<=', 'EC_PL_APPROVAL.MAX_APPROVE', false);
+        $this->db->where('(TO_DATE(CT.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7) >=', '(SELECT SYSDATE FROM DUAL)', false);
+        $this->db->order_by('CT.PO_NO DESC');
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
 
     function detailCart($PO)
     {

@@ -365,8 +365,8 @@ function loadTable_() {
                 }
                 a = "<div class='col-md-12 text-center'>" +
                     //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a ' + onhide + ' href="javascript:approveVendor(' + (full.NOMERPO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a ' + onhide + ' href="javascript:rejectVendor(' + (full.NOMERPO) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a ' + onhide + ' href="javascript:approveVendor(' + (full.PO_NO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a ' + onhide + ' href="javascript:rejectVendor(' + (full.PO_NO) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
@@ -375,7 +375,7 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 disable = '';
-                if(full.STOCK_COMMIT==full.QTY_SHIPMENT || full.VENDOR_APP == 1){
+                if(full.STOCK_COMMIT==full.QTY_SHIPMENT || full.VENDOR_APP != 0){
                     disable = 'disabled'
                 }
                 a = "<div class='col-md-12 text-center'>";
@@ -387,13 +387,7 @@ function loadTable_() {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 if(full.QTY_SHIPMENT > 0){
-                    if(shipment != full.PO_NO){
-                        a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';
-                        shipment = full.PO_NO;
-                    } else {
-                        a += '<p> </p>';
-                        shipment = full.PO_NO;
-                    }
+                    a += '<button class="btn btn-sm btn-success btn-print" data-po=' + full.PO_NO + ' data-vendor=' + full.VENDORNO + '><i class="fa fa-edit"></i> Cetak PO</button>';
                 }
                 a += "</div>";
                 return a;
@@ -517,6 +511,20 @@ function loadTable_() {
             t9 = true;
         }
     });*/
+}
+
+function approveVendor(PO) {
+    bootbox.confirm('Konfirmasi Approve PO?', function (result) {
+        if (result)
+            window.location.href = $("#base-url").val() + 'EC_Shipment/approveVendor/' + PO
+    });
+}
+
+function rejectVendor(PO) {
+    bootbox.confirm('Konfirmasi Approve PO?', function (result) {
+        if (result)
+            window.location.href = $("#base-url").val() + 'EC_Shipment/rejectVendor/' + PO
+    });
 }
 
 function loadTable_Intransit() {
