@@ -1120,7 +1120,7 @@ $('#shipment').on('show.bs.modal', function (event) {
         teks += 'Nomor PO: '+items[po]+''
         teks += '</div>'
         teks += '<div class="col-md-9">'
-        teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
+        // teks += '<button type="button" id="" class="btn btn-success btn-xs pull-right" onclick="showItems('+po+','+items[po]+')">Show List Items</button>'
         teks += '</div>'
         teks += '</div>'
         teks += '<div class="row">'

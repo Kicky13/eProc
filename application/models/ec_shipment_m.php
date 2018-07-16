@@ -146,7 +146,8 @@ class ec_shipment_m extends CI_Model
     public function getPORelease_old2($VENDORNO){
         $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC", MAT.MAKTX, MAT.MEINS,
             TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE,
-            TO_CHAR ((TO_DATE(TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(DP.DELIVERY_TIME)), \'dd-mm-yyyy\' ) EXPIRED_DATE', 
+            TO_CHAR ((TO_DATE(TS.IN_DATE, \'dd-mm-yyyy hh
+            24:mi:ss\')+TO_NUMBER(DP.DELIVERY_TIME)), \'dd-mm-yyyy\' ) EXPIRED_DATE',
             false);
         $this->db->from('EC_T_SHIPMENT TS');
         $this->db->join('EC_T_CHART TC', 'TC.PO_NO=TS.PO_NO', 'left');
@@ -285,6 +286,7 @@ class ec_shipment_m extends CI_Model
     {
         $this->db->where("PO_NO", $po);
         $this->db->update($this->tableApproval, array('VENDOR_APP' => '0'));
+        $this->recordApprovalVnd($po);
         return true;
     }
 
@@ -303,6 +305,7 @@ class ec_shipment_m extends CI_Model
     {
         $this->db->where("PO_NO", $po);
         $this->db->update($this->tableApproval, array('VENDOR_APP' => '2'));
+        $this->recordApprovalVnd($po);
         return true;
     }
 
@@ -317,12 +320,36 @@ class ec_shipment_m extends CI_Model
         return (array)$result->row_array();
     }
 
+    function recordApprovalVnd($PO)
+    {
+        $prev = $this->prevApprove($PO);
+        $status = $prev['STATUS_PO'] + 1;
+        if ($prev['NAMA_USER'] == $this->session->userdata['FULLNAME']){
+            return true;
+        } else {
+            $SQL = "INSERT INTO EC_TRACKING_PO VALUES ( 
+                '" . $PO . "', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), '" . $status . "', 1,'" . $this->session->userdata['ID'] . "', '" .
+                $this->session->userdata['FULLNAME'] . "')";
+            $this->db->query($SQL);
+            return true;
+        }
+    }
+
     function getVendorInfo($po)
     {
         $this->db->select('APR.*, VEN.VENDOR_NAME, VEN.EMAIL_ADDRESS');
         $this->db->from('EC_PL_APPROVAL APR');
         $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
         $this->db->where('APR.PO_NO', $po);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function prevApprove($po)
+    {
+        $this->db->from($this->tableTrackingPO);
+        $this->db->where('PO_NO', $po);
+        $this->db->order_by('STATUS_PO', 'DESC');
         $result = $this->db->get();
         return (array)$result->row_array();
     }

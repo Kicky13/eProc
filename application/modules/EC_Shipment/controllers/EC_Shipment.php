@@ -292,7 +292,7 @@ class EC_Shipment extends MX_Controller
         $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
         $this->db->where('APR.PO_NO', $po);
         $result = $this->db->get();
-        echo json_encode((array)$result->row_array());
+        echo json_encode($this->session->userdata);
     }
 
     public function send($kode_shipment)

@@ -201,7 +201,7 @@ $(document).ready(function () {
                     vnd.push(String($(this).data("vndno")));
         });
         datavnd = JSON.stringify(vnd)
-        // console.log(datavnd)
+        console.log(datavnd)
         console.log("matno" + $("#matno").val())
         edit($("#matno").val(), datavnd, startDate, endDate)
     })
@@ -381,8 +381,9 @@ function edit(itm, vnd, start, end) {
     }).done(function (data) {
         console.log(data)
     }).always(function (data) {
+        console.log(data)
         $('#modalItem').modal('hide')
-        location.reload();
+        // location.reload();
     })
 }
 
@@ -396,7 +397,7 @@ function setCode(id, elm) {
     });
     $(elm).css('color', '#e74c3c')
     loadTableItem(id)
-
+    loadTableItemPublish(id);
     $('.breadcrumb').empty()
     $('.breadcrumb').append('<li><a href="javascript:void(0)"><span style="color:#e74c3c;" class="glyphicon glyphicon-home" aria-hidden="true"></span></a><a href="javascript:void(0)">&nbsp;&nbsp;Kategori</a></li>')
     splitt = id.split("-")
@@ -416,7 +417,7 @@ function loadTableVnd(data) {
     // no = 1;
     $('#table_vnd').DataTable().destroy();
     $('#table_vnd tbody').empty();
-    mytable = $('#table_vnd').DataTable({
+    mytable = $('#table_vnd').DataTable({        
         "bSort": false,
         "dom": 'rtilp',
         "bAutoWidth": false,
@@ -437,16 +438,6 @@ function loadTableVnd(data) {
             "orderable": true,
             "targets": 0
         }],
-        "fnInitComplete": function () {
-            $('#table_vnd tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');
-            });
-        },
-        "drawCallback": function (settings) {
-            $('#table_vnd tbody tr').each(function () {
-                $(this).find('td').attr('nowrap', 'nowrap');
-            });
-        },
         "columns": [{
             mRender: function (data, type, full) {
                 // console.log(full);
@@ -962,7 +953,7 @@ function loadTableItem(KODE_USER) {
 
 }
 
-function loadTableItemPublish() {
+function loadTableItemPublish(KODE_USER) {
     // no = 1;
     $('#table_item_publish').DataTable().destroy();
     $('#table_item_publish tbody').empty();
@@ -975,7 +966,7 @@ function loadTableItemPublish() {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data Item...</b></center>"
         },
 
-        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Langsung/getItemPublish/',
+        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Langsung/getItemPublish/'+KODE_USER,
         "columnDefs": [{
             "searchable": false,
             "orderable": true,

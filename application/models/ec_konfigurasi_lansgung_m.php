@@ -66,16 +66,20 @@ class ec_konfigurasi_lansgung_m extends CI_Model
         for ($i = 1; $i < sizeof($matgrp); $i++) 
             $SQL .= (" OR EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matgrp[$i] . "'");
 
-        $result = $this->db->query("SELECT MATKL,PRODUCT_CODE,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
+        $result = $this->db->query("SELECT MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
 FROM EC_M_STRATEGIC_MATERIAL
 JOIN VND_PRODUCT ON EC_M_STRATEGIC_MATERIAL.MATKL = VND_PRODUCT.PRODUCT_CODE
 LEFT JOIN VND_HEADER ON VND_PRODUCT.VENDOR_ID = VND_HEADER.VENDOR_ID
 WHERE VND_HEADER.VENDOR_NO IS NOT NULL AND $SQL
-GROUP BY MATKL,PRODUCT_CODE,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
+GROUP BY MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
 UNION
-SELECT VP.PRODUCT_CODE as MATKL,VP.PRODUCT_CODE,VH.VENDOR_ID,VH.VENDOR_NO,VH.VENDOR_NAME 
+SELECT listagg(VP.PRODUCT_CODE,', ') within group( order by VP.PRODUCT_CODE ) as MATKL,VH.VENDOR_ID,VH.VENDOR_NO,VH.VENDOR_NAME 
 FROM VND_PRODUCT VP RIGHT JOIN VND_HEADER VH ON VP.VENDOR_ID=VH.VENDOR_ID 
-WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO");
+WHERE VP.VENDOR_ID IS NOT NULL AND VH.VENDOR_NO IS NOT NULL
+GROUP BY VH.VENDOR_ID,VH.VENDOR_NO,VENDOR_NAME
+ORDER BY MATKL,VENDOR_NO");
+//$this->db->last_query();die();
+        // $this -> db -> order_by('PL.VENDORNO');        
         return (array)$result->result_array();
     }
     
@@ -143,19 +147,15 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
         $this->db->join('VND_PRODUCT', 'EC_M_STRATEGIC_MATERIAL.MATKL = VND_PRODUCT.PRODUCT_CODE', 'inner');
         $this->db->join('VND_HEADER', 'VND_PRODUCT.VENDOR_ID = VND_HEADER.VENDOR_ID', 'left');
         $this->db->join("(SELECT VENDORNO FROM EC_PL_ASSIGN WHERE MATNO='" . $matno . "' GROUP BY VENDORNO) PL", 'VND_HEADER.VENDOR_NO = PL.VENDORNO', 'left');
-        $this->db->where("VND_HEADER.VENDOR_NO IS NOT NULL");
-        // $this -> db -> where("EC_M_STRATEGIC_MATERIAL.MATNR", $matno, true);
-        $this->db->where("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "'");
-        // $this -> db -> where("(EC_M_STRATEGIC_MATERIAL.MATNR = '" . $matno . "' AND EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "')");
-//        $this->db->or_where("VND_HEADER.VENDOR_NO IS NOT NULL");
-//        $this->db->where("PL.VENDORNO IS NULL");
+        $this->db->where("VND_HEADER.VENDOR_NO IS NOT NULL");        
+        $this->db->where("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "'");        
+        $this->db->or_where("VND_HEADER.VENDOR_NO IS NOT NULL");
+        $this->db->where("PL.VENDORNO IS NULL");
         $this->db->group_by($slc);
         $this->db->order_by('PL.VENDORNO');
-//        $this->db->get();
-//        echo $this->db->last_query();die();
         $result = $this->db->get();
         return (array)$result->result_array();
-    }        
+    }
 
     public function getVndMatnoOld($matno = '', $matnogrp = '')
     {
@@ -213,13 +213,23 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
 
     public function edit($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
     {
-        $this->db->where('MATNO', $itms);
-        $this->db->delete('EC_PL_ASSIGN');
+        $assign = $this->existAssign();
+        for ($i = 0; $i < count($vnds); $i++){
+            for ($j = 0; $j < count($assign); $j++){
+                if ($vnds[$i] == $assign[$j]['VENDORNO']){
+                    unset($vnds[$i]);
+                }
+            }
+        }
+//        $this->db->where('MATNO', $itms);
+//        $this->db->delete('EC_PL_ASSIGN');
         $now = date("Y-m-d H:i:s");
         $startDate = date("d-m-Y");
         $endDate = null;
+        $query = array();
         foreach ($vnds as $values) {
-            $SQL = "INSERT INTO EC_PL_ASSIGN
+//            if ($this->cekAssign($itms, $values) == 2){
+                $SQL = "INSERT INTO EC_PL_ASSIGN
 				VALUES
 					(
 						'',
@@ -238,8 +248,21 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
 							'YYYY-MM-DD HH24:MI:SS'
 						),NULL,'" . $kode_update . "','" . $lamahari . "','" . $currency . "'
 					)";
-            $this->db->query($SQL);
+                $this->db->query($SQL);
+                array_push($query, $SQL);
+//            } else {
+//                break;
+//            }
         }
+    }
+
+    public function existAssign($matno)
+    {
+        $this->db->from('EC_PL_ASSIGN');
+        $this->db->where('MATNO', $matno);
+//        $this->db->where('VENDORNO', $vnd);
+        $result = $this->db->get();
+        return (array)$result->result_array();
     }
 
     public function getItem($kode_user)
@@ -273,7 +296,7 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
     //OR EM.PUBLISHED_LANGSUNG=1
     //AND EM.PUBLISHED_LANGSUNG != 1
 
-    public function getItemPublish()
+    public function getItemPublish($kode_user)
     {
         $SQL = "SELECT
 				EM.MATNR,
@@ -296,7 +319,7 @@ WHERE VP.VENDOR_ID IS NULL AND VH.VENDOR_NO IS NOT NULL ORDER BY MATKL,VENDOR_NO
 			LEFT JOIN (SELECT MATNO,START_DATE,END_DATE,KODE_UPDATE,DAYS_UPDATE,CURRENCY FROM EC_PL_ASSIGN GROUP BY MATNO,START_DATE,END_DATE,KODE_UPDATE,DAYS_UPDATE,CURRENCY) PL ON EM.MATNR = PL.MATNO
 			INNER JOIN EC_M_CATEGORY EC ON EC.ID_CAT = EM.ID_CAT
 			WHERE
-				EM.PUBLISHED_LANGSUNG=1			 
+				EC.KODE_USER LIKE '" . $kode_user . "'	and EM.PUBLISHED_LANGSUNG=1			 
 			ORDER BY
 					EM.DATEUP DESC NULLS LAST, EM.PUBLISHED_LANGSUNG DESC";
         $result = $this->db->query($SQL);

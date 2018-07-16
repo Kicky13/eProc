@@ -58,11 +58,11 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         echo json_encode(array('data' => $result));
     }
 
-    public function getItemPublish()
+    public function getItemPublish($value = '')
     {
         // header('Content-Type: application/json');
         $this->load->model('ec_konfigurasi_lansgung_m');
-        $result = $this->ec_konfigurasi_lansgung_m->getItemPublish();
+        $result = $this->ec_konfigurasi_lansgung_m->getItemPublish($value);
         for ($i = 0; $i < 0; $i++) {
             $data[$i]["MATNR"] = $result[$i]["MATNR"];
             $data[$i]["MATKL"] = $result[$i]["MATKL"];
