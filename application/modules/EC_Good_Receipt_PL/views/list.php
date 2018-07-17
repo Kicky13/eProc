@@ -106,7 +106,7 @@
                                             <th class="text-center ts4"><a href="javascript:void(0)">Line Item</a></th>
                                             <th class="text-center ts5"><a href="javascript:void(0)">Material</a></th>
                                             <th class="text-center ts6"><a href="javascript:void(0)">Qty Shipment</a></th>
-                                            <th class="text-center ts7"><a href="javascript:void(0)">Qty Receipt</a></th>
+                                            <th class="text-center ts7"><a href="javascript:void(0)">Qty</a></th>
                                             <th class="text-center ts8"><a href="javascript:void(0)">UoM</a></th>
                                             <th class="text-center ts9"><a href="javascript:void(0)">Plant</a></th>
                                             <th class="text-center ts10"><a href="javascript:void(0)">Expired Date</a></th>

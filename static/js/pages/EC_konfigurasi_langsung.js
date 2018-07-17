@@ -195,11 +195,11 @@ $(document).ready(function () {
         vnd = []
         startDate = $('#startdatemodal').val()
         endDate = $('#enddatemodal').val()
-        $(".vndEdit").each(function () {
+        $('#table_vnd_2').DataTable().$('.vndEdit').each(function(){            
             if ($(this).is(":checked"))
                 if (vnd.indexOf($(this).data("vndno")) == -1)
-                    vnd.push(String($(this).data("vndno")));
-        });
+                    vnd.push(String($(this).data("vndno")));            
+        })
         datavnd = JSON.stringify(vnd)
         console.log(datavnd)
         console.log("matno" + $("#matno").val())

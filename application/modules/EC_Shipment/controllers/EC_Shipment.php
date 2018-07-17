@@ -231,10 +231,10 @@ class EC_Shipment extends MX_Controller
         $this->load->model('ec_shipment_m');
         $info = $this->ec_shipment_m->getPOHistory($po);
         $vendor = $this->ec_shipment_m->getVendorInfo($po);
-        $tableData = $this->ec_shipment_m->detailHistory($po);
+        $tableData = $this->ec_shipment_m->detailPO($po);
         $send = 'kicky120@gmail.com';
         if (isset($tableData)){
-            $table = $this->buildTableNotification($tableData, $vendor);
+            $table = $this->buildTableNotification($tableData);
             $data = array(
                 'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
                 'title' => 'Nomor PO ' . $po . ' Telah '.$action.' Oleh Vendor '.$vendor['VENDOR_NAME'].' Fwd To : '.$info['EMAIL'],
@@ -246,7 +246,7 @@ class EC_Shipment extends MX_Controller
         }
     }
 
-    private function buildTableNotification($tableData, $vendor) {
+    private function buildTableNotification($tableData) {
         $tableGR = array(
             '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
         );
@@ -267,11 +267,11 @@ class EC_Shipment extends MX_Controller
             if (isset($d['MATNO'])){
                 $_tr = '<tr>
                     <td> '.$no++.'</td>
-                    <td> '.$vendor['PO_NO'].'</td>                      
-                    <td> '.$vendor['VENDOR_NAME'].'</td>
+                    <td> '.$d['PO_NO'].'</td>                      
+                    <td> '.$d['VENDOR_NAME'].'</td>
                     <td> '.$d['MATNO'].'</td>
                     <td> '.$d['MAKTX'].'</td>                   
-                    <td> '.$d['QTY'].'</td>                      
+                    <td> '.$d['QTY_ORDER'].'</td>                      
                     <td> '.$d['PLANT'].' - '.$d['PLANT_NAME'].'</td>                            
                   </tr>';
                 array_push($tbody, $_tr);
@@ -285,14 +285,15 @@ class EC_Shipment extends MX_Controller
 
     public function testQuery()
     {
+        $this->load->model('ec_shipment_m');
         $userid = '833';
-        $po = '4500001192';
-        $this->db->select('APR.*, VEN.VENDOR_NAME, VEN.EMAIL_ADDRESS');
-        $this->db->from('EC_PL_APPROVAL APR');
-        $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
-        $this->db->where('APR.PO_NO', $po);
-        $result = $this->db->get();
-        echo json_encode($this->session->userdata);
+        $po = '4500001208';
+//        $this->db->select('APR.*, VEN.VENDOR_NAME, VEN.EMAIL_ADDRESS');
+//        $this->db->from('EC_PL_APPROVAL APR');
+//        $this->db->join('VND_HEADER VEN', 'APR.VENDORNO = VEN.VENDOR_NO');
+//        $this->db->where('APR.PO_NO', $po);
+        $result = $this->ec_shipment_m->detailPO($po);
+        echo json_encode($result);
     }
 
     public function send($kode_shipment)
