@@ -25,7 +25,7 @@ class Faktur extends MX_Controller {
 
 		$this->layout->add_js('bootbox.js');
 		$this->layout->add_js('pages/invoice/EC_common.js');
-		$this->layout->add_js('pages/invoice/ec_vendor_faktur.js?7');
+		$this->layout->add_js('pages/invoice/ec_vendor_faktur.js?9');
 		$this->layout->render('EC_Vendor/faktur/list', $data);
 	}
 
@@ -41,7 +41,9 @@ class Faktur extends MX_Controller {
 		$vendor_id = $this->session->userdata('VENDOR_NO');
 		$act=$this->sap_invoice->getFakturPajakAll($vendor_id);
 		$data = array();
-
+		// echo "<pre>";
+		// print_r($act);die;
+		$key = array();
 		for ($i = 0; $i < count($act['output']); $i++) {
 			$cuk = $act['output'][$i]['XBLNR'];
 
@@ -84,8 +86,19 @@ class Faktur extends MX_Controller {
 				'FILE_FP'=>$file_fp,
 				'LINK_FILE_FP'=>$act['output'][$i]['LFILE'],
 				);
+			// fungsi @ untuk mematikan error jika variable belum di deklarasi sebelumnya
+			$key[$data2['NO_EKSPEDISI']] = ($data2['KET'] == 'Diterima' ? (@$key[$data2['NO_EKSPEDISI']] == 'false' ? 'false' : 'true') : 'false');
 			array_push($data, $data2);	
+			
 		}
+
+		foreach ($data as $k=> $v) {
+			$data[$k]['STATUS_PRINT']  = $key[$v['NO_EKSPEDISI']];
+		}
+
+		// echo "<pre>";
+		// print_r($data);die;
+
 		echo json_encode(array('data'=>$data));	        
 	}
 
@@ -346,6 +359,17 @@ class Faktur extends MX_Controller {
 			$pesan = '[ERROR] '.$act['pesan']['MESSAGE'];
 			echo json_encode(array('success'=>false, 'pesan'=>$pesan));
 		}
+	}
+
+	public function tes1() {
+		$this->load->library('sap_invoice');
+		$this->load->config('ec');
+
+		echo "print";
+		$act = $this->sap_invoice->teskoneksi();
+		echo "pre";
+		print_r($act);die();
+
 	}
 
 }

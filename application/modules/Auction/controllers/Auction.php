@@ -212,7 +212,7 @@ class Auction extends CI_Controller {
 			//penambahan bobot archie//
 			foreach ($this->input->post('tender_item') as $key => $tit) {
 				foreach ($vnd_ikut as $vnd) {
-					$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd);
+					$vendor1= $this->prc_tender_quo_item->get_ptm_tit($id_ptm,$vnd,$tit);
 					$min_harga = $this->prc_auction_detail->get_min_harga($paqh_id);
 					// echo "<pre>";
 					// print_r($min_harga);die;
@@ -584,6 +584,22 @@ class Auction extends CI_Controller {
 		//end bobot archie//
 
 		$data['vendor'] = $vendor;
+		// echo "<pre>";
+		// print_r($data['vendor']);die;
+		foreach ($data['vendor'] as $value) {
+			$vnd = $value['PTV_VENDOR_CODE'];
+			$tit_id = $data['item'][0]['TIT_ID'];
+			$vendor1= $this->prc_tender_quo_item->get_ptm_tit($data['ptm_number'],$vnd,$tit_id);
+			foreach ($vendor1 as $value) {
+				$data['nilai_teknis'] = $value['PQI_TECH_VAL'];
+				// echo "<pre>";
+				// print_r($data['nilai_teknis']);
+			}
+			
+		}
+			// echo"<pre>";
+			// print_r($data['nilai_teknis']);die;
+
 		// echo "<pre>";
 		// print_r($data['vendor']);
 		// die();

@@ -80,12 +80,12 @@ class EC_Master_category extends CI_Controller {
 					$q = $this -> ec_master_category_m -> ubah_gambar($idupload, $nama_file);
 					
 					if($q) {
-						$q = move_uploaded_file($_FILES["gambar"]["tmp_name"], "{$folder}{$nama_file}");
+						$q = move_uploaded_file($_FILES["gambar"]["tmp_name"], "{$folder}{$nama_file}");                                                
 					}
 					
 					if($q && $nama != "" && file_exists("{$folder}{$nama}")) {
 						unlink("{$folder}{$nama}");
-					}
+					}                                        
 					header("location:".base_url()."EC_Master_category?upload=berhasil");
 				} else {
 					header("location:".base_url()."EC_Master_category?upload=gagal");

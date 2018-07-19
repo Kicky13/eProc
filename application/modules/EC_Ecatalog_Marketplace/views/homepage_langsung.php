@@ -31,7 +31,7 @@
 		    					} 
 		    					if(strlen($kategori[$i]['DESC'])>28){
 		    						$size = 15;
-		    					}
+		    					}                                                        
 		    					$enter++;
 	    						echo '<div class="col-lg-4 col-md-4" style="margin-bottom: 20px;">
 				    				<div class="panel panel-default" style="box-shadow: 1px 1px 1px #ccc">
@@ -41,9 +41,13 @@
 							          <center><strong>'.$kategori[$i]['DESC'].'</strong></center>
 							        </a> 
 							        <p></p>
-							        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#ac'.$i.'" aria-expanded="true" aria-controls="ac'.$i.'">
-							        <img src="'.base_url(UPLOAD_PATH).'/EC_homepage/'.$kategori[$i]['PICTURE_CAT'].'" class="img-responsive img-thumbnail">
-							        </a>
+							        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#ac'.$i.'" aria-expanded="true" aria-controls="ac'.$i.'">';
+                                                                    if($kategori[$i]['PICTURE_CAT']!='' || !empty($kategori[$i]['PICTURE_CAT'])){
+                                                                        echo '<img src="'.base_url(UPLOAD_PATH).'/EC_homepage/'.$kategori[$i]['PICTURE_CAT'].'" class="img-responsive img-thumbnail">';
+                                                                    }else{
+                                                                        echo '<img src="'.base_url(UPLOAD_PATH).'/EC_material_strategis/default_post_img.png" class="img-responsive img-thumbnail">';
+                                                                    } 
+							        echo '</a>
 							      </h4>
 							    </div>
 							    <div id="ac'.$i.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">

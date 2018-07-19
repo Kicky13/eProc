@@ -39,6 +39,7 @@ $(document).ready(function(){
 	$('#btn_bid_submit').click(function(){
 		inputpost = {
 				paqh: $("#paqh").val(),
+				tit_id: $("#tit_id").val(),
 				bid: $('#harga_bid').val(),
 				ptv_vendor_code: $('#vendor_code').val()
 			};

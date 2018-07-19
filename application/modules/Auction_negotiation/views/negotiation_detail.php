@@ -9,6 +9,7 @@
 
                     <form action="<?php echo base_url()?>Auction/buka" method="POST">
                     <input type="hidden" id="paqh" value="<?php echo $paqh['PAQH_ID']?>">
+                    <input type="hidden" name="tit_id" id="tit_id" value="<?php echo $item[0]['TIT_ID']?>">
                     <input type="hidden" name="ptm_number" id="ptm_number" value="<?php echo $ptm_number?>">
                     <input type="hidden" id="vendor_code" value="<?php echo $this->session->userdata('VENDOR_NO')?>">
                     <div class="panel panel-default">

@@ -152,6 +152,7 @@
                                         <th>Harga Akhir</th>
                                         <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
                                         <th>Nilai</th>
+                                        <th>Nilai Teknis</th>
                                         <?php } ?>
                                         <th>Ikut</th>
                                         <th class="text-center">Pemenang</th>
@@ -167,6 +168,7 @@
                                             echo '<td>'.number_format($vnd['PAQD_FINAL_PRICE']).'</td>';
                                             if(!empty($paqh['BOBOT_TEKNIS'])) { 
                                             echo '<td>'.$vnd['NILAI_GABUNG'].'</td>';
+                                            echo '<td>'.$nilai_teknis.'</td>';
                                             }
                                             echo '<td>Ya</td>';
                                             echo '<input type="text" name="vendor_code'.$no.'" value="'.$vnd['PTV_VENDOR_CODE'].'" hidden>';

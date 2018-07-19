@@ -246,10 +246,11 @@ class Auction_negotiation extends CI_Controller {
 			$data['item'] = $this->prc_tender_item->ptm_paqh($data['ptm_number'], $data_paqh[0]['PAQH_ID']);
 
 			$vnd = $this->session->userdata['VENDOR_NO'];
-			$vendor1= $this->prc_tender_quo_item->get_ptm($data['ptm_number'],$vnd);
+			$tit_id = $data['item'][0]['TIT_ID'];
+			$vendor1= $this->prc_tender_quo_item->get_ptm_tit($data['ptm_number'],$vnd,$tit_id);
 			$data['nilai_teknis'] = $vendor1[0]['PQI_TECH_VAL'];
 			// echo"<pre>";
-			// print_r($vnd);die;
+			// print_r($tit_id);die;
 
 			$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 			$now = date_format($datetimestamp, 'd-m-Y H.i.s');
@@ -335,6 +336,7 @@ class Auction_negotiation extends CI_Controller {
 	function update_bid() {
 		$this->load->model(array('prc_auction_detail','prc_auction_quo_header','prc_auction_log','prc_tender_quo_item'));
 		$id = $this->input->post('paqh');
+		$tit_id = $this->input->post('tit_id');
 
 		$data_paqh = $this->prc_auction_quo_header->get(array('PAQH_ID' => $id));
 		$paqh = $data_paqh[0];
@@ -342,7 +344,7 @@ class Auction_negotiation extends CI_Controller {
 		$bt = $paqh['BOBOT_TEKNIS'];
 		$bh = $paqh['BOBOT_HARGA'];
 		// echo "<pre>";
-		// print_r($data_paqh);die;
+		// print_r($tit_id);die;
 
 		$datetimestamp = new DateTime(null, new DateTimeZone('Asia/Jakarta'));
 		$now = strtotime(date_format($datetimestamp, 'd-m-Y H.i.s'));
@@ -376,7 +378,7 @@ class Auction_negotiation extends CI_Controller {
 			foreach ($vnd_detail as $value) {
 				$vnd_code = $value['PTV_VENDOR_CODE'];
 				$vnd_price = $value['PAQD_FINAL_PRICE'];
-				$vendor1= $this->prc_tender_quo_item->get_ptm($id_ptm,$vnd_code);
+				$vendor1= $this->prc_tender_quo_item->get_ptm_tit($id_ptm,$vnd_code,$tit_id);
 				$min_harga = $this->prc_auction_detail->get_min_harga($id);
 
 				$bobot_teknis = $vendor1[0]['PQI_TECH_VAL'] * $bt / 100;

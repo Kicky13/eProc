@@ -451,16 +451,19 @@ class EC_Ecatalog extends MX_Controller
         $qty=array();        
         $total=array();
         $po_number = array();
+        $deals=array();
         for($i=0;$i<sizeof($vendor);$i++){
             $data[$i]=$this->EC_catalog_produk->get_cart_PO_PL($user,$vendor[$i]['VENDORNO']);
             $table[$i] = $data[$i];
             for($x=0;$x<sizeof($data[$i]);$x++){
                 $tambah[$i]+=$data[$i][$x]['QTY'];
                 $tambahH[$i]+=$data[$i][$x]['QTY']*$data[$i][$x]['PRICE'];
+                $deals[$i] = $this->ec_ecatalog_m->getDealsVendor($data[$i][$x]['MATNO'], $data[$i][$x]['PLANT'], $this->session->userdata['COMPANYID']);
             }            
             $qty[$i]+=$tambah[$i];                        
-            $total[$i]+=$tambahH[$i];                 
-        }
+            $total[$i]+=$tambahH[$i];                             
+        }         
+//        var_dump($deals);die();
         $SAP=array();           
         for ($i=0;$i < sizeof($data);$i++) {            
             $SAP[$i] = $this->sap_handler->createPOLangsungCart($this->input->post('company'), $user, $data[$i], $this->input->post('costcenter'),
@@ -481,7 +484,10 @@ class EC_Ecatalog extends MX_Controller
             $sk=1;
             if ($sukses[$i]) {
                 for($j=0;$j<sizeof($data[$i]);$j++){
-                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $data[$i][$j]['QTY'], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);
+                    $this->ec_ecatalog_m->POsuccessCartPL($user, 'PL2018',$data[$i][$j]['MATNO'], $po_no[$i], $data[$i][$j]['ID_CHART'], $data[$i][$j]['QTY'], $this->input->post('costcenter'), $data[$i][$j], $data[$i][$j]['CURRENCY'],$total[$i],$gudang,$korin);                    
+                    for($s=0;$s<sizeof($deals[$i]);$s++){
+                        $this->ec_ecatalog_m->HistoryHarga($po_no[$i], $deals[$i][$s]['VENDORNO'], $deals[$i][$s]['MATNO'], $deals[$i][$s]['PLANT'], $deals[$i][$s]['STOK'], $deals[$i][$s]['DELIVERY_TIME'], $deals[$i][$s]['HARGA'], $deals[$i][$s]['MEINS']);
+                    }                    
                     $suksesReturn[$i][$j] = array("PO" => $po_no[$i], "MATNO" => $data[$i][$j]['MATNO'], "MAKTX" => $data[$i][$j]['MAKTX'],
                         "PLANT" => $data[$i][$j]['PLANT'], "NAMA_PLANT" => $data[$i][$j]['NAMA_PLANT'], "VENDOR_NAME" => $vendor[$i]['VENDOR_NAME']);                                       
                 }

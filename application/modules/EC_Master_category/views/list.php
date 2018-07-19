@@ -112,6 +112,7 @@
 											</span>
 											<input type='text' class='form-control' style='padding:3px 8px 3px 8px;font-family:Menlo,Monaco,Consolas,"Courier New",monospace;font-weight:bold;' id='nama_file_input' value='Pilih file...' readonly='readonly'>
 										</div>
+                                                                                <div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Tipe File: JPG,JPEG,PNG || Size File Maksimal 2mb</div>
 									</div>
 								</div> 
 								<div class="form-group">

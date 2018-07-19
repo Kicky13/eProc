@@ -1797,13 +1797,13 @@ class ec_ecatalog_m extends CI_Model
                 $SQL = "INSERT INTO EC_PL_APPROVAL VALUES ( 
                 '" . $po . "', '" . $CC . "', '" . $data['VENDORNO'] . "', '" . $total .
                 "', '" . $curr . "', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " .
-                " TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), 1, 1,'" . $PROGRESS_CNF . "','".$gudang."','0')";
+                " TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), 1, 1,'" . $PROGRESS_CNF . "','".$gudang."','0','1')";
                 $this->db->query($SQL);
             }else{
                 $SQL = "INSERT INTO EC_PL_APPROVAL VALUES ( 
                 '" . $po . "', '" . $CC . "', '" . $data['VENDORNO'] . "', '" . $total .
                 "', '" . $curr . "', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " .
-                " TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), 1, 1,'" . $PROGRESS_CNF . "','0','0')";
+                " TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), 1, 1,'" . $PROGRESS_CNF . "','0','0', '1')";
                 $this->db->query($SQL);
             }                        
             $SQL = "INSERT INTO EC_TRACKING_PO VALUES ( 
@@ -1812,5 +1812,15 @@ class ec_ecatalog_m extends CI_Model
             $this->db->query($SQL);
         }        
         $this->db->trans_complete();                        
-    }       
+    }    
+    
+    function HistoryHarga($po,$vendor,$matno,$plant,$stok,$delivery,$harga,$satuan)
+    {
+        $this->db->trans_start();                    
+        $SQL = "INSERT INTO EC_HISTORY_HARGA_PO VALUES ( 
+        '" . $po . "', '" . $vendor . "', '" . $matno . "', '" . $plant .
+        "', '" . $stok . "', '" . $delivery . "', '" . $harga . "', '" . $satuan . "', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'))";
+        $this->db->query($SQL);                        
+        $this->db->trans_complete();                        
+    }  
 }

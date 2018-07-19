@@ -95,7 +95,7 @@ function loadTable_() {
                 a = "<div class='col-md-12 text-center'>" +
                     '<a href="javascript:approve(' + (full.NOMERPO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:reject(' + (full.NOMERPO) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span title="Detail PO" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '" data-ven="' + (full.VENDORNO) + '"><span title="Detail PO" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span title="Tracking" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
                 return a;
@@ -258,6 +258,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget)
     var pono = button.data('pono')
     var curr = button.data('curr')
+    var ven = button.data('ven')
 
     $.ajax({ 
         url: $("#base-url").val() + 'EC_PO_PL_Approval/detail/' + pono,
@@ -279,8 +280,13 @@ $('#modalDetil').on('show.bs.modal', function (event) {
             teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['TOTAL']) + "</td>"
             teks += "<td class=\"text-center\">" + curr + "</td>"
             teks += "<td class=\"text-center\">" + data[i]['PLANT'] + "&mdash;" + data[i]['PLANT_NAME'] + "</td>"
-            teks += "<td class=\"text-center\"><a target=\"_blank\" href="+$("#base-url").val()+"/upload/EC_korin/"+data[i]['FILE_KORIN']+">View Dokumen</a></td>"
+            if(data[i]['FILE_KORIN']!= null){
+                teks += "<td class=\"text-center\"><a target=\"_blank\" href="+$("#base-url").val()+"upload/EC_korin/"+data[i]['FILE_KORIN']+">View Dokumen</a></td>"
+            }else{
+                teks += "<td class=\"text-center\"> - </td>"
+            }            
             teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + addDays(data[i]['DELIVERY_TIME']) + "</strong></td>"
+            teks += "<td class=\"text-center\"><a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#modalHarga\" data-po="+ pono +" data-matno="+data[i]['MATNO']+" data-desc=\""+data[i]['MAKTX']+"\" data-ven="+ven+"><span title=\"Detail Harga Penawaran Vendor\" class=\"glyphicon glyphicon-list-alt\" aria-hidden=\"true\"></span></a></td>"            
             teks += "</tr>"
         }
         $("#bodyTableDetail").html(teks)
@@ -291,7 +297,57 @@ $('#modalDetil').on('show.bs.modal', function (event) {
 
     });
 });
+$('#modalHarga').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var po = button.data('po')
+    var matno = button.data('matno')
+    var desc = button.data('desc')
+    var ven = button.data('ven')
+    var modal = $(this)
+    modal.find('.matno-harga').text(matno)
+    modal.find('.desc-harga').text(desc)
 
+    $.ajax({ 
+        url: $("#base-url").val() + 'EC_PO_PL_Approval/historyHarga/',
+        type: 'POST',
+        data: {
+            "po": po,
+            "matno": matno
+        },
+        dataType: 'json'
+    }).done(function (data) {
+        var teks = ""        
+        $("#bodyTableHarga").empty()
+        for (var i = 0; i < data.length; i++) {
+            teks += "<tr>";
+            if(ven==data[i]['VENDOR_NO']){
+                teks += "<td class=\"text-center\"><strong>" + (i + 1) + "</strong></td>";
+                teks += "<td class=\"text-center\"><strong>" + data[i]['VENDOR_NO'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['VENDOR_NAME'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['STOK'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['HARGA'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['SATUAN'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['DELIVERY'] + "</strong></td>"            
+                teks += "</tr>"
+            }else{
+                teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
+                teks += "<td class=\"text-center\">" + data[i]['VENDOR_NO'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['VENDOR_NAME'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['STOK'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['HARGA'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['SATUAN'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['DELIVERY'] + "</td>"            
+                teks += "</tr>"
+            }
+        }
+        $("#bodyTableHarga").html(teks)
+    }).fail(function () {
+        // console.log("error");
+    }).always(function (data) {
+        // console.log(data);
+
+    });
+});
 function addDays(days) {
     var d = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
     month = '' + (d.getMonth() + 1)

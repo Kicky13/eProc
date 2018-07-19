@@ -175,6 +175,24 @@ class prc_tender_quo_item extends CI_Model {
 		return $this->db->delete($this->table);
 	}
 
+	function getHargaTerendah1($id){
+		// $this->db->select("*");
+		$this->db->select_min('PQI_FINAL_PRICE');
+		$this->db->from($this->table);
+		$this->db->where('TIT_ID = '.$id, null, false);
+		$this->db->where('PQI_IS_WINNER', 1);
+		// $this->db->where(array('TIT_ID = '.$id, null, false, 'PQI_IS_WINNER' => 1 ));
+		// $this->db->where_in($kolom,$value);
+
+		$result = $this->db->get();
+		if ($result->num_rows() > 0) {
+			return $result->result_array();
+		}
+		else {
+			return NULL;
+		}
+	}
+
 	function getHargaTerendah($id){
 		// $this->db->select("*");
 		$this->db->select_min('PQI_PRICE');

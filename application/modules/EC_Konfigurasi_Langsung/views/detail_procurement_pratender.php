@@ -335,7 +335,7 @@
 									<th>Act</th>
 									<th class="text-center">No Vendor</th>
 									<th class="text-center">Nama Vendor</th>
-									<th class="text-center">Material Group</th>
+									<!--<th class="text-center">Material Group</th>-->
 								</tr>
 								<tr>
 									<th>
@@ -347,9 +347,9 @@
 									<th>
 									<input type="text" class="col-xs-12 srch">
 									</th>
-									<th>
+<!--									<th>
 									<input type="text" class="col-xs-12 srch">
-									</th>
+									</th>-->
 								</tr>
 							</thead>
 							<tbody></tbody>

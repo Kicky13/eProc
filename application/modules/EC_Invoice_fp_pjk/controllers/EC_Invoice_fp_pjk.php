@@ -248,33 +248,42 @@ class EC_Invoice_fp_pjk extends MX_Controller {
 
 			$cuk2 = $act['output'][$i]['TGL_TRIMA'];
 			$cuk2 = substr($cuk2, 6,2).'-'.substr($cuk2, 4,2).'-'.substr($cuk2, 0,4); 
-			$cuk = array(
-				'NOMOR' => $i,
-				'COMPANYCODE' => $act['output'][$i]['BUKRS'],
-				'TGL_EKSPEDISI' => $cuk1,
-				'NO_EKSPEDISI' => $act['output'][$i]['EKSPNO'],
-				'NO_FAKTUR' => $cuk99,
-				'NO_FAKTUR_LOS' => $act['output'][$i]['XBLNR'],
-				'NO_VENDOR' => $act['output'][$i]['LIFNR'],
-				'NAMA_VENDOR' => $act['output'][$i]['NAME1'],
-				'NPWP'=>$act['output'][$i]['STCD1'],
-				'TGL_FAKTUR' => $act['output'][$i]['BLDAT'],
-				'TGL_BAST'=> $act['output'][$i]['BLDAT'],
-				'DPP'=> "Rp " . number_format($act['output'][$i]['HWBAS'],2,',','.'),
-				'PPN'=> "Rp " . number_format($act['output'][$i]['HWSTE'],2,',','.'),
-				'PO'=> $act['output'][$i]['EBELN'],
-				'EMAIL'=> $act['output'][$i]['EMAIL'],
-				'NAMA'=> $act['output'][$i]['PERSON'],
-				'TGL_TERIMA' => $cuk2,
-				'POSISI'=>$act['output'][$i]['POS'],
-				'KET'=>$act['output'][$i]['KET'],
-				'FILE_FP'=>$file_fp,
-				'LINK_FILE_FP'=>$act['output'][$i]['LFILE'],
-				);
+			if($act['output'][$i]['KET']!="Dikembalikan"){
+				$cuk = array(
+					'NOMOR' => $i,
+					'COMPANYCODE' => $act['output'][$i]['BUKRS'],
+					'TGL_EKSPEDISI' => $cuk1,
+					'NO_EKSPEDISI' => $act['output'][$i]['EKSPNO'],
+					'NO_FAKTUR' => $cuk99,
+					'NO_FAKTUR_LOS' => $act['output'][$i]['XBLNR'],
+					'NO_VENDOR' => $act['output'][$i]['LIFNR'],
+					'NAMA_VENDOR' => $act['output'][$i]['NAME1'],
+					'NPWP'=>$act['output'][$i]['STCD1'],
+					'TGL_FAKTUR' => $act['output'][$i]['BLDAT'],
+					'TGL_BAST'=> $act['output'][$i]['BLDAT'],
+					'DPP'=> "Rp " . number_format($act['output'][$i]['HWBAS'],2,',','.'),
+					'PPN'=> "Rp " . number_format($act['output'][$i]['HWSTE'],2,',','.'),
+					'PO'=> $act['output'][$i]['EBELN'],
+					'EMAIL'=> $act['output'][$i]['EMAIL'],
+					'NAMA'=> $act['output'][$i]['PERSON'],
+					'TGL_TERIMA' => $cuk2,
+					'POSISI'=>$act['output'][$i]['POS'],
+					'KET'=>$act['output'][$i]['KET'],
+					'FILE_FP'=>$file_fp,
+					'LINK_FILE_FP'=>$act['output'][$i]['LFILE'],
+					);
+			}
 			array_push($data, $cuk);
 		}
-        // echo "<pre>";
-        // print_r($data);die();
+
+		// foreach ($data as $tel => $cuk) {
+		// 	if ($cuk['KET'] = 'Dikembalikan') {
+		// 		unset($cuk);
+		// 	}
+		// }
+
+  //       echo "<pre>";
+  //       print_r($data);die();
 		echo json_encode(array('page' => '25', 'data'=>$data));
 
 	}

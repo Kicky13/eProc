@@ -127,6 +127,7 @@
                                 <th class="text-center">Ship to</th>
                                 <th class="text-center">Dokumen Pendukung</th>
                                 <th class="text-center">Est. Date</th>
+                                <th class="text-center">Penawaran Vendor</th>
                             </tr>
                             </thead>
                             <tbody id="bodyTableDetail">
@@ -146,7 +147,49 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="modalHarga">
+    <div class="modal-dialog modal-md" style="width:75%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title text-center"><strong><u>Harga Penawaran Vendor</u></strong></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <p>Material No: <span class="matno-harga"></span></p>
+                        <p>Description : <span class="desc-harga"></span></p>
+                        <table id="tableTrack" class="table table-striped nowrap" width="100%">
+                            <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th class="text-center">Vendor</th>
+                                <th class="text-center">Vendor Name</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Harga</th>
+                                <th class="text-center">Satuan</th>
+                                <th class="text-center">Delivery Time</th>                                                       
+                            </tr>
+                            </thead>
+                            <tbody id="bodyTableHarga">
+                            <tr>
+                                <td>Loading Data......</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 text-left">
+                        <a href="javascript:void(0)">Baris yang di Bold (ditebalkan) adalah vendor yang dipilih user</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalHistory">
     <div class="modal-dialog modal-md" style="width:75%">
         <div class="modal-content">

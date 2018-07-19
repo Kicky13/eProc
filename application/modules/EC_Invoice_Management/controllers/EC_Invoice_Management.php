@@ -1399,6 +1399,10 @@ class EC_Invoice_Management extends MX_Controller {
         $id = $this->input->post('id');
         $tipe = $this->input->post('tipe');
         $nopo = $this->input->post('nopo');
+
+        $this->load->library('sap_invoice');
+        $uk_peminta = $this->sap_invoice->getUKPeminta($nopo);
+        // print_r($uk_peminta);die;
         $print_type = strtoupper($this->input->post('print_type'));
         $viewDoc = $tipe == 'RR' ? 'cetakRR' : 'cetakBAST';
         $this->load->library('M_pdf');

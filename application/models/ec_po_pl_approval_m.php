@@ -315,4 +315,17 @@ class ec_po_pl_approval_m extends CI_Model
             $this->db->query($SQL);*/
         }
     }
+    
+    function historyHarga($po,$matno)
+    {
+        $this->db->select('HO.VENDOR_NO, VH.VENDOR_NAME, HO.STOK, HO.DELIVERY, HO.HARGA, HO.SATUAN',
+            false);
+        $this->db->from('EC_HISTORY_HARGA_PO HO');
+        $this->db->join('VND_HEADER VH', 'HO.VENDOR_NO = VH.VENDOR_NO');                
+        $this->db->where("HO.PO_HISTORY", $po, TRUE);
+        $this->db->where("HO.MATNO", $matno, TRUE);
+        $this->db->order_by("HO.HARGA ASC");
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
 }
