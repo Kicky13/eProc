@@ -36,7 +36,8 @@
                             <div class="col-lg-9" id="tbl_item">
                                 <ul class="nav nav-tabs">
                                     <li id="tab1" class="active"><a href="#tab-1" role="tab" data-toggle="tab">Item List</a></li>
-                                    <li id="tab2"><a href="#tab-2" role="tab" data-toggle="tab">Item Publish</a></li>                                    
+                                    <li id="tab2"><a href="#tab-2" role="tab" data-toggle="tab">Propose Assign</a></li>
+                                    <li id="tab3"><a href="#tab-3" role="tab" data-toggle="tab">Item Publish</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" role="tabpanel" id="tab-1">
@@ -78,9 +79,36 @@
                                             <!-- <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;: Sudah dipublish ke Vendor -->
                                         </div>
                                     </div>
+                                    <div class="tab-pane active" role="tabpanel" id="tab-3">
+                                        <div class="col-lg-12">
+                                            <table id="table_item_publish" class="table table-hover" style="width:1200px;">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-md-1 text-center">No Vendor</th>
+                                                    <th class="col-md-2 text-center">Nama Vendor</th>
+                                                    <th class="col-md-1 text-center">Material Group</th>
+                                                    <!-- <th class="col-md-3 text-center">End</th>  -->
+                                                    <th class="col-md-1 text-center">Detail</th>
+                                                </tr>
+                                                <tr>
+                                                    <th><input type="text" class="col-xs-12 srch"></th>
+                                                    <th><input type="text" class="col-xs-12 srch"></th>
+                                                    <th><input type="text" class="col-xs-12 srch"></th>
+<!--                                                    <th><input type="text" class="col-xs-12 srch"></th>-->
+                                                    <!-- <th><input type="text" class="col-xs-12 srch"></th> -->
+<!--                                                    <th><input type="text" class="col-xs-12 srch"></th>-->
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                            <!-- <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;: Sudah dipublish ke Vendor -->
+                                        </div>
+                                    </div>
                                     <div class="tab-pane" role="tabpanel" id="tab-2">
                                         <div class="col-lg-12">
-                                            <table id="table_item_publish" class="table table-hover" style="width:1050px;">
+                                            <table id="table_propose_assign" class="table table-hover" style="width:1050px;">
                                                 <thead>
                                                     <tr>
                                                         <th class="col-md-1">Action</th>
@@ -378,7 +406,7 @@
                             <select class="form-control" id="activitySelectorEdit">                                  
                                 <option value="0" selected="selected">Pilih Master...</option>
                                 <?php for ($i=0; $i < sizeof($master_update) ; $i++) { ?> 
-                                    <option value="<?php  echo $master_update[$i]['KODE_UPDATE']?>"><?php  echo $master_update[$i]['UPDATE_DESC']?></option>
+                                    <option value="<?php echo $master_update[$i]['KODE_UPDATE']?>"><?php  echo $master_update[$i]['UPDATE_DESC']?></option>
                                 <?php } ?>   
                             </select>
                         </div>
@@ -397,13 +425,118 @@
 							Simpan
 						</button>
 						<button type="button"  data-dismiss="modal"  class="main_button color7 small_btn close-modal">
-							Kembali</a>
+                            Kembali</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="modalItemPublish">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong style="font-size: 20px;">Nama Vendor : <span id="namaVendor"></span></strong>
+                <br/>
+                <strong>Nomor Vendor</strong> : <span id="noVendor"></span>
+            </div><input type="hidden" id="vendorno" />
+            <div class="modal-body">
+                <div class="row">
+                    <!-- <div class="col-md-10 col-md-offset-2">
+                        <form class="form-inline">
+                          <div class="form-group">
+                            <label for="startEdit">Start</label>
+                            <div class="input-group date"><input readonly id="startdatemodal" type="text" value="" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+
+                          </div>
+                          &nbsp;&nbsp;&nbsp;
+                          <div class="form-group">
+                            <label for="endEdit">End</label>
+                            <div class="input-group date"><input readonly id="enddatemodal" type="text" value="" class="form-control" ><span class="input-group-addon"><a href="javascript:void(0)"><i class="glyphicon glyphicon-calendar"></i></a></span></div>
+
+                          </div>
+                        </form>
+                    </div> -->
+
+                    <!-- <hr />  -->
+                    <div class="col-md-12">
+                        <table id="table_vnd_2" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Act</th>
+                                <th class="text-center">Nomor Material</th>
+                                <th class="text-center">Deskripsi Material</th>
+                                <!--<th class="text-center">Material Group</th>-->
+                            </tr>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" onchange="chkAll(this,'vndEdit')" />
+                                    &nbsp;All</th>
+                                <th>
+                                    <input type="text" class="col-xs-12 srch">
+                                </th>
+                                <th>
+                                    <input type="text" class="col-xs-12 srch">
+                                </th>
+                                <!--									<th>
+                                                                    <input type="text" class="col-xs-12 srch">
+                                                                    </th>-->
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Currency</label>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="activityCurrencyPublish">
+                            <option value="0" selected="selected">Pilih Currency...</option>
+                            <?php for ($i=0; $i < sizeof($currency) ; $i++) {
+                                ?>
+                                <option <?php echo ($currency[$i]['CURR_CODE']=='IDR') ? "selected":"" ?> value="<?php  echo $currency[$i]['CURR_CODE']?>"><?php echo $currency[$i]['CURR_CODE']?> (<?php echo $currency[$i]['CURR_NAME']?>)</option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-md-2">
+                        <label>jangka Waktu</label>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-control" id="activitySelectorPublish">
+                            <option value="0" selected="selected">Pilih Master...</option>
+                            <?php for ($i=0; $i < sizeof($master_update) ; $i++) { ?>
+                                <option value="<?php echo $master_update[$i]['KODE_UPDATE']?>"><?php  echo $master_update[$i]['UPDATE_DESC']?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="days-rowPublish" style="margin-top: 10px;">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="lamahari" id="lamahariPublish" style="width: 40px;"> Days
+                    </div>
+                </div>
+                <br>
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <button type="button" id="saveItmPublish" class="main_button color2 small_btn">
+                            Simpan
+                        </button>
+                        <button type="button"  data-dismiss="modal"  class="main_button color7 small_btn close-modal">
+                            Kembali</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalPublish">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

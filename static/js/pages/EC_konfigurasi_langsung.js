@@ -61,12 +61,22 @@ $(document).ready(function () {
         }
     });
 
+    var activitiesss = document.getElementById("activitySelectorPublish");
+    activitiesss.addEventListener("change", function () {
+        if (activitiesss.value == "510") {
+            $("#days-rowPublish").show();
+        } else {
+            $("#days-rowPublish").hide();
+        }
+    });
+
     // $('.Date').datepicker({
     // 	format: "dd-mm-yyyy",
     // 	autoclose: true,
     // 	todayHighlight: true
     // });
     loadTableItemPublish();
+    loadTableProposeAssign();
     loadTree();
     loadTableItem('0');
     //loadTableVnd(data);
@@ -120,6 +130,7 @@ $(document).ready(function () {
     $('#tab1').click(function () {
         $('#PanelNgisor').hide();
         $('#button-publish').show();
+        $('#cat').show();
         $('#button-unpublish').hide();
     })
 
@@ -127,6 +138,15 @@ $(document).ready(function () {
         $('#PanelNgisor').show();
         $('#button-publish').hide();
         $('#button-unpublish').show();
+        $('#cat').show();
+    })
+
+    $('#tab3').click(function () {
+        $('#table_item_publish').show();
+        $('#cat').hide();
+        $('#PanelNgisor').hide();
+        $('#button-publish').hide();
+        $('#button-unpublish').hide();
     })
 
     $('#assign').click(function () {
@@ -242,6 +262,15 @@ $(document).ready(function () {
         }
     })
     loadTablePlant()
+
+    $('#modalItemPublish').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        $("#days-rowPublish").hide();
+        $("#namaVendor").text(button.data('vendorname'))
+        $("#noVendor").text(button.data('vendorno'))
+    })
+
+    $('#table_item_publish').hide();
 });
 
 function removeA(arr) {
@@ -398,6 +427,7 @@ function setCode(id, elm) {
     $(elm).css('color', '#e74c3c')
     loadTableItem(id)
     loadTableItemPublish(id);
+    loadTableProposeAssign(id);
     $('.breadcrumb').empty()
     $('.breadcrumb').append('<li><a href="javascript:void(0)"><span style="color:#e74c3c;" class="glyphicon glyphicon-home" aria-hidden="true"></span></a><a href="javascript:void(0)">&nbsp;&nbsp;Kategori</a></li>')
     splitt = id.split("-")
@@ -953,11 +983,11 @@ function loadTableItem(KODE_USER) {
 
 }
 
-function loadTableItemPublish(KODE_USER) {
+function loadTableProposeAssign(KODE_USER) {
     // no = 1;
-    $('#table_item_publish').DataTable().destroy();
-    $('#table_item_publish tbody').empty();
-    mytable = $('#table_item_publish').DataTable({
+    $('#table_propose_assign').DataTable().destroy();
+    $('#table_propose_assign tbody').empty();
+    mytable = $('#table_propose_assign').DataTable({
         "bSort": false,
         "dom": 'rtilp',
         "bAutoWidth": false,
@@ -973,96 +1003,13 @@ function loadTableItemPublish(KODE_USER) {
             "targets": 0
         }],
         "fnInitComplete": function () {
-            $('#table_item_publish tbody tr').each(function () {
+            $('#table_propose_assign tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
-            });
-            $('.items').change(function () {
-                //$(".btnpbls").prop('disabled', false);
-                //$(".btnupbls").prop('disabled', false);
-                //$("#assign").prop('disabled', false);
-                if ($(this).is(":checked")){
-                    if ($(this).data("pil") == 1){
-                            $(".btnpbls").prop('disabled', true);
-                            $(".btnupbls").prop('disabled', false);
-                        }
-                        else if ($(this).data("pil") == 0) {
-                            $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
-                            $(".btnpbls").prop('disabled', false);
-                        }
-                }else{
-                    $(".btnpbls").prop('disabled', true);
-                    $(".btnupbls").prop('disabled', true);
-                    $("#assign").prop('disabled', true);
-                }
-
-                $(".items").each(function () {
-                     //console.log($(this).data("pil"))
-                    if ($(this).is(":checked")){
-                        if ($(this).data("pil") == 1){
-                            $(".btnpbls").prop('disabled', true);
-                            $(".btnupbls").prop('disabled', false);
-                            $("#assign").prop('disabled', false);
-                        }
-                        else if ($(this).data("pil") == 0) {
-                            $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
-                            $(".btnpbls").prop('disabled', false);
-                        }
-                    }else{
-                        //$(".btnupbls").prop('disabled', true);
-                        //$(".btnupbls").prop('disabled', true);
-                        //$("#assign").prop('disabled', true);
-                        //$(".btnpbls").prop('disabled', true);
-                    }
-                });
             });
         },
         "drawCallback": function (settings) {
-            $('#table_item_publish tbody tr').each(function () {
+            $('#table_propose_assign tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
-            });
-            $('.items').change(function () {
-                //$(".btnpbls").prop('disabled', false);
-                //$(".btnupbls").prop('disabled', false);
-                //$("#assign").prop('disabled', false);
-                if ($(this).is(":checked")){
-                    if ($(this).data("pil") == 1){
-                        $(".btnpbls").prop('disabled', true);
-                        $(".btnupbls").prop('disabled', false);
-                        //$("#assign").prop('disabled', true);
-                    }
-                    else if ($(this).data("pil") == 0) {
-                        $(".btnupbls").prop('disabled', true);
-                        $("#assign").prop('disabled', true);
-                        $(".btnpbls").prop('disabled', false);
-                    }
-                }else{
-                    $(".btnpbls").prop('disabled', true);
-                    $(".btnupbls").prop('disabled', true);
-                    $("#assign").prop('disabled', true);
-                }
-
-                $(".items").each(function () {
-                    console.log($(this).data("pil"))
-                    if ($(this).is(":checked")){
-                        if ($(this).data("pil") == 1){
-                            $(".btnpbls").prop('disabled', true);
-                            $(".btnupbls").prop('disabled', false);
-                            $("#assign").prop('disabled', false);
-                        }
-                        else if ($(this).data("pil") == 0) {
-                            $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
-                            $(".btnpbls").prop('disabled', false);
-                        }
-                    }else{
-                        //$(".btnupbls").prop('disabled', true);
-                        //$(".btnupbls").prop('disabled', true);
-                        //$("#assign").prop('disabled', true);
-                        //$(".btnpbls").prop('disabled', true);
-                    }
-                });
             });
         },
         "columns": [{
@@ -1133,17 +1080,17 @@ function loadTableItemPublish(KODE_USER) {
                 a += "</div>";
                 return a;
             }
-        /*}, {
-            mRender: function (data, type, full) {
-                a = ''
-                a += "<div class='col-md-12'>";
-                if (full.PUBLISHED_LANGSUNG == '1')
-                    a += '<input type="datetime" style="height: 30px" value="' + (full.PENUTUPAN == null ? "" : full.PENUTUPAN) + '" class="form-control start" />';
-                else
-                    a += '<input type="datetime" style="height: 30px" value="" class="form-control start" />';
-                a += "</div>";
-                return a;
-            }*/
+            /*}, {
+                mRender: function (data, type, full) {
+                    a = ''
+                    a += "<div class='col-md-12'>";
+                    if (full.PUBLISHED_LANGSUNG == '1')
+                        a += '<input type="datetime" style="height: 30px" value="' + (full.PENUTUPAN == null ? "" : full.PENUTUPAN) + '" class="form-control start" />';
+                    else
+                        a += '<input type="datetime" style="height: 30px" value="" class="form-control start" />';
+                    a += "</div>";
+                    return a;
+                }*/
             // mRender : function(data, type, full) {
             //  a = ''
             //  a += "<div class='col-md-12'>";
@@ -1168,6 +1115,82 @@ function loadTableItemPublish(KODE_USER) {
                 else{
                     a += '<button type="button" disabled data-matno="' + full.MATNR + '" style="height: 70%" class="btn-sm btn btn-info" >Vnd</button>';
                 }
+                a += "</div>";
+                return a;
+            }
+        }],
+    });
+
+    mytable.columns().every(function () {
+        var that = this;
+        $('.srch', this.header()).on('keyup change', function () {
+            if (that.search() !== this.value) {
+                // $('#tableMT tbody tr').each(function() {
+                // $(this).find('td').attr('nowrap', 'nowrap');
+                // });
+                that.search(this.value).draw();
+            }
+        });
+    });
+
+}
+
+function loadTableItemPublish() {
+    // no = 1;
+    $('#table_item_publish').DataTable().destroy();
+    $('#table_item_publish tbody').empty();
+    mytable = $('#table_item_publish').DataTable({
+        "bSort": false,
+        "dom": 'rtilp',
+        "bAutoWidth": false,
+        "deferRender": true,
+        "language": {
+            "loadingRecords": "<center><b>Please wait - Updating and Loading Data Item...</b></center>"
+        },
+
+        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Langsung/getAllVnd',
+        "columnDefs": [{
+            "searchable": false,
+            "orderable": true,
+            "targets": 0
+        }],
+        "columns": [{
+            mRender: function (data, type, full) {
+                if (full.VENDOR_NO != null) {
+                    a = ''
+                    a += "<div class='col-md-12 text-center'>";
+                    a += "&nbsp;" + full.VENDOR_NO;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.VENDOR_NAME != null) {
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.VENDOR_NAME;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.MATKL != null) {
+                    a = ''
+                    a += "<div class='col-md-12 text-center'>";
+                    a += full.MATKL;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                a = '';
+                a += "<div class='col-md-12 text-center'>";
+                a += '<button type="button" data-toggle="modal" data-vendorno="' + full.VENDOR_NO + '" data-vendorname="' + full.VENDOR_NAME + '" data-matkl="' + full.MATKL + '" data-target="#modalItemPublish" style="height: 70%" class="btn-sm btn btn-info">Item</button>';
                 a += "</div>";
                 return a;
             }

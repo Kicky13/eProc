@@ -106,6 +106,14 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         // var_dump($xpl);
         echo json_encode(array('data' => $result));
     }
+
+    public function getAllVnd()
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $result = $this->ec_konfigurasi_lansgung_m->getAllVnd();
+        echo json_encode(array('data' => $result));
+    }
+
     public function getPlant($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');

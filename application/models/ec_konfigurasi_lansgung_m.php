@@ -82,6 +82,29 @@ ORDER BY MATKL,VENDOR_NO");
         // $this -> db -> order_by('PL.VENDORNO');        
         return (array)$result->result_array();
     }
+
+    public function getAllVnd($matgrp = '')
+    {
+//        $SQL = ("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matgrp[0] . "'");
+//        for ($i = 1; $i < sizeof($matgrp); $i++)
+//            $SQL .= (" OR EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matgrp[$i] . "'");
+
+        $result = $this->db->query("SELECT MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
+FROM EC_M_STRATEGIC_MATERIAL
+JOIN VND_PRODUCT ON EC_M_STRATEGIC_MATERIAL.MATKL = VND_PRODUCT.PRODUCT_CODE
+LEFT JOIN VND_HEADER ON VND_PRODUCT.VENDOR_ID = VND_HEADER.VENDOR_ID
+WHERE VND_HEADER.VENDOR_NO IS NOT NULL
+GROUP BY MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
+UNION
+SELECT listagg(VP.PRODUCT_CODE,', ') within group( order by VP.PRODUCT_CODE ) as MATKL,VH.VENDOR_ID,VH.VENDOR_NO,VH.VENDOR_NAME 
+FROM VND_PRODUCT VP RIGHT JOIN VND_HEADER VH ON VP.VENDOR_ID=VH.VENDOR_ID 
+WHERE VP.VENDOR_ID IS NOT NULL AND VH.VENDOR_NO IS NOT NULL
+GROUP BY VH.VENDOR_ID,VH.VENDOR_NO,VENDOR_NAME
+ORDER BY MATKL,VENDOR_NO");
+//$this->db->last_query();die();
+        // $this -> db -> order_by('PL.VENDORNO');
+        return (array)$result->result_array();
+    }
     
     public function getVndAsli($matgrp = '')
     {
