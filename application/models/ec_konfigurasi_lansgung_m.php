@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_konfigurasi_lansgung_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -83,26 +83,17 @@ ORDER BY MATKL,VENDOR_NO");
         return (array)$result->result_array();
     }
 
-    public function getAllVnd($matgrp = '')
+    public function getVndAssign()
     {
-//        $SQL = ("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matgrp[0] . "'");
-//        for ($i = 1; $i < sizeof($matgrp); $i++)
-//            $SQL .= (" OR EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matgrp[$i] . "'");
-
-        $result = $this->db->query("SELECT MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
-FROM EC_M_STRATEGIC_MATERIAL
-JOIN VND_PRODUCT ON EC_M_STRATEGIC_MATERIAL.MATKL = VND_PRODUCT.PRODUCT_CODE
-LEFT JOIN VND_HEADER ON VND_PRODUCT.VENDOR_ID = VND_HEADER.VENDOR_ID
-WHERE VND_HEADER.VENDOR_NO IS NOT NULL
-GROUP BY MATKL,VND_HEADER.VENDOR_ID,VND_HEADER.VENDOR_NO,VENDOR_NAME
-UNION
-SELECT listagg(VP.PRODUCT_CODE,', ') within group( order by VP.PRODUCT_CODE ) as MATKL,VH.VENDOR_ID,VH.VENDOR_NO,VH.VENDOR_NAME 
-FROM VND_PRODUCT VP RIGHT JOIN VND_HEADER VH ON VP.VENDOR_ID=VH.VENDOR_ID 
-WHERE VP.VENDOR_ID IS NOT NULL AND VH.VENDOR_NO IS NOT NULL
-GROUP BY VH.VENDOR_ID,VH.VENDOR_NO,VENDOR_NAME
-ORDER BY MATKL,VENDOR_NO");
-//$this->db->last_query();die();
-        // $this -> db -> order_by('PL.VENDORNO');
+        $userid = $this->session->userdata['ID'];
+        $select = $this->tableVndAss.'.VENDORNO, '.$this->tableVnd.'.VENDOR_NAME';
+        $this->db->select($select);
+        $this->db->from($this->tableVndAss);
+        $this->db->join($this->tableVnd, $this->tableVndAss.'.VENDORNO = '.$this->tableVnd.'.VENDOR_NO');
+        $this->db->where($this->tableVndAss.'.USERID', $userid);
+        $this->db->where($this->tableVndAss.'.LEVEL_APP', 0);
+        $this->db->group_by($select);
+        $result = $this->db->get();
         return (array)$result->result_array();
     }
     
@@ -182,6 +173,55 @@ ORDER BY MATKL,VENDOR_NO");
         return (array)$result->result_array();
     }
 
+    public function getMatVnd_assign($vendorno)
+    {
+        $userid = $this->session->userdata['ID'];
+        $select = $this->tableVndAss.'.MATNO, '.$this->table.'.MAKTX, '.$this->table.'.MEINS, '.$this->tableVndAss.'.INDATE, '.$this->tableVndAss.'.CURRENCY';
+        $this->db->select($select);
+        $this->db->from($this->tableVndAss);
+        $this->db->join($this->table, $this->tableVndAss.'.MATNO = '.$this->table.'.MATNR');
+        $this->db->where($this->tableVndAss.'.VENDORNO', $vendorno);
+        $this->db->where($this->tableVndAss.'.LEVEL_APP', 0);
+        $this->db->where($this->tableVndAss.'.USERID', $userid);
+        $this->db->group_by($select);
+        $this->db->order_by($this->tableVndAss.'.MATNO');
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
+    public function getAssignedItem($vendorno, $item)
+    {
+        $this->db->from($this->tableAssign);
+        $this->db->where('VENDORNO', $vendorno);
+        $this->db->where('MATNO', $item);
+        $result = $this->db->get();
+        if (count($result->result_array()) > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getVndMatno_propose($matno = '', $matnogrp = '')
+    {
+        $slc = "VND_PRODUCT.VENDOR_ID,VND_HEADER.VENDOR_NO,PL.VENDORNO,VENDOR_NAME";
+        $slcg = "VND_PRODUCT.VENDOR_ID,VND_HEADER.VENDOR_NO,PL.VENDORNO,VENDOR_NAME";
+        $this->db->from("(SELECT VENDORNO FROM EC_PL_VENDOR_ASSIGN WHERE MATNO='" . $matno . "' GROUP BY VENDORNO) PL");
+        $this->db->select($slc);
+        $this->db->join('VND_HEADER', 'VND_HEADER.VENDOR_NO = PL.VENDORNO', 'RIGHT');
+        $this->db->join('VND_PRODUCT', 'VND_PRODUCT.VENDOR_ID = VND_HEADER.VENDOR_ID');
+        $this->db->join($this->table, 'EC_M_STRATEGIC_MATERIAL.MATKL = VND_PRODUCT.PRODUCT_CODE', 'inner');
+        $this->db->where("VND_HEADER.VENDOR_NO IS NOT NULL");
+        $this->db->where("EC_M_STRATEGIC_MATERIAL.MATKL = '" . $matnogrp[0] . "'");
+        $this->db->or_where("VND_HEADER.VENDOR_NO IS NOT NULL");
+        $this->db->group_by($slcg);
+        $this->db->order_by('PL.VENDORNO');
+//        $this->db->get();
+//        echo $this->db->last_query();die();
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
     public function getVndMatnoOld($matno = '', $matnogrp = '')
     {
         $slc = "MATKL,PRODUCT_CODE,VND_PRODUCT.VENDOR_ID,VND_HEADER.VENDOR_NO,PL.VENDORNO,VENDOR_NAME";
@@ -236,6 +276,39 @@ ORDER BY MATKL,VENDOR_NO");
         // return (array)$result -> result_array();
     }
 
+    public function insertPropose($itms, $vnds, $startDate, $endDate, $kode_update, $lamahari = '0', $currency)
+    {
+        $userid = $this->session->userdata['ID'];
+        $now = date("Y-m-d H:i:s");
+        foreach ($itms as $value) {
+            $this->db->where('MATNO', $value);
+            $this->db->where('USERID', $userid);
+            $this->db->delete('EC_PL_VENDOR_ASSIGN');
+            foreach ($vnds as $values) {
+                $SQL = "INSERT INTO EC_PL_VENDOR_ASSIGN
+				VALUES
+					(
+						'',
+						'" . $value . "',
+						'" . $values . "',
+						TO_DATE (
+							'" . $startDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $endDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $now . "',
+							'YYYY-MM-DD HH24:MI:SS'
+						),NULL,'" . $kode_update . "','" . $lamahari . "','" . $currency . "','" . $userid . "','" . 1 . "','" . 1 . "'
+					)";
+                $this->db->query($SQL);
+            }
+        }
+    }
+
     public function edit($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
     {
         $this->deleteUncheck($itms, $vnds);
@@ -282,9 +355,121 @@ ORDER BY MATKL,VENDOR_NO");
         }
     }
 
-    public function deleteUncheck($matno, $check)
+    public function editPropose($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
     {
-        $data = $this->existAssign($matno);
+        $userid = $this->session->userdata['ID'];
+        $this->uncheckPropose($itms, $vnds);
+        $assign = $this->existVenAssign($itms);
+        for ($i = 0; $i < count($vnds); $i++){
+            for ($j = 0; $j < count($assign); $j++){
+                if ($vnds[$i] == $assign[$j]['VENDORNO']){
+                    unset($vnds[$i]);
+                }
+            }
+        }
+//        $this->db->where('MATNO', $itms);
+//        $this->db->delete('EC_PL_ASSIGN');
+        $now = date("Y-m-d H:i:s");
+        $startDate = date("d-m-Y");
+        $endDate = null;
+        $query = array();
+        foreach ($vnds as $values) {
+//            if ($this->cekAssign($itms, $values) == 2){
+            $SQL = "INSERT INTO EC_PL_VENDOR_ASSIGN
+				VALUES
+					(
+						'',
+						'" . $itms . "',
+						'" . $values . "',
+						TO_DATE (
+							'" . $startDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $endDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $now . "',
+							'YYYY-MM-DD HH24:MI:SS'
+						),NULL,'" . $kode_update . "','" . $lamahari . "','" . $currency . "','" . $userid . "','" . 1 . "','" . 1 . "'
+					)";
+            $this->db->query($SQL);
+            array_push($query, $SQL);
+//            } else {
+//                break;
+//            }
+        }
+    }
+
+    public function editAssign($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
+    {
+//        $this->deleteUncheck($vnds, $itms);
+//        $assign = $this->existAssign($vnds);
+//        for ($i = 0; $i < count($itms); $i++){
+//            for ($j = 0; $j < count($assign); $j++){
+//                if ($itms[$i] == $assign[$j]['MATNO']){
+//                    unset($itms[$i]);
+//                }
+//            }
+//        }
+        $now = date("Y-m-d H:i:s");
+        $startDate = date("d-m-Y");
+        $endDate = null;
+        $query = array();
+        foreach ($itms as $values) {
+            $item = $this->getInserted($vnds, $values);
+            $SQL = "INSERT INTO EC_PL_ASSIGN
+				VALUES
+					(
+						'',
+						'" . $values . "',
+						'" . $vnds . "',
+						TO_DATE (
+							'" . $startDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $endDate . "',
+							'DD-MM-YYYY'
+						),
+						TO_DATE (
+							'" . $now . "',
+							'YYYY-MM-DD HH24:MI:SS'
+						),NULL,'" . $item['KODE_UPDATE'] . "','" . $item['DAYS_UPDATE'] . "','" . $item['CURRENCY'] . "'
+					)";
+            $this->db->query($SQL);
+            array_push($query, $SQL);
+//            } else {
+//                break;
+//            }
+        }
+    }
+
+    public function deleteUncheck($vendorno, $check)
+    {
+        $data = $this->existAssign($vendorno);
+        for ($i = 0; $i < count($data); $i++){
+            $x = 0;
+            for ($j = 0; $j < count($check); $j++){
+                if ($data[$i]['MATNO'] == $check[$j]){
+                    $x++;
+                } else {
+                    break;
+                }
+            }
+            if ($x == 0){
+                $this->db->where('VENDORNO', $vendorno);
+                $this->db->where('MATNO', $data[$i]['MATNO']);
+                $this->db->delete('EC_PL_ASSIGN');
+            }
+        }
+    }
+
+    public function uncheckPropose($matno, $check)
+    {
+        $userid = $this->session->userdata['ID'];
+        $data = $this->existVenAssign($matno);
         for ($i = 0; $i < count($data); $i++){
             $x = 0;
             for ($j = 0; $j < count($check); $j++){
@@ -295,18 +480,41 @@ ORDER BY MATKL,VENDOR_NO");
                 }
             }
             if ($x == 0){
-                $this->db->where('MATNO', $matno);
-                $this->db->where('VENDORNO', $data[$i]['VENDORNO']);
-                $this->db->delete('EC_PL_ASSIGN');
+                if ($data[$i]['LEVEL_APP'] == 1){
+                    $this->db->where('MATNO', $matno);
+                    $this->db->where('VENDORNO', $data[$i]['VENDORNO']);
+                    $this->db->where('USERID', $userid);
+                    $this->db->delete('EC_PL_VENDOR_ASSIGN');
+                }
             }
         }
     }
 
-    public function existAssign($matno)
+    public function existAssign($vendorno)
     {
         $this->db->from('EC_PL_ASSIGN');
+        $this->db->where('VENDORNO', $vendorno);
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
+    public function getInserted($vendorno, $matno)
+    {
+        $userid = $this->session->userdata['ID'];
+        $this->db->from($this->tableVndAss);
+        $this->db->where('USERID', $userid);
+        $this->db->where('VENDORNO', $vendorno);
         $this->db->where('MATNO', $matno);
-//        $this->db->where('VENDORNO', $vnd);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    public function existVenAssign($matno)
+    {
+        $userid = $this->session->userdata['ID'];
+        $this->db->from('EC_PL_VENDOR_ASSIGN');
+        $this->db->where('MATNO', $matno);
+        $this->db->where('USERID', $userid);
         $result = $this->db->get();
         return (array)$result->result_array();
     }

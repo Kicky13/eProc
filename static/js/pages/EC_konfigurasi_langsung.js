@@ -1,19 +1,20 @@
 var items = [],
     matnr = '-',
-    vnd = []
+    vnd = [],
+    mat = []
 //lamahari = 0
 $(document).ready(function () {
     $('#lamahari').val('')
     $('#lamahariEdit').val('')
 
-    $("#assign").prop('disabled', true);
+    $("#propose").prop('disabled', true);
     $(".btnpbls").prop('disabled', true);
     $(".btnupbls").prop('disabled', true);
 
     $('.items').change(function () {
                 //$(".btnpbls").prop('disabled', false);
                 //$(".btnupbls").prop('disabled', false);
-                //$("#assign").prop('disabled', false);
+                //$("#propose").prop('disabled', false);
                 $(".items").each(function () {
                      //console.log($(this).data("pil"))
                     if ($(this).is(":checked")){
@@ -22,12 +23,12 @@ $(document).ready(function () {
                         }
                         else if ($(this).data("pil") == 0) {
                             $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
                             $(".btnpbls").prop('disabled', false);
                         }
                     }else{
                         $(".btnupbls").prop('disabled', true);
-                        $("#assign").prop('disabled', true);
+                        $("#propose").prop('disabled', true);
                         $(".btnpbls").prop('disabled', true);
                     }
                 });
@@ -61,22 +62,13 @@ $(document).ready(function () {
         }
     });
 
-    var activitiesss = document.getElementById("activitySelectorPublish");
-    activitiesss.addEventListener("change", function () {
-        if (activitiesss.value == "510") {
-            $("#days-rowPublish").show();
-        } else {
-            $("#days-rowPublish").hide();
-        }
-    });
-
     // $('.Date').datepicker({
     // 	format: "dd-mm-yyyy",
     // 	autoclose: true,
     // 	todayHighlight: true
     // });
     loadTableItemPublish();
-    loadTableProposeAssign();
+    loadTableVendorAssign();
     loadTree();
     loadTableItem('0');
     //loadTableVnd(data);
@@ -130,8 +122,8 @@ $(document).ready(function () {
     $('#tab1').click(function () {
         $('#PanelNgisor').hide();
         $('#button-publish').show();
-        $('#cat').show();
         $('#button-unpublish').hide();
+        $('#cat').show();
     })
 
     $('#tab2').click(function () {
@@ -142,14 +134,14 @@ $(document).ready(function () {
     })
 
     $('#tab3').click(function () {
-        $('#table_item_publish').show();
-        $('#cat').hide();
         $('#PanelNgisor').hide();
         $('#button-publish').hide();
         $('#button-unpublish').hide();
+        $('#cat').hide();
+        $('#table_vendor_assign').show();
     })
 
-    $('#assign').click(function () {
+    $('#propose').click(function () {
         items = []
         startDate = $('#startdate').val()
         endDate = $('#enddate').val()
@@ -215,6 +207,9 @@ $(document).ready(function () {
         vnd = []
         startDate = $('#startdatemodal').val()
         endDate = $('#enddatemodal').val()
+        lamahariEdit = $('#lamahariEdit').val()
+        jangkawaktuEdit = $('#activitySelectorEdit').val()
+        currencyEdit = $('#activityCurrencyEdit').val()
         $('#table_vnd_2').DataTable().$('.vndEdit').each(function(){            
             if ($(this).is(":checked"))
                 if (vnd.indexOf($(this).data("vndno")) == -1)
@@ -223,7 +218,40 @@ $(document).ready(function () {
         datavnd = JSON.stringify(vnd)
         console.log(datavnd)
         console.log("matno" + $("#matno").val())
-        edit($("#matno").val(), datavnd, startDate, endDate)
+        console.log('Jangka Waktu : ' + jangkawaktuEdit);
+        console.log('Currency : ' + currencyEdit);
+        console.log('Lama Hari : ' + lamahariEdit);
+        if (jangkawaktuEdit == null || currencyEdit == null){
+            if (jangkawaktuEdit == null){
+                console.log('Jangka Waktu : ' + jangkawaktuEdit);
+                alert('Jangka Waktu tidak Boleh Kosong');
+            } else {
+                alert('Currency tidak boleh Kosong');
+            }
+        } else {
+            if (jangkawaktuEdit == '510'){
+                if (lamahariEdit == null){
+                    alert('Lama Hari tidak boleh Kosong');
+                } else {
+                    editPropose($("#matno").val(), datavnd, startDate, endDate)
+                }
+            } else {
+                editPropose($("#matno").val(), datavnd, startDate, endDate)
+            }
+        }
+    })
+
+    $('#saveItmVen').click(function () {
+        mat = []
+        $('#table_mat_vnd').DataTable().$('.matEdit').each(function(){
+            if ($(this).is(":checked"))
+                if (mat.indexOf($(this).data("matno")) == -1)
+                    mat.push(String($(this).data("matno")));
+        })
+        datamat = JSON.stringify(mat)
+        console.log(datamat)
+        console.log("vendor" + $("#vendornoMod1").val())
+        editAssign($("#vendornoMod1").val(), datamat)
     })
 
     $('#modalItem').on('show.bs.modal', function (event) {
@@ -261,16 +289,20 @@ $(document).ready(function () {
             $("#enddatemodal").val(button.data('enddate'))
         }
     })
-    loadTablePlant()
 
-    $('#modalItemPublish').on('show.bs.modal', function (event) {
+    $('#modalVendor').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
-        $("#days-rowPublish").hide();
-        $("#namaVendor").text(button.data('vendorname'))
-        $("#noVendor").text(button.data('vendorno'))
+        var vendorno = (button.data('vendorno'))
+        console.log(vendorno);
+        $("#vendornoMod1").val(button.data('vendorno'))
+        $("#vendornoMod1").val(vendorno)
+        $("#vendornameMod").text(button.data('vendorname'))
+        $("#vendornoMod").text(button.data('vendorno'))
+        if (vendorno != "" && vendorno != null && vendorno != 0) {
+            loadTableMatVnd(vendorno)
+        }
     })
-
-    $('#table_item_publish').hide();
+    loadTablePlant()
 });
 
 function removeA(arr) {
@@ -369,7 +401,7 @@ function startTimer(duration, display) {
 function simpan(itm, vnd, start, end, kode_update, lamahari, curr, mode) {
     if (mode == 'insert')
         $.ajax({
-            url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/insert',
+            url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/insertPropose',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -397,7 +429,7 @@ function edit(itm, vnd, start, end) {
         hari = $('#lamahariEdit').val();
     }
     $.ajax({
-        url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/edit',
+        url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/editPropose',
         type: 'POST',
         dataType: 'json',
         data: {
@@ -416,9 +448,51 @@ function edit(itm, vnd, start, end) {
     })
 }
 
-function setCode(id, elm) {
-    
+function editPropose(itm, vnd, start, end) {
+    hari = '0';
+    if($('#activitySelectorEdit').val()=='510'){
+        hari = $('#lamahariEdit').val();
+    }
+    $.ajax({
+        url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/editPropose',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            kode_update: $('#activitySelectorEdit').val(),
+            currency: $('#activityCurrencyEdit').val(),
+            hari: hari,
+            items: itm,
+            vnds: vnd
+        },
+    }).done(function (data) {
+        console.log(data)
+    }).always(function (data) {
+        console.log(data)
+        $('#modalItem').modal('hide')
+        // location.reload();
+    })
+}
 
+function editAssign(vnd, itm) {
+    console.log(vnd);
+    $.ajax({
+        url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/editAssign',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            items: itm,
+            vnds: vnd
+        },
+    }).done(function (data) {
+        console.log(data)
+    }).always(function (data) {
+        console.log(data)
+        $('#modalItem').modal('hide')
+        // location.reload();
+    })
+}
+
+function setCode(id, elm) {
     $(".btnpbls").prop('disabled', true);
     $(".btnupbls").prop('disabled', true);
     $(".abuu").each(function () {
@@ -427,7 +501,6 @@ function setCode(id, elm) {
     $(elm).css('color', '#e74c3c')
     loadTableItem(id)
     loadTableItemPublish(id);
-    loadTableProposeAssign(id);
     $('.breadcrumb').empty()
     $('.breadcrumb').append('<li><a href="javascript:void(0)"><span style="color:#e74c3c;" class="glyphicon glyphicon-home" aria-hidden="true"></span></a><a href="javascript:void(0)">&nbsp;&nbsp;Kategori</a></li>')
     splitt = id.split("-")
@@ -677,7 +750,7 @@ function loadTableVndItem(data, matgrp) {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data Item...</b></center>"
         },
         "ajax": {
-            url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/getVndMatno',
+            url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/getVndMatno_propose',
             type: 'POST',
             dataType: 'json',
             data: {
@@ -761,6 +834,111 @@ function loadTableVndItem(data, matgrp) {
 
 }
 
+function loadTableMatVnd(vnd) {
+    // no = 1;
+    $('#table_mat_vnd').DataTable().destroy();
+    $('#table_mat_vnd tbody').empty();
+    mytable = $('#table_mat_vnd').DataTable({
+        "bSort": false,
+        "dom": 'rtilp',
+        "bAutoWidth": false,
+        "deferRender": true,
+        "language": {
+            "loadingRecords": "<center><b>Please wait - Updating and Loading Data Item...</b></center>"
+        },
+        "ajax": {
+            url: $("#base-url").val() + 'EC_Konfigurasi_Langsung/getMatVnd_assign',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                items: vnd
+            }
+        },
+        "columnDefs": [{
+            "searchable": false,
+            "orderable": true,
+            "targets": 0
+        }],
+        "fnInitComplete": function () {
+            $('#table_mat_vnd tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
+        "drawCallback": function (settings) {
+            $('#table_mat_vnd tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
+        "columns": [{
+            mRender: function (data, type, full) {
+                a = ''
+                a += "<div class='col-md-12'>"
+                if (full.CHECK == 'YES')
+                    a += "<input disabled type='checkbox' data-matno=" + full.MATNO + " checked>&nbsp;&nbsp;&nbsp;"
+                else
+                    a += "<input type='checkbox' data-matno=" + full.MATNO + " class='matEdit'>&nbsp;&nbsp;&nbsp;"
+                a += "</div>";
+                return a
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.MATNO != null) {
+                    a = ''
+                    a += "<div class='col-md-12 text-center'>";
+                    a += "&nbsp;" + full.MATNO;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.MAKTX != null) {
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.MAKTX;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.MEINS != null) {
+                    a = ''
+                    a += "<div class='col-md-12 text-center'>";
+                    a += full.MEINS;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }, {
+            mRender: function (data, type, full) {
+                if (full.INDATE != null) {
+                    a = "<div class='col-md-12 text-center'>";
+                    a += full.INDATE;
+                    a += "</div>";
+                    return a;
+                } else
+                    return "";
+            }
+        }],
+    });
+
+    mytable.columns().every(function () {
+        var that = this;
+        $('.srch', this.header()).on('keyup change', function () {
+            if (that.search() !== this.value) {
+                // $('#tableMT tbody tr').each(function() {
+                // $(this).find('td').attr('nowrap', 'nowrap');
+                // });
+                that.search(this.value).draw();
+            }
+        });
+    });
+
+}
+
 function loadTableItem(KODE_USER) {
     // no = 1;
     $('#table_item').DataTable().destroy();
@@ -787,7 +965,7 @@ function loadTableItem(KODE_USER) {
             $('.items').change(function () {
                 //$(".btnpbls").prop('disabled', false);
                 //$(".btnupbls").prop('disabled', false);
-                //$("#assign").prop('disabled', false);
+                //$("#propose").prop('disabled', false);
                 if ($(this).is(":checked")){
                     if ($(this).data("pil") == 1){
                             $(".btnpbls").prop('disabled', true);
@@ -795,7 +973,7 @@ function loadTableItem(KODE_USER) {
                         }
                         else if ($(this).data("pil") == 0) {
                             $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
                             $(".btnpbls").prop('disabled', false);
                         }
                 }else{
@@ -809,17 +987,17 @@ function loadTableItem(KODE_USER) {
                         if ($(this).data("pil") == 1){
                             $(".btnpbls").prop('disabled', true);
                             $(".btnupbls").prop('disabled', false);
-                            $("#assign").prop('disabled', false);
+                            $("#propose").prop('disabled', false);
                         }
                         else if ($(this).data("pil") == 0) {
                             $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
                             $(".btnpbls").prop('disabled', false);
                         }
                     }else{
                         //$(".btnupbls").prop('disabled', true);
                         //$(".btnupbls").prop('disabled', true);
-                        //$("#assign").prop('disabled', true);
+                        //$("#propose").prop('disabled', true);
                         //$(".btnpbls").prop('disabled', true);
                     }
                 });
@@ -832,16 +1010,16 @@ function loadTableItem(KODE_USER) {
             $('.items').change(function () {
                 //$(".btnpbls").prop('disabled', false);
                 //$(".btnupbls").prop('disabled', false);
-                //$("#assign").prop('disabled', false);
+                //$("#propose").prop('disabled', false);
                 if ($(this).is(":checked")){
                     if ($(this).data("pil") == 1){
                         $(".btnpbls").prop('disabled', true);
                         $(".btnupbls").prop('disabled', false);
-                        //$("#assign").prop('disabled', true);
+                        //$("#propose").prop('disabled', true);
                     }
                     else if ($(this).data("pil") == 0) {
                         $(".btnupbls").prop('disabled', true);
-                        $("#assign").prop('disabled', true);
+                        $("#propose").prop('disabled', true);
                         $(".btnpbls").prop('disabled', false);
                     }
                 }else{
@@ -855,17 +1033,17 @@ function loadTableItem(KODE_USER) {
                         if ($(this).data("pil") == 1){
                             $(".btnpbls").prop('disabled', true);
                             $(".btnupbls").prop('disabled', false);
-                            $("#assign").prop('disabled', false);
+                            $("#propose").prop('disabled', false);
                         }
                         else if ($(this).data("pil") == 0) {
                             $(".btnupbls").prop('disabled', true);
-                            $("#assign").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
                             $(".btnpbls").prop('disabled', false);
                         }
                     }else{
                         //$(".btnupbls").prop('disabled', true);
                         //$(".btnupbls").prop('disabled', true);
-                        //$("#assign").prop('disabled', true);
+                        //$("#propose").prop('disabled', true);
                         //$(".btnpbls").prop('disabled', true);
                     }
                 });
@@ -983,11 +1161,11 @@ function loadTableItem(KODE_USER) {
 
 }
 
-function loadTableProposeAssign(KODE_USER) {
+function loadTableItemPublish(KODE_USER) {
     // no = 1;
-    $('#table_propose_assign').DataTable().destroy();
-    $('#table_propose_assign tbody').empty();
-    mytable = $('#table_propose_assign').DataTable({
+    $('#table_item_publish').DataTable().destroy();
+    $('#table_item_publish tbody').empty();
+    mytable = $('#table_item_publish').DataTable({
         "bSort": false,
         "dom": 'rtilp',
         "bAutoWidth": false,
@@ -1003,13 +1181,96 @@ function loadTableProposeAssign(KODE_USER) {
             "targets": 0
         }],
         "fnInitComplete": function () {
-            $('#table_propose_assign tbody tr').each(function () {
+            $('#table_item_publish tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
+            });
+            $('.items').change(function () {
+                //$(".btnpbls").prop('disabled', false);
+                //$(".btnupbls").prop('disabled', false);
+                //$("#propose").prop('disabled', false);
+                if ($(this).is(":checked")){
+                    if ($(this).data("pil") == 1){
+                            $(".btnpbls").prop('disabled', true);
+                            $(".btnupbls").prop('disabled', false);
+                        }
+                        else if ($(this).data("pil") == 0) {
+                            $(".btnupbls").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
+                            $(".btnpbls").prop('disabled', false);
+                        }
+                }else{
+                    $(".btnpbls").prop('disabled', true);
+                    $(".btnupbls").prop('disabled', true);
+                    $("#propose").prop('disabled', true);
+                }
+
+                $(".items").each(function () {
+                     //console.log($(this).data("pil"))
+                    if ($(this).is(":checked")){
+                        if ($(this).data("pil") == 1){
+                            $(".btnpbls").prop('disabled', true);
+                            $(".btnupbls").prop('disabled', false);
+                            $("#propose").prop('disabled', false);
+                        }
+                        else if ($(this).data("pil") == 0) {
+                            $(".btnupbls").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
+                            $(".btnpbls").prop('disabled', false);
+                        }
+                    }else{
+                        //$(".btnupbls").prop('disabled', true);
+                        //$(".btnupbls").prop('disabled', true);
+                        //$("#propose").prop('disabled', true);
+                        //$(".btnpbls").prop('disabled', true);
+                    }
+                });
             });
         },
         "drawCallback": function (settings) {
-            $('#table_propose_assign tbody tr').each(function () {
+            $('#table_item_publish tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
+            });
+            $('.items').change(function () {
+                //$(".btnpbls").prop('disabled', false);
+                //$(".btnupbls").prop('disabled', false);
+                //$("#propose").prop('disabled', false);
+                if ($(this).is(":checked")){
+                    if ($(this).data("pil") == 1){
+                        $(".btnpbls").prop('disabled', true);
+                        $(".btnupbls").prop('disabled', false);
+                        //$("#propose").prop('disabled', true);
+                    }
+                    else if ($(this).data("pil") == 0) {
+                        $(".btnupbls").prop('disabled', true);
+                        $("#propose").prop('disabled', true);
+                        $(".btnpbls").prop('disabled', false);
+                    }
+                }else{
+                    $(".btnpbls").prop('disabled', true);
+                    $(".btnupbls").prop('disabled', true);
+                    $("#propose").prop('disabled', true);
+                }
+
+                $(".items").each(function () {
+                    console.log($(this).data("pil"))
+                    if ($(this).is(":checked")){
+                        if ($(this).data("pil") == 1){
+                            $(".btnpbls").prop('disabled', true);
+                            $(".btnupbls").prop('disabled', false);
+                            $("#propose").prop('disabled', false);
+                        }
+                        else if ($(this).data("pil") == 0) {
+                            $(".btnupbls").prop('disabled', true);
+                            $("#propose").prop('disabled', true);
+                            $(".btnpbls").prop('disabled', false);
+                        }
+                    }else{
+                        //$(".btnupbls").prop('disabled', true);
+                        //$(".btnupbls").prop('disabled', true);
+                        //$("#propose").prop('disabled', true);
+                        //$(".btnpbls").prop('disabled', true);
+                    }
+                });
             });
         },
         "columns": [{
@@ -1080,17 +1341,17 @@ function loadTableProposeAssign(KODE_USER) {
                 a += "</div>";
                 return a;
             }
-            /*}, {
-                mRender: function (data, type, full) {
-                    a = ''
-                    a += "<div class='col-md-12'>";
-                    if (full.PUBLISHED_LANGSUNG == '1')
-                        a += '<input type="datetime" style="height: 30px" value="' + (full.PENUTUPAN == null ? "" : full.PENUTUPAN) + '" class="form-control start" />';
-                    else
-                        a += '<input type="datetime" style="height: 30px" value="" class="form-control start" />';
-                    a += "</div>";
-                    return a;
-                }*/
+        /*}, {
+            mRender: function (data, type, full) {
+                a = ''
+                a += "<div class='col-md-12'>";
+                if (full.PUBLISHED_LANGSUNG == '1')
+                    a += '<input type="datetime" style="height: 30px" value="' + (full.PENUTUPAN == null ? "" : full.PENUTUPAN) + '" class="form-control start" />';
+                else
+                    a += '<input type="datetime" style="height: 30px" value="" class="form-control start" />';
+                a += "</div>";
+                return a;
+            }*/
             // mRender : function(data, type, full) {
             //  a = ''
             //  a += "<div class='col-md-12'>";
@@ -1106,15 +1367,16 @@ function loadTableProposeAssign(KODE_USER) {
                 disabled = '';
                 a = '';
                 a += "<div class='col-md-12'>";
-                if (full.PUBLISHED_LANGSUNG == '1'){
-                    if(full.PEMBUKAAN == null){
-                        disabled = 'disabled';
-                    }
-                    a += '<button type="button" data-toggle="modal" data-startdate="' + full.PEMBUKAAN + '" data-enddate="' + full.PENUTUPAN + '" data-matgrp="' + full.MATKL + '" data-target="#modalItem" data-full="' + full.MAKTX + '"  data-matno="' + full.MATNR + '" data-curr="' + full.CURRENCY + '" data-upd="' + full.KODE_UPDATE + '"  data-days="' + full.DAYS_UPDATE + '" style="height: 70%" class="btn-sm btn btn-info" '+disabled+'>Vnd</button>';
-                }
-                else{
-                    a += '<button type="button" disabled data-matno="' + full.MATNR + '" style="height: 70%" class="btn-sm btn btn-info" >Vnd</button>';
-                }
+                a += '<button type="button" data-toggle="modal" data-startdate="' + full.PEMBUKAAN + '" data-enddate="' + full.PENUTUPAN + '" data-matgrp="' + full.MATKL + '" data-target="#modalItem" data-full="' + full.MAKTX + '"  data-matno="' + full.MATNR + '" data-curr="' + full.CURRENCY + '" data-upd="' + full.KODE_UPDATE + '"  data-days="' + full.DAYS_UPDATE + '" style="height: 70%" class="btn-sm btn btn-info" '+disabled+'>Vnd</button>';
+                // if (full.PUBLISHED_LANGSUNG == '1'){
+                //     if(full.PEMBUKAAN == null){
+                //         disabled = 'disabled';
+                //     }
+                //     a += '<button type="button" data-toggle="modal" data-startdate="' + full.PEMBUKAAN + '" data-enddate="' + full.PENUTUPAN + '" data-matgrp="' + full.MATKL + '" data-target="#modalItem" data-full="' + full.MAKTX + '"  data-matno="' + full.MATNR + '" data-curr="' + full.CURRENCY + '" data-upd="' + full.KODE_UPDATE + '"  data-days="' + full.DAYS_UPDATE + '" style="height: 70%" class="btn-sm btn btn-info" '+disabled+'>Vnd</button>';
+                // }
+                // else{
+                //     a += '<button type="button" disabled data-matno="' + full.MATNR + '" style="height: 70%" class="btn-sm btn btn-info" >Vnd</button>';
+                // }
                 a += "</div>";
                 return a;
             }
@@ -1135,11 +1397,11 @@ function loadTableProposeAssign(KODE_USER) {
 
 }
 
-function loadTableItemPublish() {
+function loadTableVendorAssign() {
     // no = 1;
-    $('#table_item_publish').DataTable().destroy();
-    $('#table_item_publish tbody').empty();
-    mytable = $('#table_item_publish').DataTable({
+    $('#table_vendor_assign').DataTable().destroy();
+    $('#table_vendor_assign tbody').empty();
+    mytable = $('#table_vendor_assign').DataTable({
         "bSort": false,
         "dom": 'rtilp',
         "bAutoWidth": false,
@@ -1148,18 +1410,28 @@ function loadTableItemPublish() {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data Item...</b></center>"
         },
 
-        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Langsung/getAllVnd',
+        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Langsung/getVndAssign',
         "columnDefs": [{
             "searchable": false,
             "orderable": true,
             "targets": 0
         }],
+        "fnInitComplete": function () {
+            $('#table_vendor_assign tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
+        "drawCallback": function (settings) {
+            $('#table_vendor_assign tbody tr').each(function () {
+                $(this).find('td').attr('nowrap', 'nowrap');
+            });
+        },
         "columns": [{
             mRender: function (data, type, full) {
-                if (full.VENDOR_NO != null) {
+                if (full.VENDORNO != null) {
                     a = ''
                     a += "<div class='col-md-12 text-center'>";
-                    a += "&nbsp;" + full.VENDOR_NO;
+                    a += "&nbsp;" + full.VENDORNO;
                     a += "</div>";
                     return a;
                 } else
@@ -1177,20 +1449,10 @@ function loadTableItemPublish() {
             }
         }, {
             mRender: function (data, type, full) {
-                if (full.MATKL != null) {
-                    a = ''
-                    a += "<div class='col-md-12 text-center'>";
-                    a += full.MATKL;
-                    a += "</div>";
-                    return a;
-                } else
-                    return "";
-            }
-        }, {
-            mRender: function (data, type, full) {
+                disabled = '';
                 a = '';
                 a += "<div class='col-md-12 text-center'>";
-                a += '<button type="button" data-toggle="modal" data-vendorno="' + full.VENDOR_NO + '" data-vendorname="' + full.VENDOR_NAME + '" data-matkl="' + full.MATKL + '" data-target="#modalItemPublish" style="height: 70%" class="btn-sm btn btn-info">Item</button>';
+                a += '<button type="button" data-toggle="modal" data-vendorno="' + full.VENDORNO + '" data-vendorname="' + full.VENDOR_NAME + '" data-target="#modalVendor" style="height: 70%" class="btn-sm btn btn-info" '+disabled+'>Item</button>';
                 a += "</div>";
                 return a;
             }
@@ -1201,9 +1463,6 @@ function loadTableItemPublish() {
         var that = this;
         $('.srch', this.header()).on('keyup change', function () {
             if (that.search() !== this.value) {
-                // $('#tableMT tbody tr').each(function() {
-                // $(this).find('td').attr('nowrap', 'nowrap');
-                // });
                 that.search(this.value).draw();
             }
         });

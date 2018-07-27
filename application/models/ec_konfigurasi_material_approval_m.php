@@ -1,15 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ec_configuration_assign_m extends CI_Model {
-    protected $table = 'EC_PL_KONFIGURASI_ASSIGN', $employee = 'ADM_EMPLOYEE', $company = 'ADM_COMPANY';
+class ec_konfigurasi_material_approval_m extends CI_Model {
+    protected $table = 'EC_M_KONFIGURASI_MATERIAL', $employee = 'ADM_EMPLOYEE', $company = 'ADM_COMPANY';
 
     public function __construct() {
         parent::__construct();
         $this->db = $this->load->database('default', TRUE);
     }
 
-    function getMaster_assign()
+    function getMaster_data()
     {
         $this->db->select($this->table.'.*, '.$this->employee.'.FULLNAME, '.$this->company.'.COMPANYNAME');
         $this->db->from($this->table);
@@ -24,7 +24,7 @@ class ec_configuration_assign_m extends CI_Model {
         $this->db->from($this->table);
         $this->db->where('USER_ID', $data['USER_ID']);
         $query = $this->db->get();
-        if (count($query->result_array()) > 1){
+        if (count((array)$query->result_array()) > 1){
             return false;
         } else {
             return $this->alter($data, $this->getEmployeeData($data['USER_ID']));
@@ -36,7 +36,7 @@ class ec_configuration_assign_m extends CI_Model {
         $this->db->from($this->table);
         $this->db->where('USER_ID', $data['USER_ID']);
         $query = $this->db->get();
-        if (count($query->result_array()) > 0){
+        if (count((array)$query->result_array()) > 0){
             return false;
         } else {
             return $this->insert($data, $this->getEmployeeData($data['USER_ID']));
@@ -46,14 +46,14 @@ class ec_configuration_assign_m extends CI_Model {
     function insert($data, $full)
     {
         $date = date('d-m-Y h:i:sa');
-        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'LEVEL' => $data['LEVEL'], 'DATEIN' => $date, 'COMPANY' => $full['EM_COMPANY']));
+        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP'], 'PROPOSE_DATE' => $date ));
         return true;
     }
 
     function alter($data, $full)
     {
         $this->db->where('ID', $data['ID']);
-        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY']));
+        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP']));
         return true;
     }
 

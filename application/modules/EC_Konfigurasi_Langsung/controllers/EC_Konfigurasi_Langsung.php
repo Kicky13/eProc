@@ -106,14 +106,6 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         // var_dump($xpl);
         echo json_encode(array('data' => $result));
     }
-
-    public function getAllVnd()
-    {
-        $this->load->model('ec_konfigurasi_lansgung_m');
-        $result = $this->ec_konfigurasi_lansgung_m->getAllVnd();
-        echo json_encode(array('data' => $result));
-    }
-
     public function getPlant($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
@@ -132,6 +124,12 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         echo json_encode(array('data' => $result));
     }
 
+    public function getVndAssign()
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        echo json_encode(array('data' => $this->ec_konfigurasi_lansgung_m->getVndAssign()));
+    }
+
     public function getVndMatno($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
@@ -140,6 +138,37 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         $result = $this->ec_konfigurasi_lansgung_m->getVndMatno($xpl, $xpl2);
         // var_dump($xpl);
         echo json_encode(array('data' => $result));
+    }
+
+    public function getMatVnd_assign()
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $vendorno = $this->input->post('items');
+        $result = $this->ec_konfigurasi_lansgung_m->getMatVnd_assign($vendorno);
+        echo json_encode(array('data' => $this->compileMatVnd($result, $vendorno)));
+    }
+
+    public function getVndMatno_propose($value = '')
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $xpl = ($this->input->post('items'));
+        $xpl2 = json_decode($this->input->post('itemsgrp'));
+        $result = $this->ec_konfigurasi_lansgung_m->getVndMatno_propose($xpl, $xpl2);
+        // var_dump($xpl);
+        echo json_encode(array('data' => $result));
+    }
+
+    public function compileMatVnd($propose, $vendorno)
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        for ($i = 0; $i < count($propose); $i++){
+            if ($this->ec_konfigurasi_lansgung_m->getAssignedItem($vendorno, $propose[$i]['MATNO'])){
+                $propose[$i]['CHECK'] = 'YES';
+            } else {
+                $propose[$i]['CHECK'] = 'NO';
+            }
+        }
+        return $propose;
     }
 
     public function insert($value = '')
@@ -158,6 +187,22 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         echo json_encode(array('data' => $result));
     }
 
+    public function insertPropose($value = '')
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $itms = json_decode($this->input->post('items'));
+        $vnds = json_decode($this->input->post('vnds'));
+        $startDate = ($this->input->post('startDate'));
+        $endDate = ($this->input->post('endDate'));
+        $kode_update = ($this->input->post('kode'));
+        $lamahari = ($this->input->post('days'));
+        $currency = ($this->input->post('currency'));
+        // var_dump($itms);
+        // var_dump($vnds);
+        $result = $this->ec_konfigurasi_lansgung_m->insertPropose($itms, $vnds, $startDate, $endDate, $kode_update, $lamahari, $currency);
+        echo json_encode(array('data' => $result));
+    }
+
     public function edit($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
@@ -171,6 +216,31 @@ class EC_Konfigurasi_Langsung extends CI_Controller
         $hari = ($this->input->post('hari'));
         $currency = ($this->input->post('currency'));
         $result = $this->ec_konfigurasi_lansgung_m->edit($itms, $vnds, $kode_update, $hari, $currency);
+        echo json_encode(array('data' => $result));
+    }
+
+    public function editPropose($value = '')
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $itms = ($this->input->post('items'));
+        $vnds = json_decode($this->input->post('vnds'));
+        //$startDate = ($this->input->post('startDate'));
+        //$endDate = ($this->input->post('endDate'));
+        //var_dump($itms);
+        //var_dump($vnds);
+        $kode_update = ($this->input->post('kode_update'));
+        $hari = ($this->input->post('hari'));
+        $currency = ($this->input->post('currency'));
+        $result = $this->ec_konfigurasi_lansgung_m->editPropose($itms, $vnds, $kode_update, $hari, $currency);
+        echo json_encode(array('data' => $result));
+    }
+
+    public function editAssign($value = '')
+    {
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        $vnd = ($this->input->post('vnds'));
+        $itms = json_decode($this->input->post('items'));
+        $result = $this->ec_konfigurasi_lansgung_m->editAssign($itms, $vnd);
         echo json_encode(array('data' => $result));
     }
 

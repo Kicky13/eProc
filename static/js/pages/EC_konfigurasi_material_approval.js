@@ -19,7 +19,7 @@ function loadTable_() {
         "language": {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data List PO...</b></center>"
         },
-        "ajax": $("#base-url").val() + 'EC_Master_Assign_Configuration/getMaster_assign',
+        "ajax": $("#base-url").val() + 'EC_Konfigurasi_Material_Approval/getMaster_data',
 
         "columnDefs": [{
             "searchable": false,
@@ -65,21 +65,28 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.LEVEL;
+                a += full.MATGROUP;
                 a += "</div>";
                 return a;
             }
         }, {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.DATEIN;
+                a += full.CONF_LEVEL;
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.PROPOSE_DATE;
                 a += "</div>";
                 return a;
             }
         }, {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-lvl="' + (full.LEVEL) + '" data-id="' + (full.ID) + '" data-datein="' + (full.DATEIN) + '" data-username="' + (full.FULLNAME) + '" data-userid="' + (full.USER_ID) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    // '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-lvl="' + (full.LEVEL) + '" data-id="' + (full.ID) + '" data-datein="' + (full.DATEIN) + '" data-username="' + (full.FULLNAME) + '" data-userid="' + (full.USER_ID) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:deleteMaster(' + (full.ID) + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '</div>';
                 return a;
@@ -192,7 +199,7 @@ function loadTable_() {
 function deleteMaster(ID) {
     bootbox.confirm('Konfirmasi Hapus?', function (result) {
         if (result)
-            window.location.href = $("#base-url").val() + 'EC_Master_Assign_Configuration/delete/' + ID
+            window.location.href = $("#base-url").val() + 'EC_Konfigurasi_Material_Approval/delete/' + ID
     });
 }
 
@@ -237,60 +244,42 @@ var t0 = true,
 var t = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9];
 
 function simpan() {
-    // console.log($(element).is(":checked"));
-    //console.log($(element).parent().parent().find(".endDate").data('provide'))
-    // var harga1 = $('#' + harga).val();
-    // var currency = $('#' + curr).val();
-    // var time = $('#' + deliverytime).val();
-    // if (harga1 == '' || currency == null || time == '') {
-    //     alert('Harga, currency atau delivery time masih kosong');
-    // } else {
-    // if (confirm('Apakah anda yakin menyimpan data ini ?'))
-    $.ajax({
-        url: $("#base-url").val() + 'EC_Master_Assign_Configuration/simpan/',
-        data: {
-            "userid": $("#ID_USER").val(),
-            "lvl": $('#lvl').val()
-        },
-        type: 'POST',
-        dataType: 'json'
-    }).done(function (data) {
-        //location.reload(true);
-        alert(data.responseText);
-        // if (alert(data.responseText))
-        // {
-        //     window.location.reload();
-        // }
-        //window.location.reload();
-        //window.location = $("#base-url").val() + 'EC_Master_Approval/';
-        //console.log(data);
-    }).fail(function (data) {
-        alert(data.responseText);
-        // console.log("error");
-        // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
-    }).always(function (data) {
-        if(data.responseText=='Success'){
-            location.reload(true);
+    matgrp = $('#matgrp').val();
+    app = $('#lvl').val();
+    userid = $('#ID_USER').val();
+    if (matgrp == '' || app == '' || userid == ''){
+        if (matgrp == ''){
+            alert('Material Group tidak boleh kosong');
+        } else if (app == ''){
+            alert('Level Approval tidak boleh kosong');
+        } else {
+            alert('User tidak boleh kosong');
         }
-        // console.log(data)
-        //$("#statsPO").text(data)
-    });
-    // }
-
+    } else {
+        $.ajax({
+            url: $("#base-url").val() + 'EC_Konfigurasi_Material_Approval/simpan/',
+            data: {
+                "userid": userid,
+                "lvl": app,
+                "matgrp": matgrp
+            },
+            type: 'POST',
+            dataType: 'json'
+        }).done(function (data) {
+            alert(data.responseText);
+        }).fail(function (data) {
+            alert(data.responseText);
+        }).always(function (data) {
+            if(data.responseText=='Success'){
+                location.reload(true);
+            }
+        });
+    }
 }
 
 function update() {
-    // console.log($(element).is(":checked"));
-    //console.log($(element).parent().parent().find(".endDate").data('provide'))
-    // var harga1 = $('#' + harga).val();
-    // var currency = $('#' + curr).val();
-    // var time = $('#' + deliverytime).val();
-    // if (harga1 == '' || currency == null || time == '') {
-    //     alert('Harga, currency atau delivery time masih kosong');
-    // } else {
-    // if (confirm('Apakah anda yakin menyimpan data ini ?'))
     $.ajax({
-        url: $("#base-url").val() + 'EC_Master_Assign_Configuration/update/',
+        url: $("#base-url").val() + 'EC_Konfigurasi_Material_Approval/update/',
         data: {
             "userid": $('#viewusername').val(),
             "lvl": $('#viewlvl').val(),
@@ -299,27 +288,14 @@ function update() {
         type: 'POST',
         dataType: 'json'
     }).done(function (data) {
-        //location.reload(true);
         alert(data.responseText);
-        // if (alert(data.responseText))
-        // {
-        //     window.location.reload();
-        // }
-        //window.location.reload();
-        //window.location = $("#base-url").val() + 'EC_Master_Approval/';
-        //console.log(data);
     }).fail(function (data) {
         alert(data.responseText);
-        // console.log("error");
-        // $("#pocreated").text(data['RETURN'][0]['MESSAGE'])
     }).always(function (data) {
         if(data.responseText=='Success'){
             location.reload(true);
         }
-        // console.log(data)
-        //$("#statsPO").text(data)
     });
-    // }
 
 }
 

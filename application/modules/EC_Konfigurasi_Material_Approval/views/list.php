@@ -31,6 +31,14 @@
                             </div>
                             <div class="row" style="padding: 5px;">
                                 <div class="col-sm-3 col-md-3 col-lg-3">
+                                    Material Group
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <input type="text" name="matgrp" id="matgrp" placeholder="Material Group">
+                                </div>
+                            </div>
+                            <div class="row" style="padding: 5px;">
+                                <div class="col-sm-3 col-md-3 col-lg-3">
                                     Progress Approval Level
                                 </div>
                                 <div class="col-sm-4 col-md-4 col-lg-4">
@@ -62,12 +70,14 @@
                                             <th class="text-center ts0"><a href="javascript:void(0)">ID User</a></th>
                                             <th class="text-center ts1"><a href="javascript:void(0)">Username</a></th>
                                             <th class="text-center ts2"><a href="javascript:void(0)">Company</a></th>
+                                            <th class="text-center ts2"><a href="javascript:void(0)">Material Group</a></th>
                                             <th class="text-center ts3"><a href="javascript:void(0)">Progress Approval Level</a></th>
                                             <th class="text-center ts4"><a href="javascript:void(0)">Date Created</a></th>
                                             <th class="text-center ts7"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear">
                                             <!-- <th></th> -->
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -81,6 +91,7 @@
                                             <td class="text-center ts0"><a href="javascript:void(0)">ID User</td>
                                             <td class="text-center ts1"><a href="javascript:void(0)">Username</a></td>
                                             <td class="text-center ts2"><a href="javascript:void(0)">Company</a></td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Material Group</a></td>
                                             <td class="text-center ts3"><a href="javascript:void(0)">Progress Aproval Level</a></td>
                                             <td class="text-center ts4"><a href="javascript:void(0)">Date Created</a></td>
                                             <td class="text-center ts7">
@@ -131,6 +142,14 @@
                                 <?php } ?>
                             </select>
                         </div>
+                    </div>
+                </div>
+                <div class="row" style="padding: 5px;">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Progress Approval Level
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <input type="text" name="viewlvl" id="viewlvl" placeholder="Progress Level Approval">
                     </div>
                 </div>
                 <div class="row" style="padding: 5px;">
