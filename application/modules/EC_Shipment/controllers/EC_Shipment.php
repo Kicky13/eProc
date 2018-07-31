@@ -213,7 +213,7 @@ class EC_Shipment extends MX_Controller
         if ($this->ec_shipment_m->approveVendor($po)){
             $this->userNotification('Approve', $po);
         }
-        redirect('EC_Shipment/index/');
+        $this->index();
     }
 
     public function rejectVendor($po)
@@ -223,7 +223,7 @@ class EC_Shipment extends MX_Controller
         if ($this->ec_shipment_m->rejectVendor($po)){
             $this->userNotification('Reject', $po);
         }
-        redirect('EC_Shipment/index/');
+        $this->index();
     }
 
     public function userNotification($action, $po)
@@ -400,7 +400,7 @@ class EC_Shipment extends MX_Controller
     	$itms = json_decode($this->input->post('dataall'));
     	$noShip = ($this->input->post('nomor'));
         $tglShipment = ($this->input->post('tanggal'));
-        $today = date("YmdHi");
+        $today = date("YmdHis");
         // var_dump($today);
         
         for ($i=0; $i < sizeof($itms); $i++) { 

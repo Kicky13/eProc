@@ -50,8 +50,7 @@ class EC_Approval_Material_Assign extends CI_Controller
 
     public function test()
     {
-        $test = $this->ec_approval_material_assign_m->findNext(1);
-        print_r($test);
+        print_r($this->ec_approval_material_assign_m->currentLvl());
     }
 
     public function approve($kode)

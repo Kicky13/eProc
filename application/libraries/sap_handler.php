@@ -511,7 +511,7 @@ class sap_handler {
 
     public function createPOLangsungCart($comp = '7000', $id = '10164', $cart, $costcenter, $debug = true) {        
 //        var_dump($cart);die();
-        
+
     	$this->openFunction('ZCMM_GET_USERATTRIBUTE');
     	$this->fce->R_PERNR->row['SIGN'] = 'I';
     	$this->fce->R_PERNR->row['OPTION'] = 'EQ';
@@ -555,8 +555,7 @@ class sap_handler {
         $this->fce->POHEADER['VENDOR'] = $cart[0]['VENDORNO'];
         $this->fce->POHEADER['PURCH_ORG'] = $porg; 
         $this->fce->POHEADER['PUR_GROUP'] = '100'; 
-        $this->fce->POHEADER['CURRENCY'] = $cart[0]['CURRENCY'];
-        //$this->fce->POHEADER['CURRENCY'] = "IDR";
+        $this->fce->POHEADER['CURRENCY'] = $cart[0]['CURRENCY'];        
         $this->fce->POHEADER['DOC_DATE'] = date("Ymd"); 
 
         $this->fce->POHEADERX['COMP_CODE'] = "X";
@@ -566,11 +565,11 @@ class sap_handler {
         $this->fce->POHEADERX['PUR_GROUP'] = "X";
         $this->fce->POHEADERX['CURRENCY'] = "X";
         $this->fce->POHEADERX['DOC_DATE'] = "X";
-        $po = 1;
+        $po = 10;
         //funtion pertama kali
         for ($i = 0; $i < sizeof($cart); $i++) {
             //var_dump('PRICE: '.$chart[$i]['PRICE']);
-            $this->fce->POITEM->row['PO_ITEM'] = '' . $po;
+            $this->fce->POITEM->row['PO_ITEM'] = $po;
             $this->fce->POITEM->row['MATERIAL'] = $cart[$i]['MATNR'];
             $this->fce->POITEM->row['PLANT'] = $cart[$i]['PLANT']; //'7702';// $chart[$i]['plant']; $chart[$i]['PLANT']; //
             $this->fce->POITEM->row['QUANTITY'] = $cart[$i]['QTY'];
@@ -601,8 +600,9 @@ class sap_handler {
             $this->fce->POSCHEDULEX->Append($this->fce->POSCHEDULEX->row);
 
             $this->fce->POACCOUNT->row['PO_ITEM'] = $po;
+            $this->fce->POACCOUNT->row['GL_ACCOUNT'] = '67430001';
             $this->fce->POACCOUNT->row['COSTCENTER'] = $costcenter;
-            $this->fce->POACCOUNT->Append($this->fce->POACCOUNT->row);
+            $this->fce->POACCOUNT->Append($this->fce->POACCOUNT->row); 
 
             $this->fce->POACCOUNTX->row['PO_ITEM'] = $po;
             $this->fce->POACCOUNTX->row['PO_ITEMX'] = 'X';
@@ -855,12 +855,12 @@ class sap_handler {
         	return array(
         		'data' => array('invoicenumber' => $invoicenumber, 'fiscalyear' => $fiscalyear),
         		'status' => 1,
-        		);
+              );
         } else {
         	return array(
         		'data' => $error,
         		'status' => 0,
-        		);
+              );
         }
     }
 
@@ -993,12 +993,12 @@ class sap_handler {
         	return array(
         		'data' => 'Nomer mir '.$noinvoice.' tahun '.$tahun.' changed',
         		'status' => 1,
-        		);
+              );
         }else{
         	return array(
         		'data' => $error,
         		'status' => 0,
-        		);
+              );
         }
 
     }
@@ -1026,12 +1026,12 @@ class sap_handler {
     		return array(
     			'data' => $pesan,
     			'status' => 1,
-    			);
+             );
     	}else{
     		return array(
     			'data' => $error,
     			'status' => 0,
-    			);
+             );
     	}
     }
 
@@ -1286,17 +1286,17 @@ class sap_handler {
         $this->openFunction('BAPI_PO_CHANGE');
         $this->fce->PURCHASEORDER  = $PO;
         foreach($dt as $key=>$value){
-                $this->fce->POSCHEDULE->row['PO_ITEM'] = $dt[$key];
-        	$this->fce->POSCHEDULE->row['SCHED_LINE'] =  '1';
-        	$this->fce->POSCHEDULE->row['DELIVERY_DATE'] = $dt2[$key];
-        	$this->fce->POSCHEDULE->Append($this->fce->POSCHEDULE->row);
-        	
-                $this->fce->POSCHEDULEX->row['PO_ITEM'] = $dt[$key];
-        	$this->fce->POSCHEDULEX->row['PO_ITEMX'] = 'X';
-        	$this->fce->POSCHEDULEX->row['SCHED_LINE'] = '1';
-        	$this->fce->POSCHEDULEX->row['SCHED_LINEX'] = 'X';
-        	$this->fce->POSCHEDULEX->row['DELIVERY_DATE'] = 'X';
-        	$this->fce->POSCHEDULEX->Append($this->fce->POSCHEDULEX->row);
+            $this->fce->POSCHEDULE->row['PO_ITEM'] = $dt[$key];
+            $this->fce->POSCHEDULE->row['SCHED_LINE'] =  '1';
+            $this->fce->POSCHEDULE->row['DELIVERY_DATE'] = $dt2[$key];
+            $this->fce->POSCHEDULE->Append($this->fce->POSCHEDULE->row);
+
+            $this->fce->POSCHEDULEX->row['PO_ITEM'] = $dt[$key];
+            $this->fce->POSCHEDULEX->row['PO_ITEMX'] = 'X';
+            $this->fce->POSCHEDULEX->row['SCHED_LINE'] = '1';
+            $this->fce->POSCHEDULEX->row['SCHED_LINEX'] = 'X';
+            $this->fce->POSCHEDULEX->row['DELIVERY_DATE'] = 'X';
+            $this->fce->POSCHEDULEX->Append($this->fce->POSCHEDULEX->row);
 
         }        
         $this->fce->call();
@@ -1369,18 +1369,13 @@ class sap_handler {
         return $berhasil?2:0;
     }
 
-    public function GET_REPORTBUDGET ($user,$CC= '⁠⁠⁠2104200000', $debug = false) {
-    	$this->openFunction('ZCMM_GET_REPORTBUDGET');
-    	$this->fce->R_GJAHR ->row['SIGN'] = 'I';
-    	$this->fce->R_GJAHR ->row['OPTION'] = 'EQ';
-    	$this->fce->R_GJAHR ->row['LOW'] = date('Y');
-//        $this->fce->R_GJAHR ->Append($this->fce->R_GJAHR ->row);
-
-    	$this->fce->P_GJAHR = date('Y');
+    public function GET_REPORTBUDGET ($user,$CC= '2104200000', $debug = false) {        
+    	$this->openFunction('ZCMM_GET_REPORTBUDGET');        
+    	$this->fce->P_GJAHR = date('Y');        
 
     	$this->fce->R_FIKRS->row['SIGN'] = 'I';
-    	$this->fce->R_FIKRS->row['OPTION'] = 'EQ';
-        $this->fce->R_FIKRS->row['LOW'] ='SGG'.substr($user['COMPANYID'],0,1); //
+    	$this->fce->R_FIKRS->row['OPTION'] = 'EQ'; 
+        $this->fce->R_FIKRS->row['LOW'] ='SGG'.$user;
         $this->fce->R_FIKRS->Append($this->fce->R_FIKRS->row);
 
         $this->fce->R_FICTR->row['SIGN'] = 'I';
@@ -1396,7 +1391,6 @@ class sap_handler {
         		$itTampung[] = $this->fce->T_DATA->row;
         	}
         }
-//        var_dump($this->fce->T_DATA->row);
         if ($debug) {
         	header('Content-Type: application/json');
 
@@ -2001,6 +1995,52 @@ class sap_handler {
     	}
 
     	return $itTampung;
+    }
+
+    public function getDirven($company, $matkl){
+        $this->openFunction('ZCMM_GET_DIRVEN');
+
+        if ($company == '2000'){
+            $ekorg = 'HC01';
+        } elseif ($company == '3000'){
+            $ekorg = 'SP01';
+        } elseif ($company == '4000'){
+            $ekorg = 'ST01';
+        } elseif ($company == '5000'){
+            $ekorg = 'OP01';
+        } elseif ($company == '6000'){
+            $ekorg = 'TL01';
+        } elseif ($company == '7000'){
+            $ekorg = 'KS01';
+        } else {
+            $ekorg = 'HC01';
+        }
+
+        $this->fce->T_EKORG->row['SIGN'] = 'I';
+        $this->fce->T_EKORG->row['OPTION'] = 'EQ';
+        $this->fce->T_EKORG->row['LOW'] = $ekorg;
+        $this->fce->T_EKORG->row['HIGH'] = '';
+//        $this->fce->T_EKORG->Append($this->fce->T_EKORG->row);
+
+        foreach ($matkl as $item){
+            $this->fce->T_MATKL->row['SIGN'] = 'I';
+            $this->fce->T_MATKL->row['OPTION'] = 'EQ';
+            $this->fce->T_MATKL->row['LOW'] = $item;
+            $this->fce->T_MATKL->row['HIGH'] = '';
+            $this->fce->T_MATKL->Append($this->fce->T_MATKL->row);
+        }
+
+        $this->fce->call();
+        $itTampung = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->IT_DATA->Reset();
+            while ($this->fce->IT_DATA->Next()) {
+                $itTampung[] = $this->fce->IT_DATA->row;
+            }
+        }
+        $return['IT_DATA'] = $itTampung;
+
+        return $return;
     }
 
     /**
@@ -3269,5 +3309,40 @@ class sap_handler {
     		print_r('<br>');
     	}
     	return $data;
+    }
+
+    public function getPOSpb($COMPANYID, $VENDOR_NO) {
+
+        $debug = false;
+        $this->openFunction('ZCMM_GET_DATA_TIMB_PO');
+        if($COMPANYID == '2000' || $COMPANYID == '7000' || $COMPANYID == '5000'){
+            $this->fce->LR_BUKRS->row['SIGN'] = 'I';
+            $this->fce->LR_BUKRS->row['OPTION'] = 'BT';
+            $this->fce->LR_BUKRS->row['LOW'] = '2000';
+            $this->fce->LR_BUKRS->row['HIGH'] = '7000';
+        } else {
+            $this->fce->LR_BUKRS->row['SIGN'] = 'I';
+            $this->fce->LR_BUKRS->row['OPTION'] = 'EQ';
+            $this->fce->LR_BUKRS->row['LOW'] = $COMPANYID;
+        }
+
+        $this->fce->LR_LIFNR->row['SIGN'] = 'I';
+        $this->fce->LR_LIFNR->row['OPTION'] = 'EQ';
+        $this->fce->LR_LIFNR->row['LOW'] = $VENDOR_NO;
+        
+        $this->fce->call();
+        
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->T_DATA ->Reset();
+            while ($this->fce->T_DATA->Next()) {
+                $itTampung[] = $this->fce->T_DATA ->row;
+            }
+        }
+
+        if ($debug) {
+            var_dump($itTampung);
+            print_r('<br>');
+        }
+        return $itTampung;
     }
 }

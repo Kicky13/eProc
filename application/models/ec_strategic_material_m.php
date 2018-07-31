@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_strategic_material_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M', $konfigApproval = 'EC_M_KONFIGURASI_MATERIAL';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -31,13 +31,39 @@ class ec_strategic_material_m extends CI_Model
 
     public function get()
     {
+        $userdata = $this->getMatGroup();
+        $matgrp = $this->compileMatGroup($userdata['MATGROUP']);
+        $whereMatgrp = "MATKL IN (".$matgrp.")";
         $this->db->from($this->table);
-        $this->db->join('EC_M_CATEGORY', 'EC_M_CATEGORY.ID_CAT = EC_M_STRATEGIC_MATERIAL.ID_CAT', 'left');
-        $this->db->join('EC_M_APPROVAL_STRATEGIC_M', 'EC_M_APPROVAL_STRATEGIC_M.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR', 'left');
-        $this->db->order_by('STATUS DESC, EC_M_STRATEGIC_MATERIAL.MATNR ASC');
+        $this->db->join("EC_M_CATEGORY", "EC_M_CATEGORY.ID_CAT = EC_M_STRATEGIC_MATERIAL.ID_CAT", "left");
+        $this->db->join("EC_M_APPROVAL_STRATEGIC_M", "EC_M_APPROVAL_STRATEGIC_M.MATNO = EC_M_STRATEGIC_MATERIAL.MATNR", "left");
+        $this->db->where($whereMatgrp);
+        $this->db->order_by("PROGRESS_APP, MATNR");
         // $this -> db -> limit(10);
         $result = $this->db->get();
         return (array)$result->result_array();
+    }
+
+    function getMatGroup()
+    {
+        $userid = $this->session->userdata['ID'];
+        $this->db->from($this->konfigApproval);
+        $this->db->where('USER_ID', $userid);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function compileMatGroup($matgrp)
+    {
+        $text = '';
+        $part = explode(', ', $matgrp);
+        for ($i = 0; $i < count($part); $i++){
+            $text .= "'".$part[$i]."'";
+            if ($i < count($part)-1){
+                $text .= ', ';
+            }
+        }
+        return $text;
     }
 
     function getDetailCompare($xpl, $xpl2)
@@ -159,7 +185,7 @@ class ec_strategic_material_m extends CI_Model
     {
         $this->deletePropose($data['MATNR']);
         $userid = $this->session->userdata['ID'];
-        $this->db->insert($this->tableApproval, array('MATNO' => $data['MATNR'], 'ID_CAT_PROPOSE' => $data['ID_CAT'], 'PROGRESS_APP' => 1, 'USER_ID' => $userid));
+        $this->db->insert($this->tableApproval, array('MATNO' => $data['MATNR'], 'ID_CAT_PROPOSE' => $data['ID_CAT'], 'PROGRESS_APP' => 1, 'USER_ID' => $userid, 'STATUS_APP' => 1));
     }
 
     function deletePropose($matnr)

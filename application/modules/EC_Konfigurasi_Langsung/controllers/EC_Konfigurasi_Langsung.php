@@ -98,14 +98,41 @@ class EC_Konfigurasi_Langsung extends CI_Controller
 
     public function getVnd($value = '')
     {
-        $this->load->model('ec_konfigurasi_lansgung_m');
-        // $xpl = explode(',', str_replace(array('[', ']'), '', $this -> input -> post('items')));
-        $xpl = json_decode($this->input->post('items'));
-//        var_dump($xpl);die();
-        $result = $this->ec_konfigurasi_lansgung_m->getVnd($xpl);
-        // var_dump($xpl);
-        echo json_encode(array('data' => $result));
+//        $this->load->model('ec_konfigurasi_lansgung_m');
+//        $xpl = json_decode($this->input->post('items'));
+//        $result = $this->ec_konfigurasi_lansgung_m->getVnd($xpl);
+//        echo json_encode(array('data' => $result));
+
+        $this->load->library('sap_handler');
+        $item = json_decode($this->input->post('items'));
+        $temp = '';
+        $matkl = array();
+        foreach ($item as $value){
+            if ($temp == $value) {
+                $temp = $value;
+            } else {
+                $temp = $value;
+                array_push($matkl, $value);
+            }
+        }
+        $data = $this->sap_handler->getDirven($this->session->userdata['COMPANYID'], $matkl);
+        echo json_encode(array('data' => $this->compileDirven($data), 'matkl' => $matkl));
+//        echo json_encode(array('data' => $this->compileDirven($data)));
     }
+
+    private function compileDirven($data)
+    {
+        $temp = array();
+        $vnd = array();
+        foreach ($data['IT_DATA'] as $value){
+            $temp['VENDOR_NO'] = $value['LIFNR'];
+            $temp['VENDOR_NAME'] = $value['NAME1'];
+            $temp['MATKL'] = $value['MATKL'];
+            array_push($vnd, $temp);
+        }
+        return $vnd;
+    }
+
     public function getPlant($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
@@ -283,6 +310,15 @@ class EC_Konfigurasi_Langsung extends CI_Controller
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
         $result = $this->ec_konfigurasi_lansgung_m->publishPlant($plant, $this->uri->segment(4));
+    }
+
+    public function test()
+    {
+        $this->load->library('sap_handler');
+        $matkl = '623';
+        $company = $this->session->userdata['COMPANYID'];
+        $sapReturn = $this->sap_handler->getDirven($company, $matkl);
+        print json_encode($sapReturn);
     }
 
 }

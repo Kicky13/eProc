@@ -22,7 +22,7 @@
                     <th class="text-center ts4"><a href="javascript:void(0)">Grup</a></th>
                     <th class="text-center ts5"><a href="javascript:void(0)">Tipe</th>
                     <th class="text-center ts6"><a href="javascript:void(0)">Status</th>
-                    <th class="text-center">Ubah Status</th> 
+                    <th class="text-center">Status Assign</th>
                     <th class="text-center">Kategori</th> 
                     <th class="text-center">Assign Kategori</th> 
                   </tr>
@@ -35,9 +35,9 @@
                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch"></th>  
                     <th></th>
                     <th>
-                    	<label style="padding-top: 0px" class="checkbox-inline col-md-10 col-md-offset-1  col-xs-10 col-lg-offset-1  col-xs-10 col-lg-offset-1 text-center">
-  						<input type="checkbox" id="checkAll" onclick="" value="option1">Tandai Semua
-						</label>
+<!--                    	<label style="padding-top: 0px" class="checkbox-inline col-md-10 col-md-offset-1  col-xs-10 col-lg-offset-1  col-xs-10 col-lg-offset-1 text-center">-->
+<!--  						<input type="checkbox" id="checkAll" onclick="" value="option1">Tandai Semua-->
+<!--						</label>-->
 					</th>
 					<th></th>
 					<th></th>

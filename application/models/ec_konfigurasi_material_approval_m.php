@@ -46,14 +46,14 @@ class ec_konfigurasi_material_approval_m extends CI_Model {
     function insert($data, $full)
     {
         $date = date('d-m-Y h:i:sa');
-        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP'], 'PROPOSE_DATE' => $date ));
+        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $this->compileMatGroup($data['MATGROUP']), 'PROPOSE_DATE' => $date ));
         return true;
     }
 
     function alter($data, $full)
     {
         $this->db->where('ID', $data['ID']);
-        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP']));
+        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $this->compileMatGroup($data['MATGROUP'])));
         return true;
     }
 

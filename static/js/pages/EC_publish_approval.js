@@ -86,7 +86,13 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center' style='color: red;'>";
-                a += "<strong>"+full.KODE_UPDATE+"</strong>";
+                if (full.KODE_UPDATE == 510){
+                    a += 'Per ' + full.DAYS_UPDATE + ' Hari';
+                } else if (full.KODE_UPDATE == 511){
+                    a += 'Perbulan';
+                } else {
+                    a += 'Perminggu';
+                }
                 a += "</div>";
                 return a;
             }

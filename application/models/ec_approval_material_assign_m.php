@@ -39,6 +39,20 @@ class ec_approval_material_assign_m extends CI_Model
         return (array)$result->result_array();
     }
 
+    function getMatGroup()
+    {
+        $matgrp = array();
+        $userid = $this->session->userdata['ID'];
+        $this->db->from($this->tableConf);
+        $this->db->where('USER_ID', $userid);
+        $query = $this->db->get();
+        $result = (array)$query->row_array();
+        foreach ($result as $item){
+            array_push($matgrp, $item['MATGROUP']);
+        }
+        return $matgrp;
+    }
+
     function getAssignerData()
     {
         $company = $this->session->userdata['COMPANYID'];
@@ -78,7 +92,7 @@ class ec_approval_material_assign_m extends CI_Model
         $data = $this->currentLvl();
         if ($status){
             $this->db->where('ID', $kode);
-            $this->db->update($this->table, array('PROGRESS_APP' => $data['LEVEL'] + 1, 'STATUS_APP' => 1));
+            $this->db->update($this->table, array('PROGRESS_APP' => $data['CONF_LEVEL'] + 1, 'STATUS_APP' => 1));
         } else {
             $this->assignMaterial($kode);
             $this->db->where('ID', $kode);
@@ -113,14 +127,6 @@ class ec_approval_material_assign_m extends CI_Model
         $query = $this->db->get();
         $result = (array)$query->row_array();
         $this->db->where("MATNR", $result['MATNO'], TRUE);
-        $this->db->update($this->table, array('ID_CAT' => $result['ID_CAT']));
-    }
-
-    function test($kode)
-    {
-        $this->db->from($this->table);
-        $this->db->where('ID', $kode);
-        $query = $this->db->get();
-        return (array)$query->row_array();
+        $this->db->update($this->material, array('ID_CAT' => $result['ID_CAT_PROPOSE']));
     }
 }

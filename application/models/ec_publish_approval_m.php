@@ -35,6 +35,7 @@ class ec_publish_approval_m extends CI_Model
         $this->db->join($this->vnd, $this->table.'.VENDORNO = '.$this->vnd.'.VENDOR_NO');
         $this->db->where($this->table.'.USERID', $assigner['USER_ID']);
         $this->db->where($this->table.'.LEVEL_APP', $cnf['LEVEL']);
+        $this->db->order_by($this->table.'.INDATE', 'DESC');
         $result = $this->db->get();
         return (array)$result->result_array();
     }

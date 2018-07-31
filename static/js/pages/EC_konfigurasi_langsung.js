@@ -485,9 +485,11 @@ function editAssign(vnd, itm) {
         },
     }).done(function (data) {
         console.log(data)
+        alert('Success');
+
     }).always(function (data) {
         console.log(data)
-        $('#modalItem').modal('hide')
+        $('#modalVendor').modal('hide')
         // location.reload();
     })
 }

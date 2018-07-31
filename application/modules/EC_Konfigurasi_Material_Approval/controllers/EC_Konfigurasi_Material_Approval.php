@@ -128,4 +128,11 @@ class EC_Konfigurasi_Material_Approval extends CI_Controller
         }
         echo json_encode($arr);
     }
+
+    public function test()
+    {
+        $text = '623, 524, 01, 342, 77, 55, 44, 32';
+        $this->load->model('ec_konfigurasi_material_approval_m');
+        echo $this->ec_konfigurasi_material_approval_m->compileMatGroup($text);
+    }
 }

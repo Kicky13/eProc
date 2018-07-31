@@ -174,10 +174,12 @@ function loadTable() {
 		}, {
 			mRender : function(data, type, full) {
 				//console.log(full[6]);
-				if (full[10] == ("") || full[10] == ("0")){
-                    return '<input value="' + full[1] + '" class="chk col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1" data-matnr="' + full[1] + '" onclick="chk(this)" type="checkbox">'
+				if (full[10] == ("1")){
+                    return '<input value="' + full[1] + '" class="chk col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1" data-matnr="' + full[1] + '" onclick="chk(this)" disabled type="checkbox">'
+				} else if (full[10] == ("2")) {
+                    return '<input type="checkbox" value="' + full[1] + '" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1" data-matnr="' + full[1] + '" onclick="chk(this)" disabled checked>'
 				} else {
-                    return '<input type="checkbox" value="' + full[1] + '" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1" data-matnr="' + full[1] + '" onclick="chk(this)"  checked>' + full[10]
+					return '';
 				}
 				// if (full[7] != ("0"))
 				// 	return '<input type="checkbox" value="' + full[1] + '" class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1" data-matnr="' + full[1] + '" onclick="chk(this)"  checked>'
