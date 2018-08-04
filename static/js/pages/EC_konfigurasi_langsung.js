@@ -876,7 +876,7 @@ function loadTableMatVnd(vnd) {
                 a = ''
                 a += "<div class='col-md-12'>"
                 if (full.CHECK == 'YES')
-                    a += "<input disabled type='checkbox' data-matno=" + full.MATNO + " checked>&nbsp;&nbsp;&nbsp;"
+                    a += "<input type='checkbox' data-matno=" + full.MATNO + " checked class='matEdit'>&nbsp;&nbsp;&nbsp;"
                 else
                     a += "<input type='checkbox' data-matno=" + full.MATNO + " class='matEdit'>&nbsp;&nbsp;&nbsp;"
                 a += "</div>";

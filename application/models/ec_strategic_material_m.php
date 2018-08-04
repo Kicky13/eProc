@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_strategic_material_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M', $konfigApproval = 'EC_M_KONFIGURASI_MATERIAL';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M', $konfigApproval = 'EC_M_KONFIGURASI_MATERIAL', $tableReport = 'EC_REPORT_APPROVAL_STRATEGIC_M';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -186,6 +186,41 @@ class ec_strategic_material_m extends CI_Model
         $this->deletePropose($data['MATNR']);
         $userid = $this->session->userdata['ID'];
         $this->db->insert($this->tableApproval, array('MATNO' => $data['MATNR'], 'ID_CAT_PROPOSE' => $data['ID_CAT'], 'PROGRESS_APP' => 1, 'USER_ID' => $userid, 'STATUS_APP' => 1));
+        $this->insertLog($data, $this->getAssigner(), 0);
+        $this->insertLog($data, $this->getNext($this->getAssigner()), 1);
+    }
+
+    function getNext($prev)
+    {
+        $this->db->from($this->konfigApproval);
+        $this->db->where('COMPANY', $prev['COMPANY']);
+        $this->db->where('MATGROUP', $prev['MATGROUP']);
+        $this->db->where('CONF_LEVEL', $prev['CONF_LEVEL'] + 1);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getAssigner()
+    {
+        $userid = $this->session->userdata['ID'];
+
+        $this->db->from($this->konfigApproval);
+        $this->db->where('USER_ID', $userid);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function insertLog($data, $user, $activity)
+    {
+        $now = date("Y-m-d H:i:s");
+
+        $this->db->where('USER_ID');
+        $this->db->where('MATNO');
+        $this->db->where('CAT_ID');
+        $this->db->delete($this->tableReport);
+
+        $this->db->insert($this->tableReport, array('USER_ID' => $user['USER_ID'], 'MATNO' => $data['MATNR'], 'CAT_ID' => $data['ID_CAT'], 'LOG_ACTIVITY' => $activity, 'LOG_DATE' => $now));
+        return true;
     }
 
     function deletePropose($matnr)

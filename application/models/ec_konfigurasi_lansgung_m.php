@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_konfigurasi_lansgung_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN', $log = 'EC_ADM_VENDOR_ASSIGN_LOG';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -279,6 +279,7 @@ ORDER BY MATKL,VENDOR_NO");
     public function insertPropose($itms, $vnds, $startDate, $endDate, $kode_update, $lamahari = '0', $currency)
     {
         $userid = $this->session->userdata['ID'];
+        $next = $this->getNextApp();
         $now = date("Y-m-d H:i:s");
         foreach ($itms as $value) {
             $this->db->where('MATNO', $value);
@@ -305,8 +306,30 @@ ORDER BY MATKL,VENDOR_NO");
 						),NULL,'" . $kode_update . "','" . $lamahari . "','" . $currency . "','" . $userid . "','" . 1 . "','" . 1 . "'
 					)";
                 $this->db->query($SQL);
+                $this->insertLog($value, $values, $kode_update, $userid, 0, 0);
+                $this->insertLog($value, $values, $kode_update, $next['USER_ID'], 1, 1);
             }
         }
+    }
+
+    function getNextApp()
+    {
+        $comp = $this->session->userdata['COMPANYID'];
+        $this->db->from('EC_PL_KONFIGURASI_ASSIGN');
+        $this->db->where('COMPANY', $comp);
+        $this->db->where('LEVEL', 1);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function insertLog($matno, $vendorno, $kode_update, $userid, $level, $activity)
+    {
+        $this->db->where('MATNO', $matno);
+        $this->db->where('VENDORNO', $vendorno);
+        $this->db->where('USERID', $userid);
+        $this->db->delete('EC_REPORT_VENDOR_ASSIGN');
+        $now = date("Y-m-d H:i:s");
+        $this->db->insert('EC_REPORT_VENDOR_ASSIGN', array('MATNO' => $matno, 'VENDORNO' => $vendorno, 'KODE_UPDATE' => $kode_update, 'USERID' => $userid, 'LOG_DATE' => $now, 'LOG_ACTIVITY' => $activity));
     }
 
     public function edit($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
@@ -404,21 +427,22 @@ ORDER BY MATKL,VENDOR_NO");
 
     public function editAssign($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')
     {
-//        $this->deleteUncheck($vnds, $itms);
-//        $assign = $this->existAssign($vnds);
-//        for ($i = 0; $i < count($itms); $i++){
-//            for ($j = 0; $j < count($assign); $j++){
-//                if ($itms[$i] == $assign[$j]['MATNO']){
-//                    unset($itms[$i]);
-//                }
-//            }
-//        }
+        $this->deleteUncheck($vnds, $itms);
+        $assign = $this->existAssign($vnds);
+        for ($i = 0; $i < count($itms); $i++){
+            for ($j = 0; $j < count($assign); $j++){
+                if ($itms[$i] == $assign[$j]['MATNO']){
+                    unset($itms[$i]);
+                }
+            }
+        }
         $now = date("Y-m-d H:i:s");
         $startDate = date("d-m-Y");
         $endDate = null;
         $query = array();
         foreach ($itms as $values) {
             $item = $this->getInserted($vnds, $values);
+            $this->insertVendorLog($values, $vnds, 1);
             $SQL = "INSERT INTO EC_PL_ASSIGN
 				VALUES
 					(
@@ -462,6 +486,7 @@ ORDER BY MATKL,VENDOR_NO");
                 $this->db->where('VENDORNO', $vendorno);
                 $this->db->where('MATNO', $data[$i]['MATNO']);
                 $this->db->delete('EC_PL_ASSIGN');
+                $this->insertVendorLog($data[$i]['MATNO'], $vendorno, 2);
             }
         }
     }
@@ -624,12 +649,19 @@ ORDER BY MATKL,VENDOR_NO");
         return (array)$result->result_array();
     }
 
-
     public function get_M_update()
     {
         $this->db->from($this->tableUpdateHarga);
         $this->db->order_by('KODE_UPDATE ASC');
         $result = $this->db->get();
         return (array)$result->result_array();
+    }
+
+    public function insertVendorLog($matno, $vendorno, $activity)
+    {
+        $now = date("Y-m-d H:i:s");
+        $userid = $this->session->userdata['ID'];
+        $this->db->insert($this->log, array('MATNO' => $matno, 'VENDORNO' => $vendorno, 'USERID' => $userid, 'LOG_ACTIVITY' => $activity, 'LOG_DATE' => $now));
+        return true;
     }
 }

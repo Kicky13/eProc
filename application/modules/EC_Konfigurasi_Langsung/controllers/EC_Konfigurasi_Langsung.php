@@ -314,11 +314,8 @@ class EC_Konfigurasi_Langsung extends CI_Controller
 
     public function test()
     {
-        $this->load->library('sap_handler');
-        $matkl = '623';
-        $company = $this->session->userdata['COMPANYID'];
-        $sapReturn = $this->sap_handler->getDirven($company, $matkl);
-        print json_encode($sapReturn);
+        $this->load->model('ec_konfigurasi_lansgung_m');
+        print json_encode($this->ec_Konfigurasi_lansgung_m->getNextApp());
     }
 
 }

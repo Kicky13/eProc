@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Publish_Approval extends CI_Controller
+class EC_Log_Vendor_Assign extends CI_Controller
 {
 
     private $user;
@@ -11,7 +11,7 @@ class EC_Publish_Approval extends CI_Controller
         parent::__construct();
         $this->load->library('Authorization');
         $this->load->helper('url');
-        $this->load->model('ec_publish_approval_m');
+        $this->load->model('ec_log_vendor_assign_m');
         $this->load->library('Layout');
         $this->load->helper("security");
         $this->user = $this->session->userdata('FULLNAME');
@@ -19,7 +19,7 @@ class EC_Publish_Approval extends CI_Controller
 
     public function index($brhasil = false)
     {
-        $data['title'] = "Approval Propose Assign";
+        $data['title'] = "Material Assign Vendor History";
         $data['brhasil'] = $brhasil;
 //        $data['cheat'] = $cheat;
         $this->layout->set_table_js();
@@ -37,42 +37,15 @@ class EC_Publish_Approval extends CI_Controller
         $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
-        $this->layout->add_js('pages/EC_publish_approval.js');
+        $this->layout->add_js('pages/EC_log_vendor_assign.js');
 
         $this->layout->render('list', $data);
     }
 
-    public function getPublish_approval()
+    public function getLog()
     {
         header('Content-Type: application/json');
-        $result = $this->ec_publish_approval_m->getPublish_approval();
+        $result = $this->ec_log_vendor_assign_m->getLog();
         echo json_encode(array('data' => $result));
-    }
-
-    public function test()
-    {
-        $test2 = $this->ec_publish_approval_m->currentLvl();
-        $test = $this->ec_publish_approval_m->getNext(1);
-        print_r(array('test' => $test, 'test2' => $test2));
-    }
-
-    public function approve()
-    {
-        header('Content-Type: application/json');
-        $data = json_decode($this->input->post('kode'));
-        foreach ($data as $kode){
-            $this->ec_publish_approval_m->approve($kode);
-        }
-        echo json_encode($data);
-    }
-
-    public function reject()
-    {
-        header('Content-Type: application/json');
-        $data = json_decode($this->input->post('kode'));
-        foreach ($data as $kode){
-            $this->ec_publish_approval_m->reject($kode);
-        }
-        echo json_encode($data);
     }
 }
