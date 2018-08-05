@@ -360,13 +360,15 @@ function loadTable_() {
                      '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                      '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-pono="' + (full.NOMERPO) + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                      '</div>';*/
+                if (full.PROGRESS_APP != 0){
+                    onhide = 'hidden';
+                }
                 if (full.VENDOR_APP != 1){
                     onhide = 'hidden';
                 }
                 a = "<div class='col-md-12 text-center'>" +
                     //'<a href="javascript:void(0)" data-toggle="modal" data-target="#modalShipment" data-kodeshipment="" data-stokcommit="" data-qtyshipment=""><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a ' + onhide + ' href="javascript:approveVendor(' + (full.PO_NO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a ' + onhide + ' href="javascript:rejectVendor(' + (full.PO_NO) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a ' + onhide + ' href="javascript:approveVendor(' + (full.PO_NO) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +                    
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetilGR" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a> '+
                     '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-pono="' + (full.PO_NO) + '"><span title="History" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
