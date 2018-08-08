@@ -66,7 +66,7 @@ class ec_ecatalog_m extends CI_Model
 //        $this->db->get();
 //        echo $this->db->last_query();die();        
         $result = $this->db->get();
-        return (array)$result->row_array();
+        return (array)$result->result_array();
     }
 
     public function get_parent_category($parent)
@@ -1450,7 +1450,7 @@ class ec_ecatalog_m extends CI_Model
                         WHERE SM.PUBLISHED_LANGSUNG = '1'  
         ORDER BY ROWNUM ASC, SM.MATNR ASC)TW
         INNER JOIN VND_HEADER VEN ON TW.VENDORNO=VEN.VENDOR_NO
-        WHERE TW.MATNR = '" . $matno . "' AND TW.PLANT = '" . $plant . "' AND TW.VENDORNO = '" . $vendor . "'
+        WHERE TW.MATNR = '" . $matno . "' AND TW.VENDORNO = '" . $vendor . "'
         ORDER BY TW.HARGA ASC";
 
         $result = $this->db->query($SQL);
