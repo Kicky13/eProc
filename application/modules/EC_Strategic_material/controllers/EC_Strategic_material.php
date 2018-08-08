@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Strategic_material extends MX_Controller
+class EC_Strategic_material extends CI_Controller
 {
 
     private $USER;
@@ -39,7 +39,7 @@ class EC_Strategic_material extends MX_Controller
         header('Content-Type: application/json');
         $this->load->model('EC_strategic_material_m');
         $data['MATNR'] = $this->EC_strategic_material_m->getDetail($MATNR);
-        //substr($MATNR, 1));
+        //substr($MATNR, 1));        
         echo json_encode($data);
     }
 
@@ -86,9 +86,9 @@ class EC_Strategic_material extends MX_Controller
         // if ($_FILES['picture']['size'] > 200000 && $_FILES['drawing']['size'] > 200000) {
         // }
 //		var_dump(UPLOAD_PATH); 
-//		var_dump($_FILES);
-        $uploaded = $this->file_operation->uploadT(UPLOAD_PATH . 'EC_material_strategis'/*,        '200', 'jpg|png'*/, $_FILES);
-//		var_dump($uploaded);
+//		var_dump($_FILES);die();
+        $uploaded = $this->file_operation->uploadTPL(UPLOAD_PATH . 'EC_material_strategis/'/*,        '200', 'jpg|png'*/, $_FILES);
+//		var_dump($uploaded); die(); 
         if ($uploaded != null && $_FILES['picture']['name'] != "") {
             $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "PICTURE" => $uploaded['picture']['file_name']);
             if ($_FILES['drawing']['name'] != "") {
@@ -103,22 +103,7 @@ class EC_Strategic_material extends MX_Controller
         $this->EC_strategic_material_m->upload($data);
         $this->EC_strategic_material_m->setTAG(array('TAG' => $this->input->post('TAG'), "MATNR" => $MATNR));
         redirect("EC_Strategic_material/");
-    }
-
-    /*
-     MATNR(Material number),
-     MAKTX(shortext),
-     MTART(material type),
-     MEINS(uom),
-     MATKL(material group),
-     ERNAM (creator),
-     ERSDA(create on),
-     AENAM(changed by),
-     LAEDA(last change);
-     NO (longtext item ke ...),
-     TDLINE (Long Text)
-     *
-     */
+    }    
     public function get_data()
     {
         header('Content-Type: application/json');
@@ -207,7 +192,7 @@ class EC_Strategic_material extends MX_Controller
             $_tr = '<tr>
                     <td> ' . $tableData['MATNO'] . '</td>                      
                     <td> ' . $tableData['MAKTX'] . '</td>
-                    <td> ' . $tableData['ID_CAT'] . ' - ' . $tableData['DESC'] . '</td>
+                    <td> ' . $tableData['ID_CAT'] . ' - ' . $tableData['DESCRIPTION'] . '</td>
                     <td> ' . $tableData['DATE'] . '</td>                            
                   </tr>';
             array_push($tbody, $_tr);

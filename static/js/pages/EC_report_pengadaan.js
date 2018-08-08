@@ -73,7 +73,7 @@ function loadTable_() {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center' style='color: red;'>";
                 if (full.KODE_UPDATE == 510){
-                    a += 'Per ' + full.DAYS_UPDATE + ' Hari';
+                    a += 'Harian';
                 } else if (full.KODE_UPDATE == 511){
                     a += 'Perbulan';
                 } else {

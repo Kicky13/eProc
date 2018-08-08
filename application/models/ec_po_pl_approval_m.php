@@ -230,7 +230,8 @@ class ec_po_pl_approval_m extends CI_Model
                             DT.PLANT,
                             DT.DELIVERY_TIME,
                             TO_CHAR(TP.APPROVED , \'DD.MM.YYYY\' ) AS APPROVED	,
-                            TO_CHAR((TP.APPROVED+DT.DELIVERY_TIME) , \'DD.MM.YYYY\' ) AS EST_DELIV',
+                            TO_CHAR((TP.APPROVED+DT.DELIVERY_TIME) , \'DD.MM.YYYY\' ) AS EST_DELIV,
+                            to_char(TP.APPROVED+DT.DELIVERY_TIME+1,\'YYYY-MM-DD HH24:MI:SS\') AS EST_DELIV2',
             false);
         $this->db->from('EC_T_CHART CT');
         $this->db->join('EC_T_DETAIL_PENAWARAN DT', 'DT.KODE_DETAIL_PENAWARAN = CT.KODE_PENAWARAN', 'inner');
@@ -301,10 +302,12 @@ class ec_po_pl_approval_m extends CI_Model
     {
         foreach ($data as $value) {
 
+            $est=$value['EST_DELIV2'];
             $this->db->where("PO_NO", $value['PO_NO'], TRUE);
             $this->db->where("MATNO", $value['MATNO'], TRUE);
             $this->db->where("LINE_ITEM", $value['LINE_ITEM'], TRUE);
             $this->db->set('STATUS', '2', FALSE);
+            $this->db->set("CHDATE", "TO_DATE('$est', 'yyyy/mm/dd hh24:mi:ss')", FALSE);
             $this->db->update($this->tableHeaderGr);
 
             /*$SQL = "INSERT INTO EC_GR_MATERIAL VALUES ( 

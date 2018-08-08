@@ -46,8 +46,27 @@ class ec_ecatalog_m extends CI_Model
         $this->db->where("(EC_T_CHART.STATUS_CHART ='8' OR EC_T_CHART.STATUS_CHART ='0' ) ");
         $this->db->order_by('EC_T_CHART.STATUS_CHART', 'ASC');        
         $this->db->order_by('VND_HEADER.VENDOR_NO', 'ASC');     
+//        $this->db->get();
+//        echo $this->db->last_query();die();
         $result = $this->db->get();
         return (array)$result->result_array();
+    }
+    
+    public function get_stok_konfirmasi($ID_USER, $MATNO, $VENDOR)
+    {        
+        $this->db->select('SUM(EC.QTY) AS STOK_KONFIRMASI', FALSE);
+        $this->db->from('EC_T_CHART EC');
+        $this->db->join('EC_GR_DETAIL_PL EG', 'EC.PO_NO=EG.PO_NO', 'LEFT');                        
+        $this->db->where("EC.MATNO", $MATNO, TRUE);
+        $this->db->where_in("STATUS_CHART", array('1','0'));
+        $this->db->where('ID_USER', $ID_USER, TRUE);                            
+        $this->db->where('GR_NO IS NULL');
+        $this->db->where('EC.VENDORNO', $VENDOR, TRUE);
+        $this->db->group_by('EC.VENDORNO');
+//        $this->db->get();
+//        echo $this->db->last_query();die();        
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 
     public function get_parent_category($parent)
@@ -875,7 +894,7 @@ class ec_ecatalog_m extends CI_Model
 
     function getCC($USER)
     {
-        $this->db->select('COSTCENTER,COSTCENTER_NAME,GUDANG')->from($this->ccPl)->where(array('ID_USER' => $USER));
+        $this->db->select('COSTCENTER,COSTCENTER_NAME,GUDANG,GL_ACCOUNT')->from($this->ccPl)->where(array('ID_USER' => $USER));
         $query = $this->db->get();
         $result = $query->row_array();
         return isset ($result) ? $result : "";
@@ -1286,17 +1305,21 @@ class ec_ecatalog_m extends CI_Model
 //            $SQL .= " AND ROWNUM < 13 ";
 //        }else{
 //            $SQL .= " AND ROWNUM <= '".$limitMax."'";
-//        }
-        if ($kategori != '-'){
-            $SQL .= " AND CAT.KODE_USER LIKE '" . $kategori . "%' ";
-        }
+//        }        
+        if ($kategori != '-' && $kategori != '-'){
+            if (strpos($kategori, '-') !== false){
+                $SQL .= " AND CAT.KODE_USER = '" . $kategori . "'";
+            }else{
+                $SQL .= " AND CAT.KODE_USER LIKE '" . $kategori . "%'";
+            }   
+        }        
         if ($search != '-' && $search != '-'){
             $SQL .= " AND (lower(SM.TAG) LIKE lower('%" . $search . "%') OR lower(DT.PLANT) LIKE lower('%" . $search . "%') OR lower(DT.NAMA_PLANT) LIKE lower('%" . $search . "%') OR lower(SM.MAKTX) LIKE lower('%" . $search . "%') OR lower(SM.MATNR) LIKE lower('%" . $search . "%') ) ";
         }
         if ($harga_min != '-' && $harga_max != '-'){
             $SQL .= " AND DT.PRICE >= " . $harga_min . " AND DT.PRICE <= " . $harga_max;
         }
-        $SQL .= " ORDER BY SM.MATNR ASC";
+        $SQL .= " ORDER BY CAT.\"DESC\", SM.MATNR ASC";
         // var_dump($SQL);
         $result = $this->db->query($SQL);
 //        while (count($data) < $limitMax && $j < count($result)){
@@ -1339,7 +1362,7 @@ class ec_ecatalog_m extends CI_Model
                             (SELECT  T1.PRICE HARGA,T1.* FROM EC_T_DETAIL_PENAWARAN
          T1 
                             INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE) INDATE FROM EC_T_DETAIL_PENAWARAN
-        
+                                                    WHERE MATNO='" . $matno . "' AND PLANT='" . $plant . "'
                                                     GROUP BY MATNO,PLANT,VENDORNO ORDER BY PLANT,MATNO,VENDORNO
         ) T2 
                                                     ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND
@@ -1358,6 +1381,8 @@ class ec_ecatalog_m extends CI_Model
                                     MAX (PEN.INDATE) AS DATE1
                                 FROM
                                     EC_PL_PENAWARAN PEN 
+                                WHERE 
+                                    MATNO ='" . $matno . "'
                                 GROUP BY
                                     PEN.VENDORNO,
                                     PEN.MATNO
@@ -1369,9 +1394,8 @@ class ec_ecatalog_m extends CI_Model
                         WHERE SM.PUBLISHED_LANGSUNG = '1'  
         ORDER BY ROWNUM ASC, SM.MATNR ASC)TW
         INNER JOIN VND_HEADER VEN ON TW.VENDORNO=VEN.VENDOR_NO
-        WHERE TW.MATNR = '" . $matno . "' AND TW.PLANT='" . $plant . "'
-        ORDER BY TW.HARGA ASC";
-
+        WHERE TW.MATNR = '" . $matno . "' AND TW.PLANT='" . $plant . "'        
+        ORDER BY TW.HARGA ASC";                    
         $result = $this->db->query($SQL);
         return (array)$result->result_array();
     }

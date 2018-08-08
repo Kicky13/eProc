@@ -21,7 +21,7 @@ function openmodal(MATNR) {
 		type : 'get',
 		dataType : 'json',
 	}).done(function(data) {
-		console.log(data.MATNR[0]);
+//		console.log(data.MATNR[0]);
 		dt = data.MATNR[0];
 		if (dt != null) {
 			$("#formUp").attr("action", "EC_Strategic_material/upload/" + dt.MATNR);
@@ -30,7 +30,7 @@ function openmodal(MATNR) {
 			$("#MTART").val(dt.MTART);
 			$("#MEINS").val(dt.MEINS);
 			$("#MATKL").val(dt.MATKL);
-			$("#TAG").val(dt.TAG);
+			$("#TAG").val(dt.TAG); 
 			$("#created").val(dt.ERNAM + ", " + dt.ERSDA.substring(6) + "-" + dt.ERSDA.substring(4, 6) + "-" + dt.ERSDA.substring(0, 4));
 			$("#lastChg").val(dt.AENAM + ", " + dt.LAEDA.substring(6) + "-" + dt.LAEDA.substring(4, 6) + "-" + dt.LAEDA.substring(0, 4));
 			if (dt.PICTURE != null || dt.DRAWING != null) {
@@ -39,7 +39,7 @@ function openmodal(MATNR) {
 			} else {
 				$("#pic").attr('src', $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/default_post_img.png");
 				$("#draw").attr('src', $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/default_post_img.png");
-			}
+			} 
 			if (dt.LNGTX != null) {
 				$("#TDLINE").val(dt.LNGTX);
 			} else
@@ -49,7 +49,7 @@ function openmodal(MATNR) {
 	}).fail(function() {
 		console.log("error");
 	}).always(function(data) {
-		// console.log(MATNR);
+		 console.log(MATNR);
 	});
 }
 
@@ -160,16 +160,6 @@ function loadTable() {
 					return a;
 				} else
 					return "";
-			}
-		}, {
-			mRender : function(data, type, full) {
-				// if(full[6] != null){
-				a = ''
-				a += "<div class='col-md-12 text-center'>";
-				a += full[6];
-				a += "</div>";
-				return a;
-				// }else return "";
 			}
 		}, {
 			mRender : function(data, type, full) {

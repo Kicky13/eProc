@@ -15,10 +15,11 @@ class ec_report_publish_m extends CI_Model
     function getReport_approval()
     {
         $select = 'MATNO, VENDORNO, KODE_UPDATE, MEINS, VENDOR_NAME, MAKTX';
+        $from = '(SELECT * FROM '.$this->table.' ORDER BY LOG_DATE DESC) RVA';
         $this->db->select($select);
-        $this->db->from($this->table);
-        $this->db->join($this->vnd, $this->vnd.'.VENDOR_NO = '.$this->table.'.VENDORNO');
-        $this->db->join($this->material, $this->material.'.MATNR = '.$this->table.'.MATNO');
+        $this->db->from($from);
+        $this->db->join($this->vnd, $this->vnd.'.VENDOR_NO = RVA.VENDORNO');
+        $this->db->join($this->material, $this->material.'.MATNR = RVA.MATNO');
         $this->db->group_by($select);
         $result = $this->db->get();
         return (array)$result->result_array();

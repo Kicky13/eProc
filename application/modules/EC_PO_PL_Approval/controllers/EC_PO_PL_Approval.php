@@ -134,8 +134,7 @@ class EC_PO_PL_Approval extends MX_Controller
         $this->layout->add_js('pages/EC-bootstrap-datepicker.min.js');
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
-        $this->layout->add_js('pages/EC_po_pl_approval.js');
-
+        $this->layout->add_js('pages/EC_po_pl_approval.js');        
         $this->layout->render('list', $data);
     }
 
@@ -156,11 +155,11 @@ class EC_PO_PL_Approval extends MX_Controller
         if ($this->ec_po_pl_approval_m->approve($PO)) {
             $this->load->library('sap_handler');
             $data = $this->ec_po_pl_approval_m->detailCart($PO);
-            $data2 = $this->sap_handler->PO_CHANGE($PO, $data, false);
-            //var_dump($data);
+            $data2 = $this->sap_handler->PO_CHANGE($PO, $data, false);            
+//            var_dump($data);die();4500001212
             if($data2==1){
                 $this->ec_po_pl_approval_m->insertToShipment($data, $PO);
-                $this->ec_po_pl_approval_m->insertHeaderGR($data);
+                $this->ec_po_pl_approval_m->insertHeaderGR($data);                               
             }
             redirect('EC_PO_PL_Approval/index/'.$data2.'/'.$PO);
         }

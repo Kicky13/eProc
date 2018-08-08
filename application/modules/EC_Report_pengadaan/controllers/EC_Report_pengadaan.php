@@ -58,8 +58,13 @@ class EC_Report_pengadaan extends CI_Controller
 
     public function test()
     {
-        $test2 = $this->ec_report_publish_m->currentLvl();
-        $test = $this->ec_report_publish_m->getNext(1);
-        print_r(array('test' => $test, 'test2' => $test2));
+        $select = 'MATNO, VENDORNO, KODE_UPDATE, MEINS, VENDOR_NAME, MAKTX';
+        $this->db->select($select);
+        $this->db->from('EC_REPORT_VENDOR_ASSIGN');
+        $this->db->join('VND_HEADER', 'VND_HEADER.VENDOR_NO = EC_REPORT_VENDOR_ASSIGN.VENDORNO');
+        $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_M_STRATEGIC_MATERIAL.MATNR = EC_REPORT_VENDOR_ASSIGN.MATNO');
+        $this->db->group_by($select);
+        $result = $this->db->get();
+        echo $this->db->last_query();
     }
 }

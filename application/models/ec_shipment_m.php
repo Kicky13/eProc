@@ -18,6 +18,8 @@ class ec_shipment_m extends CI_Model
         $this->db->join('EC_PL_APPROVAL', 'EC_T_SHIPMENT.PO_NO=EC_PL_APPROVAL.PO_NO', 'inner');
         $this->db->where("EC_T_SHIPMENT.VENDORNO", $VENDORNO, TRUE);
         $this->db->order_by("EC_T_SHIPMENT.PO_NO DESC");
+//        $this->db->get();
+//        echo $this->db->last_query();die();
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -34,7 +36,8 @@ class ec_shipment_m extends CI_Model
         $this->db->where("PL.VENDORNO", $VENDORNO, TRUE);
         $this->db->where("PL.PROGRESS_APP <= PL.MAX_APPROVE");
         $this->db->where("PL.STATUS", '1', TRUE);
-        $this->db->where("TC.PO_NO !=", 'null', TRUE);  
+        $this->db->where("TC.PO_NO !=", 'null', TRUE);
+        $this->db->where('(TO_DATE(TC.DATE_BUY, \'dd-mm-yyyy hh24:mi:ss\')+7) >=', '(SELECT SYSDATE FROM DUAL)', false);
         $this->db->where('ETS.PO_NO IS NULL', NULL, false);
         $this->db->order_by("PL.PO_NO DESC, TC.LINE_ITEM ASC"); 
         $result = $this->db->get();
@@ -58,7 +61,7 @@ class ec_shipment_m extends CI_Model
     public function getPODetail($PO){
         $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC" AS PLANT_NAME, MAT.MAKTX, MAT.MEINS, (TC.QTY*DP.PRICE) TOTAL,
             TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE,
-            TO_CHAR ((TO_DATE(TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(DP.DELIVERY_TIME)), \'dd-mm-yyyy\' ) EXPIRED_DATE, GM.QTY_SHIPMENT AS QTY_RECEIPT', 
+            TO_CHAR(GM.CHDATE,\'YYYY-MM-DD HH24:MI:SS\') AS EXPIRED_DATE, GM.QTY_SHIPMENT AS QTY_RECEIPT', 
             false);
         $this->db->from('EC_T_SHIPMENT TS');
         $this->db->join('EC_T_CHART TC', 'TC.PO_NO=TS.PO_NO', 'left');
@@ -104,32 +107,6 @@ class ec_shipment_m extends CI_Model
         $this->db->order_by("TC.LINE_ITEM ASC");
         $result = $this->db->get();
         return (array)$result->result_array();
-    }
-
-    public function detailPO($po)
-    {
-        $data = array();
-        $PO_NO = $po;
-        $this->db->select('GM.*, MAT.MAKTX, MAT.MEINS, TC.KODE_PENAWARAN, VEN.VENDOR_NAME, PEN.PLANT, PEN.PRICE, PEN.DELIVERY_TIME, PEN.CURRENCY, (GM.QTY_ORDER*PEN.PRICE) AS VALUE_ITEM, 
-    TO_CHAR ((TO_DATE(TO_CHAR (GM.INDATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\' ) EXPIRED_DATE,
-    TO_CHAR (GM.INDATE, \'dd-mm-yyyy\' ) DOC_DATE, PLN."DESC" AS PLANT_NAME',
-            false);
-        $this->db->from('EC_GR_MATERIAL GM');
-        $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'MAT.MATNR=GM.MATNO', 'inner');
-        $this->db->join('EC_T_CHART TC', 'TC.ID_CHART=GM.ID_CHART', 'inner');
-        $this->db->join('EC_T_DETAIL_PENAWARAN PEN', 'PEN.KODE_DETAIL_PENAWARAN = TC.KODE_PENAWARAN', 'inner');
-        $this->db->join('EC_M_PLANT PLN', 'PLN.PLANT=PEN.PLANT', 'inner');
-        $this->db->join('VND_HEADER VEN', 'VEN.VENDOR_NO=PEN.VENDORNO', 'inner');
-        $this->db->where("GM.STATUS !=", '0', TRUE);
-        $this->db->order_by("GM.PO_NO DESC, GM.LINE_ITEM ASC");
-        $sql = $this->db->get();
-        $result = $sql->result_array();
-        for ($i = 0; $i < count($result); $i++){
-            if ($PO_NO == $result[$i]['PO_NO']){
-                array_push($data, $result[$i]);
-            }
-        }
-        return $data;
     }
 
     public function detailIntransit($VENDORNO){
