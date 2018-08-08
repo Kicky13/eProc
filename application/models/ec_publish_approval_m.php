@@ -35,6 +35,7 @@ class ec_publish_approval_m extends CI_Model
         $this->db->join($this->vnd, $this->table.'.VENDORNO = '.$this->vnd.'.VENDOR_NO');
         $this->db->where($this->table.'.USERID', $assigner['USER_ID']);
         $this->db->where($this->table.'.LEVEL_APP', $cnf['LEVEL']);
+        $this->db->where($this->table.'.STATUS_APP', 1);
         $this->db->order_by($this->table.'.INDATE', 'DESC');
         $result = $this->db->get();
         return (array)$result->result_array();
@@ -146,7 +147,63 @@ class ec_publish_approval_m extends CI_Model
     function getPropose($id)
     {
         $this->db->from($this->table);
+        $this->db->join($this->vnd, $this->vnd.'.VENDOR_NO = '.$this->table.'.VENDORNO');
+        $this->db->join($this->material, $this->material.'.MATNR = '.$this->table.'.MATNO');
         $this->db->where('KODE_PROPOSE', $id);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function notificationGateway($kode, $activity)
+    {
+        $data = array();
+        $item = $this->getPropose($kode);
+        if ($activity == 1) {
+            $curr = $this->currentLvl();
+            if ($this->findNext($curr['LEVEL']) > 0) {
+                $data['ACTIVITY'] = 1;
+                $userdata = $this->getEmail($this->getNext($curr['LEVEL']));
+            } else {
+                $data['ACTIVITY'] = 2;
+                $userdata = $this->getEmail($this->getAssignerData());
+            }
+        } else {
+            $data['ACTIVITY'] = 3;
+            $userdata = $this->getEmail($this->getAssignerData());
+        }
+        $data['DATA']['MATNO'] = $item['MATNO'];
+        $data['DATA']['MAKTX'] = $item['MAKTX'];
+        $data['DATA']['VENDORNO'] = $item['VENDORNO'];
+        $data['DATA']['VENDORNAME'] = $item['VENDOR_NAME'];
+        $data['DATA']['KODE_UPDATE'] = $item['KODE_UPDATE'];
+        $data['DATA']['DAYS_UPDATE'] = $item['DAYS_UPDATE'];
+        switch ($item['KODE_UPDATE']){
+            case '510':
+                $data['DATA']['UPDATE'] = $item['DAYS_UPDATE'].' Hari';
+                break;
+            case '511':
+                $data['DATA']['UPDATE'] = 'Perbulan';
+                break;
+            case '210':
+                $data['DATA']['UPDATE'] = 'Perminggu';
+                break;
+            default:
+                $data['DATA']['UPDATE'] = 'Null';
+                break;
+        }
+        $data['DATA']['CURRENCY'] = $item['CURRENCY'];
+        $data['DATA']['START_DATE'] = $item['START_DATE'];
+        $data['DATA']['INDATE'] = $item['INDATE'];
+        $data['EMAIL'] = $userdata['EMAIL'];
+        $data['FULLNAME'] = $userdata['FULLNAME'];
+
+        return $data;
+    }
+
+    function getEmail($userdata)
+    {
+        $this->db->from($this->employee);
+        $this->db->where('ID', $userdata['USER_ID']);
         $result = $this->db->get();
         return (array)$result->row_array();
     }

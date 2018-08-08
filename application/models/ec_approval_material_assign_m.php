@@ -35,6 +35,7 @@ class ec_approval_material_assign_m extends CI_Model
         $this->db->join($this->category, $this->table.'.ID_CAT_PROPOSE = '.$this->category.'.ID_CAT');
         $this->db->where($this->table.'.USER_ID', $assigner['USER_ID']);
         $this->db->where($this->table.'.PROGRESS_APP', $cnf['CONF_LEVEL']);
+        $this->db->order_by($this->table.'.ID', 'DESC');
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -128,6 +129,61 @@ class ec_approval_material_assign_m extends CI_Model
         $this->db->where('MATGROUP', $prev['MATGROUP']);
         $this->db->where('COMPANY', $prev['COMPANY']);
         $this->db->where('CONF_LEVEL', $prev['CONF_LEVEL'] + 1);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function notificationGateway($kode, $activity)
+    {
+        $now = date('Y-m-d H:i:s');
+        $dataApp = $this->getDetailApproval($kode);
+        $material = $this->getMaterial($dataApp['MATNO']);
+        $category = $this->getCategory($dataApp['ID_CAT_PROPOSE']);
+        if ($activity == 1) {
+            $curr = $this->currentLvl();
+            if ($this->findNext($curr['LEVEL']) > 0) {
+                $data['ACTIVITY'] = 1;
+                $userdata = $this->getEmail($this->getNext($this->currentLvl()));
+            } else {
+                $data['ACTIVITY'] = 2;
+                $userdata = $this->getEmail($this->getAssignerData());
+            }
+        } else {
+            $data['ACTIVITY'] = 3;
+            $userdata = $this->getEmail($this->getAssignerData());
+        }
+
+        $data['DATA']['MATNO'] = $material['MATNR'];
+        $data['DATA']['MAKTX'] = $material['MAKTX'];
+        $data['DATA']['ID_CAT'] = $category['ID_CAT'];
+        $data['DATA']['DESC'] = $category['DESCRIPTION'];
+        $data['FULLNAME'] = $userdata['FULLNAME'];
+        $data['EMAIL'] = $userdata['EMAIL'];
+        $data['DATA']['DATE'] = $now;
+
+        return $data;
+    }
+
+    function getEmail($user)
+    {
+        $this->db->from($this->employee);
+        $this->db->where('ID', $user['USER_ID']);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getMaterial($mat)
+    {
+        $this->db->from($this->material);
+        $this->db->where('MATNR', $mat);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getCategory($cat)
+    {
+        $this->db->from($this->category);
+        $this->db->where('ID_CAT', $cat);
         $result = $this->db->get();
         return (array)$result->row_array();
     }

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_konfigurasi_lansgung_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN', $log = 'EC_ADM_VENDOR_ASSIGN_LOG';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN', $log = 'EC_ADM_VENDOR_ASSIGN_LOG', $tableConf = 'EC_PL_KONFIGURASI_ASSIGN', $employee = 'ADM_EMPLOYEE', $plantLog = 'EC_LOG_PLANT_CHANGE';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -128,8 +128,13 @@ ORDER BY MATKL,VENDOR_NO");
 
     public function publishPlant($plant, $stat)
     {
+        $userid = $this->session->userdata['ID'];
+        $now = $now = date("Y-m-d H:i:s");
+
         $this->db->where("PLANT", $plant);
         $this->db->update($this->tablePlant, array('STATUS' => $stat));
+
+        $this->db->insert($this->plantLog, array('PLANT' => $plant, 'USER_ID' => $userid, 'LOG_DATE' => $now, 'LOG_ACTIVITY' => $stat));
     }
 
     public function syncPlant($data)
@@ -423,6 +428,80 @@ ORDER BY MATKL,VENDOR_NO");
 //                break;
 //            }
         }
+    }
+
+    function notificationGateway($item, $vendor, $kode, $days, $currency)
+    {
+        $data = array();
+        $item = $this->getMaterial($item);
+        $vendor = $this->getVendor($vendor);
+        $curr = $this->currentLvl();
+        $now = date("Y-m-d H:i:s");
+        $userdata = $this->getEmail($this->getNext($curr['LEVEL']));
+        $data['DATA']['MATNO'] = $item['MATNR'];
+        $data['DATA']['MAKTX'] = $item['MAKTX'];
+        $data['DATA']['VENDORNO'] = $vendor['VENDOR_NO'];
+        $data['DATA']['VENDORNAME'] = $vendor['VENDOR_NAME'];
+        $data['DATA']['KODE_UPDATE'] = $kode;
+        $data['DATA']['DAYS_UPDATE'] = $days;
+        if ($kode == '510'){
+            $data['DATA']['UPDATE'] = $days.' Hari';
+        } elseif ($kode == '511'){
+            $data['DATA']['UPDATE'] = 'Perbulan';
+        } elseif ($kode == '521'){
+            $data['DATA']['UPDATE'] = 'Perminggu';
+        } else {
+            $data['DATA']['UPDATE'] = 'Null';
+        }
+        $data['DATA']['CURRENCY'] = $currency;
+        $data['DATA']['INDATE'] = $now;
+        $data['EMAIL'] = $userdata['EMAIL'];
+        $data['ACTIVITY'] = 0;
+        $data['FULLNAME'] = $userdata['FULLNAME'];
+
+        return $data;
+    }
+
+    function getMaterial($matno)
+    {
+        $this->db->from($this->table);
+        $this->db->where('MATNR', $matno);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getVendor($vendorno)
+    {
+        $this->db->from($this->tableVnd);
+        $this->db->where('VENDOR_NO', $vendorno);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function currentLvl()
+    {
+        $this->db->from($this->tableConf);
+        $this->db->where('USER_ID', $this->session->userdata['ID']);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getNext($lvl)
+    {
+        $company = $this->session->userdata['COMPANYID'];
+        $this->db->from($this->tableConf);
+        $this->db->where('COMPANY', $company);
+        $this->db->where('LEVEL', $lvl+1);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getEmail($userdata)
+    {
+        $this->db->from($this->employee);
+        $this->db->where('ID', $userdata['USER_ID']);
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 
     public function editAssign($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')

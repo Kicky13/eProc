@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Approval_Material_Assign extends CI_Controller
+class EC_Approval_Material_Assign extends MX_Controller
 {
 
     private $user;
@@ -19,7 +19,7 @@ class EC_Approval_Material_Assign extends CI_Controller
 
     public function index($brhasil = false)
     {
-        $data['title'] = "Approval Propose Assign";
+        $data['title'] = "Approval Cataloging";
         $data['brhasil'] = $brhasil;
 //        $data['cheat'] = $cheat;
         $this->layout->set_table_js();
@@ -56,12 +56,69 @@ class EC_Approval_Material_Assign extends CI_Controller
     public function approve($kode)
     {
         $this->ec_approval_material_assign_m->approve($kode);
+        $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 1));
         return $this->index();
     }
 
     public function reject($kode)
     {
         $this->ec_approval_material_assign_m->reject($kode);
+        $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 2));
         return $this->index();
+    }
+
+    public function sendNotif($tableData)
+    {
+        $send = 'kicky120@gmail.com';
+        if ($tableData['ACTIVITY'] == 1) {
+            $msg = 'di Approve. Menunggu Approve selanjutnya dari Anda.';
+        } elseif ($tableData['ACTIVITY'] == 2) {
+            $msg = 'Selesai proses Approval.';
+        } elseif ($tableData['ACTIVITY'] == 3) {
+            $msg = 'di Reject.';
+        } else {
+            $msg = 'di Assign. Menunggu Approve dari Anda';
+        }
+        if (isset($tableData)) {
+            $matno = $tableData['DATA']['MATNO'];
+            $table = $this->buildTableUser($tableData['DATA']);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL INFO VENDOR ASSIGN</h2>' . $table . '<br/>',
+                'title' => 'Nomor Material ' . $matno . ' Telah dipropose untuk penambahan material Pembelian Langsung Fwd To : ' . $tableData['EMAIL'],
+                'title_header' => 'Nomor Material ' . $matno . ' Telah ' . $msg,
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'Matno ' . $matno . ' Berhasil di Assign.[E-Catalog Semen Indonesia] Fwd To : ' . $tableData['EMAIL'];
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $send, $message, $subject);
+        }
+    }
+
+    private function buildTableUser($tableData)
+    {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Kategori</th>
+                <th style="font-weight:600;"> Indate</th>               
+              </tr>        
+              </thead>';
+        $tbody = array();
+        if (isset($tableData)) {
+            $_tr = '<tr>
+                    <td> ' . $tableData['MATNO'] . '</td>                      
+                    <td> ' . $tableData['MAKTX'] . '</td>
+                    <td> ' . $tableData['ID_CAT'] . ' - ' . $tableData['DESC'] . '</td>
+                    <td> ' . $tableData['DATE'] . '</td>                            
+                  </tr>';
+            array_push($tbody, $_tr);
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
     }
 }

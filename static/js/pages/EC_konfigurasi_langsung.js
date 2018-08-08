@@ -414,12 +414,11 @@ function simpan(itm, vnd, start, end, kode_update, lamahari, curr, mode) {
                 currency: curr
             },
         }).done(function (data) {
-            console.log(data.vnd)
+            console.log(data)
         }).always(function (data) {
             alert('Data telah disimpan');
             location.reload(true);
             $('#enddate').val('');
-
         })
 }
 

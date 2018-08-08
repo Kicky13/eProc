@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Publish_Approval extends CI_Controller
+class EC_Publish_Approval extends MX_Controller
 {
 
     private $user;
@@ -51,17 +51,16 @@ class EC_Publish_Approval extends CI_Controller
 
     public function test()
     {
-        $test2 = $this->ec_publish_approval_m->currentLvl();
-        $test = $this->ec_publish_approval_m->getNext(1);
-        print_r(array('test' => $test, 'test2' => $test2));
+        echo json_encode($this->ec_publish_approval_m->notificationGateway('90', 1));
     }
 
     public function approve()
     {
         header('Content-Type: application/json');
         $data = json_decode($this->input->post('kode'));
-        foreach ($data as $kode){
+        foreach ($data as $kode) {
             $this->ec_publish_approval_m->approve($kode);
+            $this->sendNotif($this->ec_publish_approval_m->notificationGateway($kode, 1));
         }
         echo json_encode($data);
     }
@@ -70,9 +69,69 @@ class EC_Publish_Approval extends CI_Controller
     {
         header('Content-Type: application/json');
         $data = json_decode($this->input->post('kode'));
-        foreach ($data as $kode){
+        foreach ($data as $kode) {
             $this->ec_publish_approval_m->reject($kode);
+            $this->sendNotif($this->ec_publish_approval_m->notificationGateway($kode, 2));
         }
         echo json_encode($data);
+    }
+
+    public function sendNotif($tableData)
+    {
+        $send = 'kicky120@gmail.com';
+        if ($tableData['ACTIVITY'] == 1) {
+            $msg = 'di Approve. Menunggu Approve selanjutnya dari Anda';
+        } elseif ($tableData['ACTIVITY'] == 2) {
+            $msg = 'Selesai proses Approval, Silahkan melanjutkan untuk proses assign';
+        } elseif ($tableData['ACTIVITY'] == 3) {
+            $msg = 'di Reject';
+        } else {
+            $msg = 'di buat. Menunggu Approve dari Anda';
+        }
+        if (isset($tableData)) {
+            $matno = $tableData['DATA']['MATNO'];
+            $table = $this->buildTableUser($tableData['DATA']);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL INFO VENDOR ASSIGN</h2>' . $table . '<br/>',
+                'title' => 'Nomor Material ' . $matno . ' Telah dipropose Fwd To : ' . $tableData['EMAIL'],
+                'title_header' => 'Nomor Material ' . $matno . ' Telah ' . $msg,
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
+            $subject = 'Matno ' . $matno . ' Berhasil diassign.[E-Catalog Semen Indonesia] Fwd To : ' . $tableData['EMAIL'];
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $send, $message, $subject);
+        }
+    }
+
+    private function buildTableUser($tableData)
+    {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Nama Vendor</th>
+                <th style="font-weight:600;"> Indate</th>
+                <th style="font-weight:600;"> Frekuensi Update</th>
+                <th style="font-weight:600;"> Currency</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        if (isset($tableData)) {
+            $_tr = '<tr>
+                    <td> ' . $tableData['MATNO'] . '</td>                      
+                    <td> ' . $tableData['MAKTX'] . '</td>
+                    <td> ' . $tableData['VENDORNAME'] . '</td>
+                    <td> ' . $tableData['INDATE'] . '</td>
+                    <td> ' . $tableData['UPDATE'] . '</td>
+                    <td> ' . $tableData['CURRENCY'] . '</td>                            
+                  </tr>';
+            array_push($tbody, $_tr);
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
     }
 }

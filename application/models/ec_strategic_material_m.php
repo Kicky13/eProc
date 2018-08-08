@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_strategic_material_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M', $konfigApproval = 'EC_M_KONFIGURASI_MATERIAL', $tableReport = 'EC_REPORT_APPROVAL_STRATEGIC_M';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tableCategory = 'EC_M_CATEGORY', $tableApproval = 'EC_M_APPROVAL_STRATEGIC_M', $konfigApproval = 'EC_M_KONFIGURASI_MATERIAL', $tableReport = 'EC_REPORT_APPROVAL_STRATEGIC_M', $employee = 'ADM_EMPLOYEE';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -206,6 +206,48 @@ class ec_strategic_material_m extends CI_Model
 
         $this->db->from($this->konfigApproval);
         $this->db->where('USER_ID', $userid);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function notificationGateway($mat, $cat)
+    {
+        $now = date("Y-m-d H:i:s");
+        $category = $this->getCategory($cat);
+        $material = $this->getMaterial($mat);
+        $toUser = $this->getEmail($this->getNext($this->getAssigner()));
+        $data['DATA']['MATNO'] = $material['MATNR'];
+        $data['DATA']['MAKTX'] = $material['MAKTX'];
+        $data['DATA']['ID_CAT'] = $category['ID_CAT'];
+        $data['DATA']['DESC'] = $category['DESCRIPTION'];
+        $data['DATA']['DATE'] = $now;
+        $data['FULLNAME'] = $toUser['FULLNAME'];
+        $data['EMAIL'] = $toUser['EMAIL'];
+        $data['ACTIVITY'] = 0;
+
+        return $data;
+    }
+
+    function getMaterial($matno)
+    {
+        $this->db->from($this->table);
+        $this->db->where('MATNR', $matno);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getCategory($cat)
+    {
+        $this->db->from($this->tableCategory);
+        $this->db->where('ID_CAT', $cat);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getEmail($userdata)
+    {
+        $this->db->from($this->employee);
+        $this->db->where('ID', $userdata['USER_ID']);
         $result = $this->db->get();
         return (array)$result->row_array();
     }

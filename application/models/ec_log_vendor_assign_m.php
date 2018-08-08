@@ -17,6 +17,7 @@ class ec_log_vendor_assign_m extends CI_Model
         $this->db->join($this->material, $this->material.'.MATNR = '.$this->table.'.MATNO');
         $this->db->join($this->vnd, $this->vnd.'.VENDOR_NO = '.$this->table.'.VENDORNO');
         $this->db->join($this->employee, $this->employee.'.ID = '.$this->table.'.USERID');
+        $this->db->order_by($this->table.'.LOG_DATE', 'DESC');
         $result = $this->db->get();
         return (array)$result->result_array();
     }
