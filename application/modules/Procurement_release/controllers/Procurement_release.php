@@ -169,7 +169,7 @@ class Procurement_release extends CI_Controller {
 			"PTC_POSITION" => '\''.$this->authorization->getCurrentRole().'\'',
 			"PTC_NAME"     => '\''.$this->authorization->getCurrentName().'\'',
 			"PTC_ACTIVITY" => "'Approval Pengadaan'",
-			);
+		);
 		$this->comment->insert_comment_tender($dataComment);
 
 		$submit = $this->input->post('harus_pilih');
@@ -180,7 +180,7 @@ class Procurement_release extends CI_Controller {
 			//--LOG MAIN--//
 		$this->log_data->main($this->session->userdata['ID'],$this->session->userdata['FULLNAME'],
 			$this->authorization->getCurrentRole(),$this->input->post('process_name'),$action,$this->input->ip_address()
-			);
+		);
 		$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
 
@@ -283,7 +283,7 @@ class Procurement_release extends CI_Controller {
 					'TAP_CREATED_AT' => date('d-M-Y g.i.s A'),
 					'TAP_ITERATION'  => $ptm['PTM_COUNT_RETENDER'],
 					'TAP_COUNTER'    => $counter,
-					);
+				);
 				$this->prc_tender_approve->insert($tap);
 					//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Procurement_release/save_bidding','prc_tender_approve','insert',$tap);
@@ -339,7 +339,7 @@ class Procurement_release extends CI_Controller {
 								'NO_PO'=>$ponya[$key][$val['PPI_ID']],
 								'NETPR'=>intval($netnya[$key][$val['PPI_ID']])*100,
 								'TGL_PO'=>$tglnya[$key][$val['PPI_ID']]
-								);
+							);
 							$wher = array('PTM_NUMBER' => $id, 'PPI_ID'=>$val['PPI_ID']);
 							$this->prc_tender_item->update($item, $wher);
 								//--LOG DETAIL--//
@@ -502,7 +502,7 @@ class Procurement_release extends CI_Controller {
 				'pritem' => $val['PPI_PRITEM'],
 				'qty' => $val['TIT_QUANTITY'],
 				'uom' => $val['PPI_UOM'],
-				);
+			);
 		}
 		foreach ($ptv as $val) {
 			$tab[] = array('vendor_no' => $val['PTV_VENDOR_CODE'], 'vendor_name' => $val['VENDOR_NAME'], 'matkl' => $matkl);
@@ -584,6 +584,8 @@ class Procurement_release extends CI_Controller {
 		$this->load->library('sap_handler');
 		// var_dump(compact('rfqtype', 'rfqdate', 'quodeadline', 'ddate', 'ekorg', 'ekgrp', 'bidnumber','pricedate','termdelivery','deliverynote'));die;
 		$data = $this->sap_handler->getRfq($rfqtype, $rfqdate, $quodeadline, $ddate, $ekorg, $ekgrp, $bidnumber, $pricedate,$termdelivery,$deliverynote);
+		// echo "<pre>";
+		// print_r($data);die;
 		$rfq = $data['rfq'];
 		$error = false;
 		if (isset($data['O_ANGDT']) && $data['O_ANGDT'] != '00000000') {
@@ -609,7 +611,23 @@ class Procurement_release extends CI_Controller {
 				//--END LOG DETAIL--//
 		}
 		if (!empty($rfq)) {
+			$prev = "";
+			$next = "";
 			foreach ($rfq as $val) {
+				$prev = (int)$val['LIFNR'];
+				if($next=="" || $prev==$next){
+					//update
+					if(!empty($val['EBELP'])){	
+						$where_item['PTM_NUMBER'] = $ptm_number;
+						$where_item['PPI_ID'] = $val['BANFN'].$val['BNFPO'];
+						$set_item['TIT_EBELP'] = $val['EBELP'];
+						$this->prc_tender_item->update($set_item, $where_item);
+					}
+					//update
+					$next = $prev;
+				} else {
+				}
+
 				$rfq = $val['EBELN'];
 				if (empty($rfq)) {
 					$error = true;

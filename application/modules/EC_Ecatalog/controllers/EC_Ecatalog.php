@@ -439,6 +439,7 @@ class EC_Ecatalog extends MX_Controller
         $now = date("d-m-Y H:i:s");
         $this->load->model('ec_ecatalog_m');
         $this->load->model('EC_catalog_produk');
+        $this->load->model('ec_master_costcenter');
         $this->load->library('sap_handler');
         $user=$this->session->userdata['ID'];
         $korin=$this->input->post('korin');
@@ -448,6 +449,7 @@ class EC_Ecatalog extends MX_Controller
         $data=array();
         $table = array();
         $vendor=$this->EC_catalog_produk->get_vendor_PO_PL($user);        
+        $gl_account=$this->ec_master_costcenter->get_gl($this->input->post('costcenter'),$this->session->userdata['ID']);        
         $qty=array();        
         $total=array();
         $po_number = array();
@@ -463,10 +465,10 @@ class EC_Ecatalog extends MX_Controller
             $qty[$i]+=$tambah[$i];                        
             $total[$i]+=$tambahH[$i];                             
         }         
-//        var_dump($deals);die();
+//        var_dump($data);die();
         $SAP=array();           
         for ($i=0;$i < sizeof($data);$i++) {            
-            $SAP[$i] = $this->sap_handler->createPOLangsungCart($this->input->post('company'), $user, $data[$i], $this->input->post('costcenter'),
+            $SAP[$i] = $this->sap_handler->createPOLangsungCart($this->input->post('company'), $user, $data[$i], $this->input->post('costcenter'),$gl_account[0]['GL_ACCOUNT'],
                     false); 
             $kmbl = "";
             $sukses = false;
@@ -493,10 +495,10 @@ class EC_Ecatalog extends MX_Controller
                 }
                 $sk = 1; 
             } else {
-                for($j=0;$j<sizeof($SAP[$i]);$j++){
-                    $this->ec_ecatalog_m->POfailedOne($user, 'PL2018',
-                        $data[$i][$j]['MATNO'], $data[$i][$j]['ID_CHART']);                    
-                }
+//                for($j=0;$j<sizeof($SAP[$i]);$j++){
+//                    $this->ec_ecatalog_m->POfailedOne($user, 'PL2018',
+//                        $data[$i][$j]['MATNO'], $data[$i][$j]['ID_CHART']);                    
+//                }
                 $gagalReturn[] = $SAP[$i];                    
                 $sk = 0;                    
             }

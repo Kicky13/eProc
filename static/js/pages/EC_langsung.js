@@ -310,13 +310,13 @@ function buyOne(elm, id, contract_no, matno, kode_penawaran) {
         
 
         $('#modalPO').modal('show')
-        var fiveMinutes = 10,
-            display = document.querySelector('#dtk');
-        startTimer(fiveMinutes, display);
-        setTimeout(function () {
-            // window.location.reload();
-            window.location=$("#base-url").val() + 'EC_Ecatalog/listCatalogLsgs/';
-        }, 10000);
+//        var fiveMinutes = 10,
+//            display = document.querySelector('#dtk');
+//        startTimer(fiveMinutes, display);
+//        setTimeout(function () {
+//            // window.location.reload();
+//            window.location=$("#base-url").val() + 'EC_Ecatalog/listCatalogLsgs/';
+//        }, 10000);
     });
     // else
     // alert('Budget Exceeded!!')

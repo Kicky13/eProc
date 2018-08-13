@@ -67,7 +67,8 @@ class Vendor_regis_sap extends CI_Controller {
 		$suffix = $this->input->post('suffix') == 0 ? null : $this->input->post('suffix');
 		$company_name = $this->input->post('company_name');
 		$username = $this->input->post('username');
-		$vendorno = $this->input->post('vendorno');
+		$vnd_no = $this->input->post('vendorno');
+		$vendorno = str_pad($vnd_no,10,"0",STR_PAD_LEFT);
 		$email = $this->input->post('email');
 		$password = $this->input->post('password'); 
 		$vendor_type = $this->input->post('vendor_type'); 

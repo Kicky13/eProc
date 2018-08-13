@@ -74,6 +74,7 @@ function showPeserta(NO_TENDER, NO_BATCH) {
 				teks += '<td class="text-center">' + data.data[i][4] + '</td>'
 				// teks += '<td class="text-center">' + data.data[i][5] + '%</td>'
 				teks += '<td class="text-center">IDR ' + numberWithCommas(data.data[i][6]) + '</td>'
+				teks += '<td class="text-center">IDR ' + numberWithCommas(data.data[i][7]) + '</td>'
 				teks += '/<tr>'
 				$("#peserta").append(teks);
 			}
@@ -290,6 +291,7 @@ $(document).ready(function() {
 
 		id_item = $('#id_item').val();
 		id_tender = $('#id_tender').val();
+		type_ranking = $('#type_ranking').val();
 		
 		$.ajax({
 			url : $("#base-url").val() + 'EC_Auction_itemize_negotiation/getTimeServer/',
@@ -308,9 +310,14 @@ $(document).ready(function() {
 				$("#CLOSED").hide();
 				$("#SELESAI").hide();
 				$("#closeBTN").hide();
+				if (type_ranking == 2){
+					showPeserta($("#NO_TENDER").text(), $("#nobatch").text());
+					// console.log('archie');	
+				}
+				// showPeserta($("#NO_TENDER").text(), $("#nobatch").text());
 				showOlehRanking($("#NO_TENDER").text(), $("#nobatch").text());
 				reportOlehRanking($("#NO_TENDER").text(), $("#nobatch").text());
-				//console.log('ok');
+				// console.log('ok');
 			} else if (data > date1 && data > date2 && stat == 1) {
 				// clearInterval(timeInterval3)
 				$("#BELUM").hide();

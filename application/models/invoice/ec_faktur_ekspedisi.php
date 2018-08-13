@@ -1,6 +1,27 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ec_faktur_ekspedisi extends MY_Model {	                                                    
+class ec_faktur_ekspedisi extends MY_Model {
+
+    // public function get($where = NULL) {
+    //     $this->db->select('FAKTUR_KEMBALI.*');
+    //     if (!empty($where)) {
+    //         $this->db->where($where);
+    //     }
+    //     $this->db->from('FAKTUR_KEMBALI');
+    //     $result = $this->db->get();
+    //     // echo $this->db->last_query();
+    //     return $result->result_array();
+    // }
+
+    // public function get_id() {
+    //     $this->db->select_max('ID','MAX');
+    //     $max = $this->db->get('FAKTUR_KEMBALI')->row_array();
+    //     return $max['MAX']+1;
+    // }
+
+    public function insert($data) {
+        $this->db->insert('FAKTUR_KEMBALI', $data);
+    }
 
     public function getData($vendorno){        
         $sql = $this->db->from('EC_FAKTUR_EAEA')->where('VENDORNO', $vendorno)->order_by('TGL_EKSPEDISI','desc')->get();     

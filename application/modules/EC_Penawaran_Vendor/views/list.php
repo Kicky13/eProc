@@ -28,6 +28,7 @@
                               <li>Harga untuk produk pengambilan sendiri sudah termasuk <span style="font-weight:bold;">PPH</span> namun tidak termasuk <span style="font-weight:bold;">PPN</span> dan <span style="font-weight:bold;">ongkos kirim</span></li>
                               <li>Update Harga dan Delivery Time hanya dapat dilakukan ketika <span style="font-weight:bold;">Tanggal Sekarang</span> sudah mencapai <span style="font-weight:bold;">Next Update</span></li>
                               <li>Barang yang dikirimkan harus sesuai dengan informasi barang yang telah tertera (keterangan dan foto)</li>
+                              <li>Khusus Harga <span style="font-weight:bold;">Pengambilan Sendiri (2901 dan 7901)</span> memiliki harga yang sama berdasarkan satu produk.</li>
                           </ol>                                                                        
                     </div>
                 </div>

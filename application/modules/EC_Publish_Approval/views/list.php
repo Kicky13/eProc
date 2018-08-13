@@ -35,7 +35,7 @@
                                             <th class="text-center ts8"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear">
-                                            <th></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>

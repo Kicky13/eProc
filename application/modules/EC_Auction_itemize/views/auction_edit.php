@@ -93,6 +93,17 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 											<?php } ?>
 										</tbody>
 									</table>
+									<hr style="height:3px;border:none;color:#333;background-color:#333;">	
+									<table border="1">
+										<tr>
+											<?php if ($header[0]['HPS_TOTAL'] == ''){ ?>
+											<td align="left" style="font-size:20px"><strong>Total HPS : <?php echo $items[0]['CURR']?> 0</strong></td>
+											<?php } else { ?>
+											<!-- <input type="hidden" name="total_hps" value="<?php echo $total_hps[0]['TOT_HPS']?>"> -->
+											<td align="left" style="font-size:20px"><strong>Total HPS : &nbsp&nbsp<?php echo $items[0]['CURR']?> <?php echo number_format($header[0]['HPS_TOTAL'],0,",",".")?></strong></td>
+											<?php } ?>
+										</tr>
+									</table>
 								</div>
 							</div>
 						</div>
@@ -171,9 +182,9 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 									<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 								</a>
 								<a style="margin-right: 20px" class="btn btn-warning btn-sm pull-right btn-hasilawal" data-id="<?php echo $NO_TENDER?>" data-toggle="tooltip" title="View/Edit">Hasil</a>
-								<!-- <button style="margin-right: 20px" type="button" class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#tbh-peserta">
+								<button style="margin-right: 20px" type="button" class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#tbh-peserta">
 									Tambah
-								</button> -->
+								</button>
 							</div>
 							<div class="panel-body">
 								<div class="table-responsive" id="printin">
@@ -305,6 +316,14 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 								<td>Lokasi Auction</td>
 								<td>
 									<input type="text" class="form-control" required="" name="LOCATION" placeholder="Lokasi" value="<?php echo $value['LOCATION']; ?>" readonly>
+								</td>
+							</tr>
+							<tr>
+								<td>Tipe Ranking</td>
+								<td>
+									<select class="form-control" name="opco" readonly>
+										<option value="<?php echo $value['TIPE_RANKING']; ?>"><?php echo $value['TIPE_RANKING']==1 ? 'Ranking Satuan' : 'Ranking Total'; ?></option>
+									</select>
 								</td>
 							</tr>
 							<tr>
@@ -689,6 +708,104 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 		</div>
 	</div>
 </div>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="tbh-peserta" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">Tambah Peserta</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" action="<?php echo base_url()?>EC_Auction_itemize/addPesertaEdit/<?php echo $NO_TENDER?>" method="POST">
+					<!-- <div class="form-group">
+						<label for="kd_vnd" class="col-sm-3 control-label">Kode Vendor</label>
+						<div class="col-sm-8">
+							<select id="vendor" name="vendor" value="" class="select2">
+								<option disabled selected value>Pilih Vendor</option>
+								<?php foreach ($vendor_data as $vendor ) :?>
+									<option value="<?php echo $vendor['VENDOR_NO'];?>"><?php echo $vendor['VENDOR_NO']." - ".$vendor['VENDOR_NAME'];?></option>
+								<?php endforeach ?>
+							</select>
+							<input type="" name="kd_vnd" id="kd_vnd" value="">
+							<input type="" name="nama_vnd" id="nama_vnd" value="">
+						</div>
+					</div> -->
+					<div class="form-group">
+						<label for="kd_vnd" class="col-sm-3 control-label">Kode Vendor</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" name="kd_vnd" id="kd_vnd" required="" placeholder="Kode">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="nama_vnd" class="col-sm-3 control-label">Nama Vendor</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" name="nama_vnd" id="nama_vnd" required="" placeholder="Nama">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="init_vnd" class="col-sm-3 control-label">Inisial Vendor</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" name="init_vnd" id="init_vnd" required="" placeholder="Inisial">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="init_vnd" class="col-sm-3 control-label">Currency</label>
+						<div class="col-sm-8">
+							<select name="currency" class="currency">
+								<option value="IDR">IDR - Indonesia Rupiah</option>
+								<?php 
+								foreach ($currency as $cr) {
+									echo "<option value=".$cr['FROM_CURR'].">".$cr['FROM_CURR']." - ".$cr['CURR_NAME']." (".$cr['TO_CURRNCY']." ".number_format($cr['KONVERSI'],0,".",".").")</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div> 
+					<!-- <div class="form-group">
+						<label for="init_vnd" class="col-sm-3 control-label">Bea Masuk</label>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<input name="bea_masuk" type="number" class="form-control bm" placeholder="Bea Masuk" disabled>
+								<div class="input-group-addon"><i class="fa fa-percent"></i></div>
+							</div>
+						</div>
+					</div>   
+					<div class="form-group">
+						<label for="Harga" class="col-sm-3 control-label">Harga Awal</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control format-koma" name="Harga" id="Harga" required="" placeholder="Harga">
+						</div>
+					</div> -->  
+					<div class="form-group">
+						<label for="user" class="col-sm-3 control-label">Username Login</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input type="text" class="form-control" readonly="" name="user" value="<?php echo $userid?>" id="user" placeholder="user">
+								<!-- <div class="input-group-addon"><a class="glyphicon glyphicon-refresh" href="javascript:void(0)" aria-hidden="true"></a></div> -->
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<label for="passw" class="col-sm-3 control-label">Password</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input type="text" class="form-control" name="passw" id="passw" required="" placeholder="passw">
+								<div class="input-group-addon"><a class="glyphicon glyphicon-refresh" href="javascript:void(0)" aria-hidden="true"></a></div>
+							</div>
+						</div>
+					</div>  
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-10">
+							<button type="submit" class="btn btn-info">Tambah</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <!-- <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="tbh-peserta" aria-labelledby="myLargeModalLabel">
 	<div class="modal-dialog modal-md" role="document">

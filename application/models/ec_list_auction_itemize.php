@@ -284,7 +284,7 @@ class ec_list_auction_itemize extends CI_Model {
 	public function get_min_bid($no_tender = '') {
 		$this -> db -> from($this -> tablePeserta);
 		$this -> db -> join('EC_AUCTION_ITEMIZE_LOG', 'EC_AUCTION_ITEMIZE_LOG.NO_TENDER = EC_AUCTION_ITEMIZE_PESERTA.ID_HEADER AND EC_AUCTION_ITEMIZE_LOG.VENDOR_NO = EC_AUCTION_ITEMIZE_PESERTA.KODE_VENDOR', 'left');
-		$this -> db -> order_by('HARGATERKINI');
+		$this -> db -> order_by('TOTAL_HARGA');
 		$this -> db -> order_by('CREATED_AT', 'ASC');
 		$this -> db -> where('ID_HEADER', $no_tender);
 		$query = $this -> db -> get();
@@ -389,7 +389,7 @@ class ec_list_auction_itemize extends CI_Model {
 		return $query -> row_array();
 	}
 
-	public function bid($KODE_VENDOR, $no_tender = '', $ID_ITEM = '', $HARGATERKINI = '', $KONVERSI_IDR_UBAH = '', $BM_HB = '') {
+	public function bid($KODE_VENDOR, $no_tender = '', $ID_ITEM = '', $HARGATERKINI = '', $KONVERSI_IDR_UBAH = '', $BM_HB = '', $auction) {
 		$this -> db -> set('BM_HB', $BM_HB);
 		$this -> db -> set('KONVERSI_IDR_UBAH', $KONVERSI_IDR_UBAH);
 		$this -> db -> set('HARGATERKINI', $HARGATERKINI);
@@ -408,6 +408,23 @@ class ec_list_auction_itemize extends CI_Model {
 		'" . $no_tender . "', 
 		'" . $ID_ITEM . "')";
 		$this -> db -> query($SQL);
+
+		if ($auction['TIPE_RANKING'] == 2){
+			$SQL = 'UPDATE EC_AUCTION_ITEMIZE_PESERTA
+			SET TOTAL_HARGA = (
+			SELECT
+			SUM (BM_HB)
+			FROM
+			EC_AUCTION_ITEMIZE_PRICE
+			WHERE
+			ID_HEADER = '.$no_tender.'
+			AND ID_PESERTA = '. $KODE_VENDOR .'
+			)
+			WHERE
+			ID_HEADER = '.$no_tender.'
+			AND KODE_VENDOR = '. $KODE_VENDOR;
+			$this -> db -> query($SQL);
+		}
 
 		$SQL = "
 		SELECT

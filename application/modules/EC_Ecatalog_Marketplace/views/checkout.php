@@ -84,6 +84,7 @@
                 <h6 class="modal-title" id="myModalLabel">Tiap nomer PO terbit berdasarkan Vendor yang sama</h6>
             </div>
             <div class="modal-body">
+                <?php if($CCC['GUDANG']==='1'){?>
                 <div class="row" style="margin-top: 10px;">
                     <div class="col-sm-3 col-md-3 col-lg-3">
                         Func. Loc.
@@ -121,6 +122,7 @@
                         </form>
                     </div>
                 </div>
+                <?php }?>
                 <input type="hidden" id="gudang" name="gudang" value="<?=$CCC['GUDANG']?>">
                 <div class="row" style="margin-top: 10px;">
                     <div class="col-sm-3 col-md-3 col-lg-3">
@@ -186,7 +188,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-4">
-                        <h6>Jumlah barang</h6>
+                        <h6>Jumlah jenis barang</h6>
                     </div>
                     <div class="col-xs-8">
                         : <a id="jmlBrg">0</a>
@@ -543,10 +545,7 @@
                     <tbody id="tbodyPO">
                     </tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <small>Halaman akan otomatis refresh dalam <span id="dtk">10</span> detik....</small>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

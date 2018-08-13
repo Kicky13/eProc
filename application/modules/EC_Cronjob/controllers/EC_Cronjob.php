@@ -99,8 +99,8 @@ class EC_Cronjob extends MX_Controller {
             'MENGE', 'BPMNG', 'WESBS', 'BPWES', 'BAMNG', 'MENGE_POP', 'BPMNG_POP', 'BPWEB', 'WESBB'
             );
         $kali100 = array('DMBTR', 'WRBTR');
-        //echo '<pre>';
-//        print_r($arrJasa);die();
+        // echo '<pre>';
+        // print_r($arrJasa);die();
         foreach ($arrJasa as $j) {
             foreach ($quanType as $qq) {
                 $j[$qq] = $this->convertQuan($j[$qq]);
@@ -746,6 +746,47 @@ public function getPOCompany($date) {
     ORDER BY WERKS
     ";
     return $this->db->query($sql)->result_array();
+}
+
+public function getPOICS(){
+    $this->load->library('sap_invoice');
+
+    $range_po = array(
+        array(
+            'START_RANGE' => '5340000000',
+            'END_RANGE' => '5349999999'
+        )
+    );
+
+    $tglGrCari = '20180808';
+
+    $arrJasa = $this->sap_invoice->getALLGR2('EQ', $tglGrCari, $tglGrCari, $range_po);
+
+    echo $this->renderTable($arrJasa);
+    var_dump($arrJasa);
+}
+
+public function renderTable($data){
+    $check = 1;
+    $table = "<table border='1'>";
+        foreach ($data as $value) {
+            if($check){
+                $table .= "<tr>";
+                foreach ($value as $key => $val) {
+                    $table .= "<th>".$key."<th>";
+                }
+                $table .= "</tr>";
+                $check = 0;
+            }
+            $table .= "<tr>";
+            foreach ($value as $key => $val) {
+                $table .= "<th>".$val."<th>";
+            }
+            $table .= "</tr>";
+        }
+
+    $table .= "</table>";
+    return $table;
 }
 
 }

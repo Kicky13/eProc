@@ -63,11 +63,16 @@ class sap_handler {
 	public function getStrategicMaterial($NOW) {
 		$this->openFunction('ZCMM_MAT_MASTER');
 
-		$this->fce->S_ERSDA->row['SIGN'] = 'I';
-		$this->fce->S_ERSDA->row['OPTION'] = 'BT';
-		$this->fce->S_ERSDA->row['LOW'] = '20161208';
-		$this->fce->S_ERSDA->row['HIGH'] = date('Ymd');
-		$this->fce->S_ERSDA->Append($this->fce->S_ERSDA->row);
+                $this->fce->S_MATNR->row['SIGN'] = 'I';
+                $this->fce->S_MATNR->row['OPTION'] = 'BT';
+                $this->fce->S_MATNR->row['LOW'] = '503-000000';
+                $this->fce->S_MATNR->row['HIGH'] = '504-999999';                
+                $this->fce->S_MATNR->Append($this->fce->S_MATNR->row);
+//		$this->fce->S_ERSDA->row['SIGN'] = 'I';
+//		$this->fce->S_ERSDA->row['OPTION'] = 'BT';
+//		$this->fce->S_ERSDA->row['LOW'] = '20161208';
+//		$this->fce->S_ERSDA->row['HIGH'] = date('Ymd');
+//		$this->fce->S_ERSDA->Append($this->fce->S_ERSDA->row);
 
 		$this->fce->call();
 		$i = 0;
@@ -430,58 +435,7 @@ class sap_handler {
             $this->fce->POACCOUNTX->Append($this->fce->POACCOUNTX->row);
             $po+=10;
 
-        }
-
-        /*for ($i = 0; $i < sizeof($chart); $i++) {
-            var_dump($chart[$i]['PRICE']);
-            var_dump($chart[$i]['QTY']);
-            $this->fce->POITEM->row['PO_ITEM'] = '' . $po;
-            $this->fce->POITEM->row['MATERIAL'] = $chart[$i]['MATNR'];
-            $this->fce->POITEM->row['PLANT'] = $chart[$i]['PLANT']; //'7702';// $chart[$i]['plant']; $chart[$i]['PLANT']; //
-            $this->fce->POITEM->row['QUANTITY'] = $chart[$i]['QTY'];
-            $this->fce->POITEM->row['ACCTASSCAT'] = 'K'; // $chart[$i]['cat']; //'K';
-            // $this->fce->POITEM->row['AGREEMENT'] = $chart[$i]['contract_no'];
-            // $this->fce->POITEM->row['AGMT_ITEM'] = $chart[$i]['contract_itm'];
-            if($chart[$i]['CURR']=='IDR'){
-                $this->fce->POITEM->row['NET_PRICE'] =  $chart[$i]['PRICE']/100;
-            }else{
-                $this->fce->POITEM->row['NET_PRICE'] =  $chart[$i]['PRICE'];
-            }
-            $this->fce->POITEM->Append($this->fce->POITEM->row);
-
-            $this->fce->POITEMX->row['PO_ITEM'] = $po;
-            $this->fce->POITEMX->row['PO_ITEMX'] = 'X';
-            $this->fce->POITEMX->row['MATERIAL'] = 'X';
-            $this->fce->POITEMX->row['PLANT'] = 'X';
-            $this->fce->POITEMX->row['QUANTITY'] = 'X';
-            $this->fce->POITEMX->row['ACCTASSCAT'] = 'X';
-            // $this->fce->POITEMX->row['AGREEMENT'] = 'X';
-            // $this->fce->POITEMX->row['AGMT_ITEM'] = 'X';
-            $this->fce->POITEMX->row['NET_PRICE'] = 'X';
-            $this->fce->POITEMX->Append($this->fce->POITEMX->row);
-
-            $this->fce->POSCHEDULE->row['PO_ITEM'] = $po;
-            $this->fce->POSCHEDULE->row['DELIVERY_DATE'] = date("Ymd", strtotime("+" . $chart[$i]['DELIVERY_TIME'] . " day", strtotime(date('Y-m-d'))));//'02.04.2017'; //'20161231';
-            $this->fce->POSCHEDULE->Append($this->fce->POSCHEDULE->row);
-
-            $this->fce->POSCHEDULEX->row['PO_ITEM'] = $po;
-            $this->fce->POSCHEDULEX->row['PO_ITEMX'] = 'X';
-            $this->fce->POSCHEDULEX->row['DELIVERY_DATE'] = 'X';
-            $this->fce->POSCHEDULEX->Append($this->fce->POSCHEDULEX->row);
-
-            $this->fce->POACCOUNT->row['PO_ITEM'] = $po;
-            $this->fce->POACCOUNT->row['COSTCENTER'] = $chart[$i]['COSCENTER'];//$KOSTL; //'7104200000';//$KOSTL;
-            // $this->fce->POACCOUNT->row['GL_ACCOUNT'] = $detail['GL']; //'67430001';
-            $this->fce->POACCOUNT->Append($this->fce->POACCOUNT->row);
-
-            $this->fce->POACCOUNTX->row['PO_ITEM'] = $po;
-            $this->fce->POACCOUNTX->row['PO_ITEMX'] = 'X';
-            $this->fce->POACCOUNTX->row['COSTCENTER'] = 'X';
-            // $this->fce->POACCOUNTX->row['GL_ACCOUNT'] = 'X';
-            $this->fce->POACCOUNTX->Append($this->fce->POACCOUNTX->row);
-            $po+=10;
-        }*/
-
+        }      
 
         $berhasil = false;
         $this->fce->call();
@@ -509,7 +463,7 @@ class sap_handler {
         return $data['RETURN'];
     }
 
-    public function createPOLangsungCart($comp = '7000', $id = '10164', $cart, $costcenter, $debug = true) {        
+    public function createPOLangsungCart($comp = '7000', $id = '10164', $cart, $costcenter, $gl_account, $debug = true) {        
 //        var_dump($cart);die();
 
     	$this->openFunction('ZCMM_GET_USERATTRIBUTE');
@@ -600,7 +554,7 @@ class sap_handler {
             $this->fce->POSCHEDULEX->Append($this->fce->POSCHEDULEX->row);
 
             $this->fce->POACCOUNT->row['PO_ITEM'] = $po;
-            $this->fce->POACCOUNT->row['GL_ACCOUNT'] = '67430001';
+            $this->fce->POACCOUNT->row['GL_ACCOUNT'] = $gl_account;
             $this->fce->POACCOUNT->row['COSTCENTER'] = $costcenter;
             $this->fce->POACCOUNT->Append($this->fce->POACCOUNT->row); 
 
@@ -3311,7 +3265,7 @@ class sap_handler {
     	return $data;
     }
 
-    public function getPOSpb($COMPANYID, $VENDOR_NO) {
+    public function getPOSpb($COMPANYID, $VENDOR_NO, $NO_PO) {
 
         $debug = false;
         $this->openFunction('ZCMM_GET_DATA_TIMB_PO');
@@ -3325,10 +3279,17 @@ class sap_handler {
             $this->fce->LR_BUKRS->row['OPTION'] = 'EQ';
             $this->fce->LR_BUKRS->row['LOW'] = $COMPANYID;
         }
+        $this->fce->LR_BUKRS->Append($this->fce->LR_BUKRS->row);
 
         $this->fce->LR_LIFNR->row['SIGN'] = 'I';
         $this->fce->LR_LIFNR->row['OPTION'] = 'EQ';
         $this->fce->LR_LIFNR->row['LOW'] = $VENDOR_NO;
+        $this->fce->LR_LIFNR->Append($this->fce->LR_LIFNR->row);
+
+        $this->fce->LR_EBELN->row['SIGN'] = 'I';
+        $this->fce->LR_EBELN->row['OPTION'] = 'EQ';
+        $this->fce->LR_EBELN->row['LOW'] = $NO_PO;
+        $this->fce->LR_EBELN->Append($this->fce->LR_EBELN->row);
         
         $this->fce->call();
         

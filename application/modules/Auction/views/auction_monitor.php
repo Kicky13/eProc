@@ -168,12 +168,13 @@
                                         <th class="text-right">Harga Awal</th>
                                         <th class="text-right">Harga Terkini</th>
                                         <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                        <th>Nilai Teknis</th>
                                         <th>Nilai</th>
                                         <?php } ?>
                                         <th><span class="label label-primary invisible">new ece</span></th>
                                     </thead>
                                     <tbody>
-                                        <?php $no = 1; foreach ($vendor as $vnd) { ?>
+                                        <?php $no = 1; foreach ($vendor as $key =>$vnd) { ?>
                                         <tr class="tr_vnd">
                                             <td class="text-center"><?php echo $no ?></td>
                                             <td><?php echo $vnd['PTV_RFQ_NO'] ?></td>
@@ -182,6 +183,7 @@
                                             <td class="text-right"><?php echo number_format($vnd['PAQD_INIT_PRICE']) ?></td>
                                             <td class="text-right harga_terkini"><?php echo number_format($vnd['PAQD_FINAL_PRICE']) ?></td>
                                             <?php if(!empty($paqh['BOBOT_TEKNIS'])) { ?>
+                                            <td class="text-right nilai_gabung"><?php echo $vnd['nilai_teknis'] ?></td>
                                             <td class="text-right nilai_gabung"><?php echo $vnd['NILAI_GABUNG'] ?></td>
                                             <?php } ?>
                                             <td class="hidden">

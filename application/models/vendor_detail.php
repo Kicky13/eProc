@@ -269,6 +269,40 @@ class vendor_detail extends CI_Model {
 		$this->db->where('VND_ADD.TYPE LIKE \'%Affiliation Company%\' AND VND_HEADER.VENDOR_ID =', $id);
 		$result = $this->db->get();
 		return $result->result_array();
+	}
+
+	public function vnd_table_prod_all($prod){
+		
+		if ($prod == '1') { // GOODS
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO,vh.STATUS, vh.EMAIL_ADDRESS, vh.STATUS_PERUBAHAN, vh.COMPANYID from vnd_header vh inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VP on vh.VENDOR_ID=VP.vendor_id where vh.VENDOR_ID not in(select vd.vendor_id from vnd_header vd inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.vendor_id=vd.vendor_id inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vd.vendor_id) order by vh.VENDOR_NO', false);
+		} elseif ($prod == '2') { // SERVICE
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO ,vh.STATUS, vh.EMAIL_ADDRESS, vh.STATUS_PERUBAHAN, vh.COMPANYID from vnd_header vh inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VP on vh.VENDOR_ID=VP.vendor_id where vh.VENDOR_ID not in(select vd.vendor_id from vnd_header vd inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.vendor_id=vd.vendor_id inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vd.vendor_id) order by vh.VENDOR_NO', false);
+		} elseif ($prod == '3') { //S N G
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO, vh.STATUS, vh.EMAIL_ADDRESS, vh.STATUS_PERUBAHAN, vh.COMPANYID from vnd_header vh inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.VENDOR_ID=vh.VENDOR_ID inner join (select vendor_id from vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vh.VENDOR_ID order by vh.VENDOR_NO', false);
+		} else{
+			$this->db->select('VENDOR_ID, VENDOR_NAME, VENDOR_NO, STATUS, EMAIL_ADDRESS, STATUS_PERUBAHAN, COMPANYID FROM VND_HEADER ORDER BY VENDOR_NO', false);
+		}
+
+		
+		$result = $this->db->get();
+		return $result->result_array(); 
+	}
+
+	public function tmp_table_prod_all($prod){
+ 		
+		if ($prod == '1') { // GOODS
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO,vh.STATUS, vh.EMAIL_ADDRESS, vh.COMPANYID from tmp_vnd_header vh inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VP on vh.VENDOR_ID=VP.vendor_id where vh.VENDOR_ID not in(select vd.vendor_id from tmp_vnd_header vd inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.vendor_id=vd.vendor_id inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vd.vendor_id) order by vh.VENDOR_NO', false);
+		} elseif ($prod == '2') { // SERVICE
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO ,vh.STATUS, vh.EMAIL_ADDRESS, vh.COMPANYID from tmp_vnd_header vh inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VP on vh.VENDOR_ID=VP.vendor_id where vh.VENDOR_ID not in(select vd.vendor_id from tmp_vnd_header vd inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.vendor_id=vd.vendor_id inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vd.vendor_id) order by vh.VENDOR_NO', false);
+		} elseif ($prod == '3') { //S N G
+			$this->db->select('vh.VENDOR_ID,vh.VENDOR_NAME,vh.VENDOR_NO, vh.STATUS, vh.EMAIL_ADDRESS, vh.COMPANYID from tmp_vnd_header vh inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'SERVICES\' group by vendor_id) VS on VS.VENDOR_ID=vh.VENDOR_ID inner join (select vendor_id from tmp_vnd_product where PRODUCT_TYPE = \'GOODS\' group by vendor_id) VG on VG.vendor_id=vh.VENDOR_ID order by vh.VENDOR_NO', false);
+		} else{
+			$this->db->select('VENDOR_ID, VENDOR_NAME, VENDOR_NO, STATUS, EMAIL_ADDRESS, COMPANYID FROM TMP_VND_HEADER ORDER BY VENDOR_NO', false);
+		}
+
+		
+		$result = $this->db->get();
+		return $result->result_array(); 
 	}	
 
 	public function vnd_table_prod($prod,$opco){

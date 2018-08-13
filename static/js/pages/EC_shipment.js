@@ -348,7 +348,7 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 onhide = '';
-                if (full.VENDOR_APP == 1){
+                if (full.VENDOR_APP == 0){
                     onhide = 'hidden';
                 }
                 /* a = "<div class='col-md-12 text-center'>" +

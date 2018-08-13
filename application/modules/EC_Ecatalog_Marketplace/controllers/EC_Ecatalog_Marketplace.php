@@ -1444,13 +1444,12 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //        var_dump(count($data['deals']));die();
 //        var_dump($data['deals']);die();
         for ($j = 0; $j < count($data['deals']); $j++) {
-            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'],$data['deals'][$j]['MATNO'],$data['deals'][$j]['VENDORNO']);
-////            var_dump($stok_konfirmasi);
-//            if(isset($stok_konfirmasi['STOK_KONFIRMASI'])){
-                $data['deals'][$j]['STOK_KONFIRMASI'] = $stok_konfirmasi['STOK_KONFIRMASI'];
-//            } else {
-//                $data['deals'][$j]['STOK_KONFIRMASI'] = 0;
-//            }
+            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'],$data['deals'][$j]['MATNO'],$data['deals'][$j]['VENDORNO']);                        
+            if(!isset($stok_konfirmasi['STOK_KONFIRMASI'])){
+                $data['deals'][$j]['STOK_KONFIRMASI'] = $stok_konfirmasi[0]['STOK_KONFIRMASI'];
+            } else {
+                $data['deals'][$j]['STOK_KONFIRMASI'] = 0;
+}
 ////            var_dump($stok_konfirmasi[0]['STOK_KONFIRMASI']);
 ////            $data['deals2'][$j]['STOK_KONFIRMASI']=$stok_konfirmasi[0]['STOK_KONFIRMASI'];
 ////            var_dump($data['deals'][$j]['STOK_KONFIRMASI']);
@@ -2359,3 +2358,4 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         echo json_encode($uploaded['korin']);
     }
 }
+//

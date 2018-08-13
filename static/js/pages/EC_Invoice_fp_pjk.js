@@ -325,14 +325,14 @@ function loadTable_invoice() {
 		},{
 			mRender : function(data, type, full) {
 				a = "<div class='col-md-12 text-center'>";
-				a += full.TGL_EKSPEDISI;
+				a += full.NO_EKSPEDISI;
 				a += "</div>";
 				return a;
 			}
 		}, {
 			mRender : function(data, type, full) {
 				a = "<div class='col-md-12 text-center'>";
-				a += full.NO_EKSPEDISI;
+				a += full.NAMA_VENDOR;
 				a += "</div>";
 				return a;
 			}
@@ -350,13 +350,20 @@ function loadTable_invoice() {
 		}, {
 			mRender : function(data, type, full) {
 				a = "<div class='col-md-12'>";
+				a += full.TGL_FAKTUR;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-right'>";
 				a += full.DPP;
 				a += "</div>";
 				return a;
 			}
 		}, {
 			mRender : function(data, type, full) {
-				a = "<div class='col-md-12'>";
+				a = "<div class='col-md-12 text-right'>";
 				a += full.PPN;
 				a += "</div>";
 				return a;
@@ -375,6 +382,9 @@ function loadTable_invoice() {
 				a += '<input type="hidden" name="NOEKS['+full.NOMOR+']" value="'+full.NO_EKSPEDISI+'">';
 				a += '<input type="hidden" name="NO_VENDOR['+full.NOMOR+']" value="'+full.NO_VENDOR+'">';
 				a += '<input type="hidden" name="NO_FAKTUR['+full.NOMOR+']" value="'+full.NO_FAKTUR+'">';
+				a += '<input type="hidden" name="NAMA['+full.NOMOR+']" value="'+full.NAMA+'">';
+				a += '<input type="hidden" name="EMAIL['+full.NOMOR+']" value="'+full.EMAIL+'">';
+				a += '<input type="hidden" name="EMVENDOR['+full.NOMOR+']" value="'+full.EMVENDOR+'">';
 
 				a += '<input type="checkbox" name="NOFAK['+full.NOMOR+']" value="'+full.NO_FAKTUR_LOS+'">';
 				// if (full.KET == 'Belum diterima') {
@@ -498,6 +508,489 @@ function loadTable_invoice() {
 	 }
 	});*/
 }
+
+
+
+function loadTable_invoice2() {
+	no = 1;
+	$('#table_inv2').DataTable().destroy();
+	$('#table_inv2 tbody').empty();
+	mytable = $('#table_inv2').DataTable({
+		"bSort" : true,
+		"dom" : 'rtpli',
+		"deferRender" : true,
+		"colReorder" : true,
+		"pageLength" : 25,
+		// "fixedHeader" : true,
+		// "scrollX" : true,
+		// "lengthMenu" : [5, 10, 25, 50, 75, 100],
+		"language" : {
+			"loadingRecords" : "<center><b>Please wait - Updating and Loading Data Tax Invoice...</b></center>"
+		},
+		"ajax" : $("#base-url").val() + 'EC_Invoice_fp_pjk/get_invoice_lanjut2',
+
+		"columnDefs" : [{
+			"searchable" : false,
+			"orderable" : true,
+			"targets" : 0
+		}],
+		// "order": [[ 1, 'asc' ]],
+		"fnInitComplete" : function() {
+			$('#table_inv2 tbody tr').each(function() {
+				$(this).find('td').attr('nowrap', 'nowrap');
+			});
+		},
+		"fnCreatedRow": function (row, data, index) {
+			$('td', row).eq(0).html(index + 1);
+		},
+		"drawCallback" : function(settings) {
+			$('#table_inv2 tbody tr').each(function() {
+				$(this).find('td').attr('nowrap', 'nowrap');
+			});
+		},
+		"columns" : [
+		{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NO;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				if(full.COMPANYCODE=='2000'){
+					COMPANYCODE='PT. Semen Indonesia';  
+				} else if(full.COMPANYCODE=='7000'){
+					COMPANYCODE='PT. Semen Indonesia ';  
+				} else if(full.COMPANYCODE=='5000'){
+					COMPANYCODE='PT. Semen Gresik';
+				}
+				a = "<div class='col-md-12 text-center'>";
+				a += COMPANYCODE;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NO_EKSPEDISI;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NAMA_VENDOR;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				if(full.LINK_FILE_FP!=""){
+					a += "<a href="+full.LINK_FILE_FP+" target=_blank>"+full.NO_FAKTUR+"</a>";
+				} else {
+					a += full.NO_FAKTUR;
+				}
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.TGL_FAKTUR;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-right'>";
+				a += full.DPP;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-right'>";
+				a += full.PPN;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.KET;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 '>";
+				a += '<input type="hidden" name="COMPANYCODE['+full.NOMOR+']" value="'+full.COMPANYCODE+'">';
+				a += '<input type="hidden" name="NOEKS['+full.NOMOR+']" value="'+full.NO_EKSPEDISI+'">';
+				a += '<input type="hidden" name="NO_VENDOR['+full.NOMOR+']" value="'+full.NO_VENDOR+'">';
+				a += '<input type="hidden" name="NO_FAKTUR['+full.NOMOR+']" value="'+full.NO_FAKTUR+'">';
+				a += '<input type="hidden" name="NAMA['+full.NOMOR+']" value="'+full.NAMA+'">';
+				a += '<input type="hidden" name="EMAIL['+full.NOMOR+']" value="'+full.EMAIL+'">';
+				a += '<input type="hidden" name="EMVENDOR['+full.NOMOR+']" value="'+full.EMVENDOR+'">';
+
+				a += '<input type="checkbox" name="NOFAK['+full.NOMOR+']" value="'+full.NO_FAKTUR_LOS+'">';
+				// if (full.KET == 'Belum diterima') {
+				// } else {
+				// 	// a += '<input type="checkbox" disabled="disabled" name="NOFAK['+full.NOMOR+']" value="'+full.NO_FAKTUR_LOS+'">';
+				// }
+				a += "</div>";
+				return a;
+			}
+		}],
+
+	});
+
+	mytable.columns().every(function() {
+		var that = this;
+		$('.srch', this.header()).on('keyup change', function() {
+			if (that.search() !== this.value) {
+				that.search(this.value).draw();
+			}
+		});
+	});
+
+	$('#table_inv2').find("th").off("click.DT");
+	$('.ts0').on('dblclick', function() {
+		if (t0) {
+			mytable.order([0, 'asc']).draw();
+			t0 = false;
+		} else {
+			mytable.order([0, 'desc']).draw();
+			t0 = true;
+		}
+	});
+	$('.ts1').on('dblclick', function() {
+		if (t1) {
+			mytable.order([1, 'asc']).draw();
+			t1 = false;
+		} else {
+			mytable.order([1, 'desc']).draw();
+			t1 = true;
+		}
+	});
+	$('.ts2').on('dblclick', function() {
+		if (t2) {
+			mytable.order([2, 'asc']).draw();
+			t2 = false;
+		} else {
+			mytable.order([2, 'desc']).draw();
+			t2 = true;
+		}
+	});
+	$('.ts3').on('dblclick', function() {
+		if (t3) {
+			mytable.order([3, 'asc']).draw();
+			t3 = false;
+		} else {
+			mytable.order([3, 'desc']).draw();
+			t3 = true;
+		}
+	});
+	$('.ts4').on('dbldblclick', function() {
+		if (t4) {
+			mytable.order([4, 'asc']).draw();
+			t4 = false;
+		} else {
+			mytable.order([4, 'desc']).draw();
+			t4 = true;
+		}
+	});
+	$('.ts5').on('dblclick', function() {
+		if (t5) {
+			mytable.order([5, 'asc']).draw();
+			t5 = false;
+		} else {
+			mytable.order([5, 'desc']).draw();
+			t5 = true;
+		}
+	});
+	$('.ts6').on('dblclick', function() {
+		if (t6) {
+			mytable.order([6, 'asc']).draw();
+			t6 = false;
+		} else {
+			mytable.order([6, 'desc']).draw();
+			t6 = true;
+		}
+	});
+	$('.ts7').on('dblclick', function() {
+		if (t7) {
+			mytable.order([7, 'asc']).draw();
+			t7 = false;
+		} else {
+			mytable.order([7, 'desc']).draw();
+			t7 = true;
+		}
+	});
+	$('.ts8').on('dblclick', function() {
+		if (t8) {
+			mytable.order([8, 'asc']).draw();
+			t8 = false;
+		} else {
+			mytable.order([8, 'desc']).draw();
+			t8 = true;
+		}
+	});
+	$('.ts9').on('dblclick', function() {
+		if (t9) {
+			mytable.order([9, 'asc']).draw();
+			t9 = false;
+		} else {
+			mytable.order([9, 'desc']).draw();
+			t9 = true;
+		}
+	});
+	/*$('.ts10').on('dblclick', function() {
+	 if (t10) {
+	 mytable.order([10, 'asc']).draw();
+	 t10 = false;
+	 } else {
+	 mytable.order([10, 'desc']).draw();
+	 t10 = true;
+	 }
+	});*/
+}
+
+
+function loadTable_invoice3() {
+	no = 1;
+	$('#table_inv3').DataTable().destroy();
+	$('#table_inv3 tbody').empty();
+	mytable = $('#table_inv3').DataTable({
+		"bSort" : true,
+		"dom" : 'rtpli',
+		"deferRender" : true,
+		"colReorder" : true,
+		"pageLength" : 25,
+		// "fixedHeader" : true,
+		// "scrollX" : true,
+		// "lengthMenu" : [5, 10, 25, 50, 75, 100],
+		"language" : {
+			"loadingRecords" : "<center><b>Please wait - Updating and Loading Data Tax Invoice...</b></center>"
+		},
+		"ajax" : $("#base-url").val() + 'EC_Invoice_fp_pjk/get_invoice_lanjut3',
+
+		"columnDefs" : [{
+			"searchable" : false,
+			"orderable" : true,
+			"targets" : 0
+		}],
+		// "order": [[ 1, 'asc' ]],
+		"fnInitComplete" : function() {
+			$('#table_inv3 tbody tr').each(function() {
+				$(this).find('td').attr('nowrap', 'nowrap');
+			});
+		},
+		"fnCreatedRow": function (row, data, index) {
+			$('td', row).eq(0).html(index + 1);
+		},
+		"drawCallback" : function(settings) {
+			$('#table_inv3 tbody tr').each(function() {
+				$(this).find('td').attr('nowrap', 'nowrap');
+			});
+		},
+		"columns" : [
+		{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NO;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				if(full.COMPANYCODE=='2000'){
+					COMPANYCODE='PT. Semen Indonesia';  
+				} else if(full.COMPANYCODE=='7000'){
+					COMPANYCODE='PT. Semen Indonesia ';  
+				} else if(full.COMPANYCODE=='5000'){
+					COMPANYCODE='PT. Semen Gresik';
+				}
+				a = "<div class='col-md-12 text-center'>";
+				a += COMPANYCODE;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NO_EKSPEDISI;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-center'>";
+				a += full.NAMA_VENDOR;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				if(full.LINK_FILE_FP!=""){
+					a += "<a href="+full.LINK_FILE_FP+" target=_blank>"+full.NO_FAKTUR+"</a>";
+				} else {
+					a += full.NO_FAKTUR;
+				}
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.TGL_FAKTUR;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-right'>";
+				a += full.DPP;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 text-right'>";
+				a += full.PPN;
+				a += "</div>";
+				return a;
+			}
+		},{
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12'>";
+				a += full.KET;
+				a += "</div>";
+				return a;
+			}
+		}, {
+			mRender : function(data, type, full) {
+				a = "<div class='col-md-12 '>";
+				a += '-';
+				a += "</div>";
+				return a;
+			}
+		}],
+
+	});
+
+	mytable.columns().every(function() {
+		var that = this;
+		$('.srch', this.header()).on('keyup change', function() {
+			if (that.search() !== this.value) {
+				that.search(this.value).draw();
+			}
+		});
+	});
+
+	$('#table_inv3').find("th").off("click.DT");
+	$('.ts0').on('dblclick', function() {
+		if (t0) {
+			mytable.order([0, 'asc']).draw();
+			t0 = false;
+		} else {
+			mytable.order([0, 'desc']).draw();
+			t0 = true;
+		}
+	});
+	$('.ts1').on('dblclick', function() {
+		if (t1) {
+			mytable.order([1, 'asc']).draw();
+			t1 = false;
+		} else {
+			mytable.order([1, 'desc']).draw();
+			t1 = true;
+		}
+	});
+	$('.ts2').on('dblclick', function() {
+		if (t2) {
+			mytable.order([2, 'asc']).draw();
+			t2 = false;
+		} else {
+			mytable.order([2, 'desc']).draw();
+			t2 = true;
+		}
+	});
+	$('.ts3').on('dblclick', function() {
+		if (t3) {
+			mytable.order([3, 'asc']).draw();
+			t3 = false;
+		} else {
+			mytable.order([3, 'desc']).draw();
+			t3 = true;
+		}
+	});
+	$('.ts4').on('dbldblclick', function() {
+		if (t4) {
+			mytable.order([4, 'asc']).draw();
+			t4 = false;
+		} else {
+			mytable.order([4, 'desc']).draw();
+			t4 = true;
+		}
+	});
+	$('.ts5').on('dblclick', function() {
+		if (t5) {
+			mytable.order([5, 'asc']).draw();
+			t5 = false;
+		} else {
+			mytable.order([5, 'desc']).draw();
+			t5 = true;
+		}
+	});
+	$('.ts6').on('dblclick', function() {
+		if (t6) {
+			mytable.order([6, 'asc']).draw();
+			t6 = false;
+		} else {
+			mytable.order([6, 'desc']).draw();
+			t6 = true;
+		}
+	});
+	$('.ts7').on('dblclick', function() {
+		if (t7) {
+			mytable.order([7, 'asc']).draw();
+			t7 = false;
+		} else {
+			mytable.order([7, 'desc']).draw();
+			t7 = true;
+		}
+	});
+	$('.ts8').on('dblclick', function() {
+		if (t8) {
+			mytable.order([8, 'asc']).draw();
+			t8 = false;
+		} else {
+			mytable.order([8, 'desc']).draw();
+			t8 = true;
+		}
+	});
+	$('.ts9').on('dblclick', function() {
+		if (t9) {
+			mytable.order([9, 'asc']).draw();
+			t9 = false;
+		} else {
+			mytable.order([9, 'desc']).draw();
+			t9 = true;
+		}
+	});
+	/*$('.ts10').on('dblclick', function() {
+	 if (t10) {
+	 mytable.order([10, 'asc']).draw();
+	 t10 = false;
+	 } else {
+	 mytable.order([10, 'desc']).draw();
+	 t10 = true;
+	 }
+	});*/
+}
 var t0 = true,
 t1 = true,
 t2 = true,
@@ -514,6 +1007,8 @@ var t = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9];
 $(document).ready(function() {
 
 	loadTable_invoice();
+	loadTable_invoice2();
+	loadTable_invoice3();
 	$(".sear").hide();
 	for (var i = 0; i < t.length; i++) {
 		$(".ts" + i).on("click", function(e) {
@@ -544,4 +1039,25 @@ $(document).ready(function() {
 		todayHighlight : true
 	});
 	*/
+
+	// $(".kembalikan2").hide();
+	$(".kembalikan1").on("click", function() {
+		// $(".kembalikan2").show();
+		// $(".kembalikan1").hide();
+		$("#myModalKembali").modal('show')
+	})
+
+	$(".submitkan").on("click", function() {
+		$('#form1').attr('action', $("#base-url").val() + 'EC_Invoice_fp_pjk/rejectPajak');
+		document.getElementById("form1").submit(); 
+	})
+
+	$(".kembalikan2").on("click", function() {
+		$("#myModalKembali2").modal('show')
+	})
+
+	$(".submitkan2").on("click", function() {
+		$('#form1').attr('action', $("#base-url").val() + 'EC_Invoice_fp_pjk/rejectPajak');
+		document.getElementById("form1").submit(); 
+	})
 });

@@ -586,12 +586,12 @@ class Auction extends CI_Controller {
 		$data['vendor'] = $vendor;
 		// echo "<pre>";
 		// print_r($data['vendor']);die;
-		foreach ($data['vendor'] as $value) {
+		foreach ($data['vendor'] as $key => $value) {
 			$vnd = $value['PTV_VENDOR_CODE'];
 			$tit_id = $data['item'][0]['TIT_ID'];
 			$vendor1= $this->prc_tender_quo_item->get_ptm_tit($data['ptm_number'],$vnd,$tit_id);
 			foreach ($vendor1 as $value) {
-				$data['nilai_teknis'] = $value['PQI_TECH_VAL'];
+				$data['vendor'][$key]['nilai_teknis'] = $value['PQI_TECH_VAL'];
 				// echo "<pre>";
 				// print_r($data['nilai_teknis']);
 			}

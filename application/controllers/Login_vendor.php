@@ -33,6 +33,8 @@ class Login_vendor extends CI_Controller {
 		$data['captcha'] = create_captcha($vals);
 		$this->load->model('adm_company');
 		$data['company_name'] = $this->adm_company->get_all(array('ISACTIVE' => 1));
+		// echo "<pre>";
+		// print_r($data['company_name']);die;
 		$this->session->set_userdata('captchaWord', $data['captcha']['word']);
 		$this->layout->add_js('plugins/jquery.capslockstate.js');
 		$this->layout->add_js('pages/login.js');

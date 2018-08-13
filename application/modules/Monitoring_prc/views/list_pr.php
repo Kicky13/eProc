@@ -164,9 +164,9 @@
             {
                 mRender : function(data,type,full) {
                     if (full.PTM_STATUS > 0){
-                        if (full.PTM_STATUS == 3 && full.TAMBAHAN_APPROVAL_NAME!="" && full.PTM_COMPANY_ID == '5000') {
-                            return full.TAMBAHAN_APPROVAL_NAME;
-                        }
+                        // if (full.PTM_STATUS == 3 && full.TAMBAHAN_APPROVAL_NAME!="" && full.PTM_COMPANY_ID == '2000') {
+                        //     return full.TAMBAHAN_APPROVAL_NAME;
+                        // }
                         if(full.PROCESS_MASTER_ID == 'Proc_verify_entry/index' ){
                             return statusRfq(full.PTP_REG_CLOSING_DATE,full.NAMA_BARU);
                         }
@@ -174,7 +174,12 @@
                             return statusPenawaranHarga(full.BATAS_VENDOR_HARGA_VER,full.NAMA_BARU);
                         }
                         if(full.PROCESS_MASTER_ID == 'Tahap_negosiasi/index'){
-                            return statusNegosiasi(full.TIT_STATUS_GROUP);
+                            if (full.TIT_STATUS_GROUP == 999) {
+                                return 'Batal Tender';
+                            } else {
+                                return statusNegosiasi(full.TIT_STATUS_GROUP);
+                            }
+                            //return statusNegosiasi(full.TIT_STATUS_GROUP);
                         }
                         return full.NAMA_BARU;
                     }

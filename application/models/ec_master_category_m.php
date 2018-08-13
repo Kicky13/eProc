@@ -14,7 +14,7 @@ class ec_master_category_m extends CI_Model {
 
 	public function get() {
 		$this -> db -> from($this -> table);
-		$this -> db -> order_by('KODE_USER ASC');
+		$this -> db -> order_by('DESC ASC');
 		$result = $this -> db -> get();
 		return (array)$result -> result_array();
 	}

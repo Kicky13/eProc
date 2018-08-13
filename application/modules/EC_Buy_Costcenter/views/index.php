@@ -49,6 +49,14 @@
                                     <!-- </div> -->
                                 </div>                
                             </div>
+                            <div class="row" style="padding: 5px;">
+                                <div class="col-sm-3 col-md-3 col-lg-3">
+                                    GL Account 
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4">                                    
+                                    <input type="text" id="gl_account" name="gl_account">                    
+                                </div>                
+                            </div>
                             <div class="row" style="margin-top: 10px;">
                                 <div class="col-sm-3 col-md-3 col-lg-3">
                                     Approved Gudang?
@@ -85,13 +93,15 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center ts0"><a href="javascript:void(0)">Cost Center</th>
-                                            <th class="text-center ts1"><a href="javascript:void(0)">Full Name</a></th>
-                                            <th class="text-center ts2"><a href="javascript:void(0)">Cost Center Name</a></th>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">Approved Gudang</a></td>
-                                            <th class="text-center ts4"><a href="javascript:void(0)">Aksi</a></th>                                             
+                                            <th class="text-center ts1"><a href="javascript:void(0)">GL Account</th>
+                                            <th class="text-center ts2"><a href="javascript:void(0)">Full Name</a></th>
+                                            <th class="text-center ts3"><a href="javascript:void(0)">Cost Center Name</a></th>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">Approved Gudang</a></td>
+                                            <th class="text-center ts5"><a href="javascript:void(0)">Aksi</a></th>                                             
                                         </tr>
                                         <tr class="sear">
                                             <!-- <th></th> -->
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -102,10 +112,11 @@
                                         <tbody>
                                         <tr>
                                             <td class="text-center ts0"><a href="javascript:void(0)">Cost Center</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Full Name</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Cost Center Name</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">Approved Gudang</a></td>
-                                            <td class="text-center ts4">
+                                            <td class="text-center ts1"><a href="javascript:void(0)">GL Account</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Full Name</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Cost Center Name</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">Approved Gudang</a></td>
+                                            <td class="text-center ts5">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
@@ -158,6 +169,14 @@
                     <!-- </div> -->
                 </div>                
             </div>
+             <div class="row" style="padding: 5px;">
+                <div class="col-sm-3 col-md-3 col-lg-3">
+                    GL Account 
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">                                    
+                    <input type="text" id="viewgl" name="gl_account">                    
+                </div>                
+            </div>
             <input type="hidden" name="viewid" id="viewid">
             <div class="row" style="padding: 5px;">
                 <div class="col-sm-3 col-md-3 col-lg-3">
@@ -173,7 +192,7 @@
                         </select>
                     </div>                    
                 </div>                
-            </div>
+            </div>            
             <div class="row" style="margin-top: 10px;">
                 <div class="col-sm-3 col-md-3 col-lg-3">
                     Approved Gudang?

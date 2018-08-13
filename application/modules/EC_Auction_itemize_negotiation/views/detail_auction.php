@@ -59,6 +59,15 @@
                     </div> 
                     <div class="row" style="border-bottom: 1px solid #ccc; padding-bottom: 3px; padding-top: 3px;">
                         <div class="col-lg-2">
+                            Type Ranking
+                        </div>
+                        <div class="col-lg-10">
+                            <input type="hidden" id="type_ranking" name="type_ranking" value="<?php echo $Detail_Auction['TIPE_RANKING']?>"/>
+                            :&nbsp<strong><?php echo $Detail_Auction['TIPE_RANKING'] == 1 ? 'Ranking Satuan' : 'Ranking Total' ?></strong>
+                        </div>
+                    </div>
+                    <div class="row" style="border-bottom: 1px solid #ccc; padding-bottom: 3px; padding-top: 3px;">
+                        <div class="col-lg-2">
                             Unit Peminta
                         </div>
                         <div class="col-lg-10">
@@ -297,9 +306,15 @@
                             <div class="col-lg-6" style="font-size: 150%;">
                                 <strong><?php echo $vendor['NAMA_VENDOR']?></strong>
                             </div>
+                            <?php if ($Detail_Auction['TIPE_RANKING'] == 1) { ?>
                             <div class="col-lg-6 pialaGet" style="font-size: 150%;text-align: right;">
                                 <img width="50" height="50" src="<?php echo base_url(); ?>upload/EC_auction/piala.gif"> = 
                             </div>
+                            <?php } else {?>
+                            <div class="col-lg-6 piala hidden" style="font-size: 150%;text-align: right;">
+                                <img width="100" height="100" src="<?php echo base_url(); ?>upload/EC_auction/piala.gif"> 
+                            </div>
+                            <?php } ?>
                         </div>
                         <div class="row" style="padding-bottom: 3px;">
                             <div class="col-lg-2">
@@ -358,8 +373,12 @@
                                         <th class="text-center ts3"><a href="javascript:void(0)">Harga Awal</a></th>
                                         <th class="text-center ts4"><a href="javascript:void(0)">Harga Akhir</a></th>
                                         <th class="text-center ts5"><a href="javascript:void(0)">Display Harga</a></th>
-                                        <th class="text-center">Pilih Item</th> 
-                                        <th class="text-center ts6" width="100" style="width:100px"><a href="javascript:void(0)">Status Piala</a></th> 
+                                        <th class="text-center">Pilih Item</th>
+                                        <?php if ($Detail_Auction['TIPE_RANKING'] == 1) { ?>
+                                        <th class="text-center ts6" width="100" style="width:100px"><a href="javascript:void(0)">Status Piala</a></th>
+                                        <?php } else {?>
+                                        <th></th>
+                                        <?php }?>
                                     </tr>
                                     <tr>
                                         <!-- <td><input type="text" class="col-xs-10 col-xs-offset-1 srch"></td> -->

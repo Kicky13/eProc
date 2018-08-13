@@ -53,17 +53,23 @@ class EC_Approval_Material_Assign extends MX_Controller
         print_r($this->ec_approval_material_assign_m->currentLvl());
     }
 
-    public function approve($kode)
+    public function approve()
     {
-        $this->ec_approval_material_assign_m->approve($kode);
-        $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 1));
+        $data = json_decode($this->input->post('kode'));
+        foreach ($data as $kode){
+            $this->ec_approval_material_assign_m->approve($kode);
+            $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 1));
+        }
         return $this->index();
     }
 
-    public function reject($kode)
+    public function reject()
     {
-        $this->ec_approval_material_assign_m->reject($kode);
-        $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 2));
+        $data = json_decode($this->input->post('kode'));
+        foreach ($data as $kode){
+            $this->ec_approval_material_assign_m->reject($kode);
+            $this->sendNotif($this->ec_approval_material_assign_m->notificationGateway($kode, 2));
+        }
         return $this->index();
     }
 

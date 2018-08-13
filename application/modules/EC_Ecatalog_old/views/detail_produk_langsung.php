@@ -373,10 +373,7 @@
                     <tbody id="tbodyPO">
                     </tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <small>Halaman akan otomatis refresh dalam <span id="dtk">15</span> detik....</small>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

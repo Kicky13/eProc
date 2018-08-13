@@ -274,7 +274,57 @@ function loadTable_App() {
         }
     });
 }
+$('#modalHarga').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var po = button.data('po')
+    var matno = button.data('matno')
+    var desc = button.data('desc')
+    var ven = button.data('ven')
+    var modal = $(this)
+    modal.find('.matno-harga').text(matno)
+    modal.find('.desc-harga').text(desc)
 
+    $.ajax({ 
+        url: $("#base-url").val() + 'EC_PO_PL_Approval/historyHarga/',
+        type: 'POST',
+        data: {
+            "po": po,
+            "matno": matno
+        },
+        dataType: 'json'
+    }).done(function (data) {
+        var teks = ""        
+        $("#bodyTableHarga").empty()
+        for (var i = 0; i < data.length; i++) {
+            teks += "<tr>";
+            if(ven==data[i]['VENDOR_NO']){
+                teks += "<td class=\"text-center\"><strong>" + (i + 1) + "</strong></td>";
+                teks += "<td class=\"text-center\"><strong>" + data[i]['VENDOR_NO'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['VENDOR_NAME'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['STOK'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['HARGA'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['SATUAN'] + "</strong></td>"
+                teks += "<td class=\"text-center\"><strong>" + data[i]['DELIVERY'] + "</strong></td>"            
+                teks += "</tr>"
+            }else{
+                teks += "<td class=\"text-center\">" + (i + 1) + "</td>";
+                teks += "<td class=\"text-center\">" + data[i]['VENDOR_NO'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['VENDOR_NAME'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['STOK'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['HARGA'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['SATUAN'] + "</td>"
+                teks += "<td class=\"text-center\">" + data[i]['DELIVERY'] + "</td>"            
+                teks += "</tr>"
+            }
+        }
+        $("#bodyTableHarga").html(teks)
+    }).fail(function () {
+        // console.log("error");
+    }).always(function (data) {
+        // console.log(data);
+
+    });
+});
 function send(kode) {
     bootbox.confirm('Konfirmasi Kirim Barang?', function (result) {
         if (result)
@@ -506,7 +556,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
 
 $('#modalDetailPo').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
-    var pono = button.data('pono');
+    var pono = button.data('pono');    
     //var kodeshipment = button.data('kodeshipment')
     console.log("tes "+ pono);
     $.ajax({
@@ -530,6 +580,7 @@ $('#modalDetailPo').on('show.bs.modal', function (event) {
             teks += "<td class=\"text-center\">" + numberWithCommas(data[i]['VALUE_ITEM']) + "</td>";
             teks += "<td class=\"text-center\">" + data[i]['PLANT'] +" - "+ data[i]['PLANT_NAME'] +"</td>";
             teks += "<td class=\"text-center\" style=\"color: red;\"><strong>" + data[i]['EXPIRED_DATE'] + "</strong></td>";
+            teks += "<td class=\"text-center\"><a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#modalHarga\" data-po="+ pono +" data-matno="+data[i]['MATNO']+" data-desc=\""+data[i]['MAKTX']+"\" data-ven="+data[i]['VENDORNO']+"><span title=\"Detail Harga Penawaran Vendor\" class=\"glyphicon glyphicon-list-alt\" aria-hidden=\"true\"></span></a></td>"            
             teks += "</tr>";
         }
         $("#tableDetailPO").html(teks)

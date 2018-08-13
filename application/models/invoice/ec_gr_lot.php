@@ -4,6 +4,12 @@ class ec_gr_lot extends MY_Model {
     public $table = 'EC_GR_LOT';
     public $primary_key = 'LOT_NUMBER';
 
+    public function getlot($id) {
+        $this->db->where("LOT_NUMBER", $id, true);
+        $max = $this->db->get($this->table)->row_array();
+        return $max;
+    }
+
     public function insert($data){
         if($this->db->insert($this->table,$data)){
             return $this->get_last_id();

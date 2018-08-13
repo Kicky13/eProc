@@ -54,7 +54,7 @@ class ec_goodreceipt_m extends CI_Model
     public function getPOShipmentReview($kodeShipment)
     {
         $this->db->select('DS.*, TC.ID_CHART, TC.MATNO, TC.PO_NO, TC.LINE_ITEM, PEN.PLANT, PEN.VENDORNO, PEN.DELIVERY_TIME, VEN.VENDOR_NAME, MAT.MAKTX, MAT.MEINS, PLN."DESC" AS PLANT_NAME,
-            TO_CHAR ((TO_DATE(TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\') EXPIRED_DATE',
+            TO_CHAR ((TO_DATE(TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\') EXPIRED_DATE, PEN.KODE_DETAIL_PENAWARAN',
             false);
         $this->db->from('EC_T_DETAIL_SHIPMENT DS');
         $this->db->join('EC_T_CHART TC', 'TC.ID_CHART=DS.ID_CHART', 'inner');
@@ -215,6 +215,22 @@ class ec_goodreceipt_m extends CI_Model
         $this->db->where("PO_NO", $po, TRUE);
         $this->db->set('QTY_SHIPMENT', $hasil['QTY_RECEIPT'], FALSE);
         $this->db->update($this->tableShipment);
+
+        $this->db->trans_complete();
+    }
+    
+    public function update_stok_vendor($vendor, $matno, $qtyreceipt)
+    {        
+        $this->db->trans_start();
+       
+        $result=$this->db->query("SELECT * FROM (SELECT KODE_PENAWARAN,STOK FROM EC_PL_PENAWARAN WHERE MATNO='".$matno."' AND VENDORNO='".$vendor."'
+ORDER BY INDATE DESC) WHERE ROWNUM = 1");          
+        $hasil = $result->row_array();
+        $qty = $hasil['STOK'] - $qtyreceipt;        
+
+        $this->db->where("KODE_PENAWARAN", $hasil['KODE_PENAWARAN'], TRUE);
+        $this->db->set('STOK', $qty, true);        
+        $this->db->update('EC_PL_PENAWARAN');        
 
         $this->db->trans_complete();
     }

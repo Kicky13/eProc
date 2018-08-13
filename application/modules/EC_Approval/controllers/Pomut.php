@@ -112,7 +112,7 @@ class Pomut extends MX_Controller {
     public function approvalBA() {
         $this->load->library('sap_invoice');
         $data_update = $this->input->post();
-
+        // var_dump($this->input->post());die();
         $no_ba = $this->input->post('NO_BA');
         $printApproval=$this->sap_invoice->setPrintBA($no_ba);
 //        var_dump($printApproval);die();
@@ -122,10 +122,11 @@ class Pomut extends MX_Controller {
         $data_update['STATUS'] = 2;
         $data['header'] = $this->pm->getSingleHeader($no_ba);
         $data['detail'] = $this->pm->getDataDetail($no_ba);
-        $data['info_vendor']=$this->db->where(array('VENDOR_NO'=>$data['header']['LIFNR']))->get('VND_HEADER')->row_array();               
+        $data['info_vendor']=$this->db->where(array('VENDOR_NO'=>$data['header']['LIFNR']))->get('VND_HEADER')->row_array();   
+        // var_dump($data);die();     
 //        var_dump($data);  
         $jumlahGr=count($data['detail']);
-        $this->notifikasiApprovalBA($data); die();
+        // $this->notifikasiApprovalBA($data); die();
         for($i=0;$i<$jumlahGr;$i++){            
              $data['gr'][$i]=$this->db->where(array('PO_NO'=>$data['header']['EBELN'], 'GR_NO'=>$data['detail'][$i]['MBLNR'], 'PO_ITEM_NO'=>$data['detail'][$i]['LOTQTY']))->get('EC_GR_STATUS')->row_array();            
              if($data['gr'][$i]['STATUS']==2){

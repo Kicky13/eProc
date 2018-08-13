@@ -24,7 +24,7 @@ class ec_master_costcenter extends CI_Model {
 		if ($count > 0) {
 			return false;
 		}else{
-			$this->db->insert($this->tableMaster, array('COSTCENTER' => $data['COSTCENTER'], 'COSTCENTER_NAME' => $data['COSTCENTER_NAME'], 'ID_USER' => $data['USERID'],'GUDANG'=>$data['GUDANG']));
+			$this->db->insert($this->tableMaster, array('COSTCENTER' => $data['COSTCENTER'], 'COSTCENTER_NAME' => $data['COSTCENTER_NAME'], 'ID_USER' => $data['USERID'],'GUDANG'=>$data['GUDANG'],'GL_ACCOUNT'=>$data['GL_ACCOUNT']));
 			return true;
 		}
 
@@ -52,6 +52,7 @@ class ec_master_costcenter extends CI_Model {
                         $this->db->set('COSTCENTER_NAME', $data['COSTCENTER_NAME']);
                         $this->db->set('ID_USER', $data['USERID']);
                         $this->db->set('GUDANG', $data['GUDANG']);
+                        $this->db->set('GL_ACCOUNT', $data['GL_ACCOUNT']);
                         $this->db->where('ID', $data['ID']);
 			$this->db->update($this->tableMaster);
 			return true;
@@ -63,8 +64,8 @@ class ec_master_costcenter extends CI_Model {
         $this->db->delete($this->tableMaster);
     }
 
-	public function getMaster_costcenter(){
-        $this->db->select($this->tableMaster.'.ID, FULLNAME, COSTCENTER, COSTCENTER_NAME, ID_USER, GUDANG');    
+    public function getMaster_costcenter(){
+        $this->db->select($this->tableMaster.'.ID, FULLNAME, COSTCENTER, COSTCENTER_NAME, ID_USER, GUDANG, GL_ACCOUNT');    
 	$this->db->from($this->tableMaster);
         $this->db->join($this->employee, $this->tableMaster.'.ID_USER = '.$this->employee.'.ID');
         $this->db->order_by('COSTCENTER ASC');
@@ -92,6 +93,15 @@ class ec_master_costcenter extends CI_Model {
     }
     public function getUsername(){
         $this->db->from($this->employee);
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+    
+    public function get_gl($costcenter,$user){
+        $this->db->select('GL_ACCOUNT');    
+	$this->db->from($this->tableMaster);
+        $this->db->where('COSTCENTER', $costcenter);        
+        $this->db->where('ID_USER', $user);        
         $result = $this->db->get();
         return (array)$result->result_array();
     }

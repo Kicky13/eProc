@@ -41,8 +41,8 @@ class ec_reporting extends CI_Model
         $data = array();
         $PO_NO = $po;
         $this->db->select('GM.*, MAT.MAKTX, MAT.MEINS, TC.KODE_PENAWARAN, VEN.VENDOR_NAME, PEN.PLANT, PEN.PRICE, PEN.DELIVERY_TIME, PEN.CURRENCY, (GM.QTY_ORDER*PEN.PRICE) AS VALUE_ITEM, 
-    TO_CHAR ((TO_DATE(TO_CHAR (GM.INDATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\' ) EXPIRED_DATE,
-    TO_CHAR (GM.INDATE, \'dd-mm-yyyy\' ) DOC_DATE, PLN."DESC" AS PLANT_NAME',
+    TO_CHAR(GM.CHDATE,\'YYYY-MM-DD HH24:MI:SS\') EXPIRED_DATE,
+    TO_CHAR (GM.INDATE, \'dd-mm-yyyy\' ) DOC_DATE, PLN."DESC" AS PLANT_NAME, PEN.VENDORNO',
             false);
         $this->db->from('EC_GR_MATERIAL GM');
         $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'MAT.MATNR=GM.MATNO', 'inner');

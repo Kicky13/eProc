@@ -65,15 +65,15 @@
 
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="po">Nomor PO/SPK/OP</label>
+                            <label for="po">Nomor BAST/BAPP/PO/SPK/OP</label>
                             <input type="text" class="form-control" id="po" required placeholder="6610001321">
                         </div>
                         <div class="form-group">
-                            <label for="po">Nama</label>
+                            <label for="po">Nama yang Membuat Ekspedisi</label>
                             <input type="text" class="form-control" id="nama" placeholder="Shobikh Sahirar" required>
                         </div>
                         <div class="form-group">
-                            <label for="po">Email</label>
+                            <label for="po">Email yang Membuat Ekspedisi</label>
                             <input type="text" class="form-control" id="email" placeholder="shobikhs@gmail.com" required>
                         </div>
                         <div class="form-group">

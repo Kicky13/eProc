@@ -124,7 +124,9 @@
       <td width="25%"><?php echo $deals[$i]['VENDOR_NAME']?></td>
       <td width="55%">
 <!--          <strong><?php echo ($deals[$i]['DESKRIPSI_ITEM']==''?'Tidak ada deskripsi' : $deals[$i]['DESKRIPSI_ITEM']) ?></strong>-->        Plant: <?php echo $deals[$i]['PLANT'] ?> &mdash; <?php echo $deals[$i]['NAMA_PLANT'] ?>
-        <br>Stok: <?php echo $deals[$i]['STOK'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
+        <br>Stok Vendor: <?php echo $deals[$i]['STOK'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
+        <br>Stok Konfirmasi: <?php echo $deals[$i]['STOK_KONFIRMASI'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
+        <br>Stok Avalaible: <?php echo $deals[$i]['STOK'] - $deals[$i]['STOK_KONFIRMASI'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
         <br>Delivery Time: <?php echo $deals[$i]['DELIVERY_TIME'] ?> Days
       </td>
       <td width="15%"><?php echo $deals[$i]['CURRENCY'] ?> &nbsp; <?php echo number_format($deals[$i]['HARGA'], 0, ",", ".") ?></td>
@@ -365,10 +367,7 @@
                     <tbody id="tbodyPO">
                     </tbody>
                 </table>
-            </div>
-            <div class="modal-footer">
-                <small>Halaman akan otomatis refresh dalam <span id="dtk">15</span> detik....</small>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

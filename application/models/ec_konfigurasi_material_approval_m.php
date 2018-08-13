@@ -46,14 +46,14 @@ class ec_konfigurasi_material_approval_m extends CI_Model {
     function insert($data, $full)
     {
         $date = date('d-m-Y h:i:sa');
-        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $this->compileMatGroup($data['MATGROUP']), 'PROPOSE_DATE' => $date ));
+        $this->db->insert($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP'], 'PROPOSE_DATE' => $date ));
         return true;
     }
 
     function alter($data, $full)
     {
         $this->db->where('ID', $data['ID']);
-        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $this->compileMatGroup($data['MATGROUP'])));
+        $this->db->update($this->table, array('USER_ID' => $data['USER_ID'], 'CONF_LEVEL' => $data['LEVEL'], 'COMPANY' => $full['EM_COMPANY'], 'MATGROUP' => $data['MATGROUP']));
         return true;
     }
 
@@ -70,5 +70,18 @@ class ec_konfigurasi_material_approval_m extends CI_Model {
         $this->db->where('ID', $userid);
         $result = $this->db->get();
         return $result->row_array();
+    }
+
+    function compileMatGroup($matgrp)
+    {
+        $text = '';
+        $part = explode(', ', $matgrp);
+        for ($i = 0; $i < count($part); $i++){
+            $text .= '"'.$part[$i].'"';
+            if ($i < count($part)-1){
+                $text .= ', ';
+            }
+        }
+        return $text;
     }
 }

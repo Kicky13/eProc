@@ -113,6 +113,7 @@ class ec_auction_itemize_m extends CI_Model {
 		WHERE
 		EPP.ID_HEADER = '".$NO_TENDER."'
 		AND EPR.ID_HEADER = '".$NO_TENDER."'
+		ORDER BY EPP.TOTAL_HARGA
 		";
 		$result = $this -> db -> query($SQL);
 		return (array)$result -> result_array();
@@ -529,7 +530,9 @@ class ec_auction_itemize_m extends CI_Model {
 		'" . $data['NOTE'] . "',
 		'" . $data['COMPANYID'] ."',
 		TO_DATE('" . $data['TGL_CREATE'] . "', 'dd/mm/yyyy hh24:mi:ss'),
-		'". $data['ID_USER']."'
+		'". $data['ID_USER']."',
+		'". $data['TIPE_RANKING']."',
+		'". $data['TOTAL_HPS']."'
 		)
 		";
 		$this -> db -> query($SQL);
@@ -574,6 +577,19 @@ class ec_auction_itemize_m extends CI_Model {
 		$this -> db -> where('ID_HEADER', $user);
 		$this -> db -> update('EC_AUCTION_ITEMIZE_PESERTA');
 
+		// if ($data['TIPE_RANKING'] == 2){
+		// 	$SQL = 'UPDATE EC_AUCTION_ITEMIZE_HEADER
+		// 	SET HPS_TOTAL = (
+		// 	SELECT
+		// 	SUM (HPS)
+		// 	FROM
+		// 	EC_AUCTION_ITEMIZE_ITEM
+		// 	WHERE
+		// 	ID_HEADER = '.$data['NO_TENDER'].'
+		// 	)
+		// 	WHERE NO_TENDER = '.$data['NO_TENDER'];
+		// 	$this -> db -> query($SQL);
+		// }
 
 		$this -> db -> from($this -> tablePeserta) -> where("ID_HEADER",$data['NO_TENDER'], TRUE); 
 		$result = $this -> db -> get();
@@ -585,6 +601,23 @@ class ec_auction_itemize_m extends CI_Model {
 			('" . $dataa[$i]['KODE_VENDOR'] . "',TO_DATE('" . date('d/m/Y h:i:s') . "', 'dd/mm/yyyy hh24:mi:ss'),'" . $dataa[$i]['HARGAAWAL'] . "', 0, '0', 
 			'" . $data['NO_TENDER']  . "', '')";
 			$this -> db -> query($SQL);
+
+			if ($data['TIPE_RANKING'] == 2){
+				$SQL = 'UPDATE EC_AUCTION_ITEMIZE_PESERTA
+				SET TOTAL_HARGA = (
+				SELECT
+				SUM (BM_HB)
+				FROM
+				EC_AUCTION_ITEMIZE_PRICE
+				WHERE
+				ID_HEADER = '.$data['NO_TENDER'].'
+				AND ID_PESERTA = '. $dataa[$i]['KODE_VENDOR'] .'
+				)
+				WHERE
+				ID_HEADER = '.$data['NO_TENDER'].'
+				AND KODE_VENDOR = '. $dataa[$i]['KODE_VENDOR'];
+				$this -> db -> query($SQL);
+			}
 		} 
 	}
 
@@ -634,6 +667,28 @@ class ec_auction_itemize_m extends CI_Model {
 		$this -> db -> where("FROM_CURR", $FROM_CURR, TRUE);
 		$this -> db -> where("TO_CURRNCY", $TO_CURRNCY, TRUE);
 		$result = $this -> db -> get();
+		return (array)$result -> result_array();
+	}
+
+	public function addHPStotal($iduser) {
+		$SQL = '
+		SELECT SUM(HPS) AS TOT_HPS
+		from "EC_AUCTION_ITEMIZE_ITEM_temp"
+		where ID_USER = '.$iduser;
+		//echo $SQL;die;
+		$result = $this -> db -> query($SQL);
+		return (array)$result -> result_array();
+	}
+
+	public function addHPStotalVendor($iduser, $kd_peserta) {
+		$SQL = '
+		SELECT SUM(BM_HB) AS TOT_HARGA
+		from "EC_AUCTION_ITEMIZE_PRICE"
+		where ID_USER = '.$iduser.'
+		AND ID_HEADER IS NULL
+		AND ID_PESERTA = '.$kd_peserta;
+		//echo $SQL;die;
+		$result = $this -> db -> query($SQL);
 		return (array)$result -> result_array();
 	}
 
@@ -709,7 +764,7 @@ class ec_auction_itemize_m extends CI_Model {
 		EC_AUCTION_ITEMIZE_ITEM II
 		INNER JOIN EC_AUCTION_ITEMIZE_PRICE IP ON II.ID_ITEM = IP.ID_ITEM
 		INNER JOIN EC_AUCTION_ITEMIZE_PESERTA IPP ON IP.ID_PESERTA = IPP.KODE_VENDOR
-		
+
 		where II.ID_ITEM IN ('.$ID_ITEM.')
 		AND IPP.USERID = \''.$ID_PESERTA.'\'
 		AND IP.MERK = \''.$MERK.'\'
@@ -1024,7 +1079,7 @@ class ec_auction_itemize_m extends CI_Model {
 	}
 
 	public function getReportItemRanking2($ID_USER,$ID_PESERTA,$NO_TENDER,$RANKING, $NO_BATCH, $ID_ITEM){
-		
+
 		$SQL1 = "
 		SELECT DISTINCT
 		(
@@ -1069,6 +1124,28 @@ class ec_auction_itemize_m extends CI_Model {
 	}
 
 	public function getReportItemRankingHist($ID_USER,$ID_PESERTA,$NO_TENDER,$RANKING, $NO_BATCH, $ID_ITEM){
+
+		$SQL1 = "
+		SELECT DISTINCT
+		(
+		EC_AUCTION_ITEMIZE_PESERTA.NAMA_VENDOR
+		),
+		EC_AUCTION_ITEMIZE_HIST.*, EC_AUCTION_ITEMIZE_PESERTA.NAMA_VENDOR,
+		EC_AUCTION_ITEMIZE_BATCH. NAME
+		FROM
+		EC_AUCTION_ITEMIZE_HIST
+		INNER JOIN EC_AUCTION_ITEMIZE_PESERTA ON EC_AUCTION_ITEMIZE_HIST.ID_PESERTA = EC_AUCTION_ITEMIZE_PESERTA.KODE_VENDOR
+		INNER JOIN EC_AUCTION_ITEMIZE_BATCH ON EC_AUCTION_ITEMIZE_BATCH.ID_HEADER = EC_AUCTION_ITEMIZE_PESERTA.ID_HEADER
+		WHERE
+		EC_AUCTION_ITEMIZE_PESERTA.ID_HEADER = ".$NO_TENDER."
+		AND EC_AUCTION_ITEMIZE_HIST.ID_PESERTA = '".$ID_PESERTA."'
+		AND EC_AUCTION_ITEMIZE_HIST.ID_USER = ".$ID_USER."
+		AND EC_AUCTION_ITEMIZE_HIST.RANKING = ".$RANKING."
+		AND EC_AUCTION_ITEMIZE_BATCH. NAME = '".$NO_BATCH."'
+		ORDER BY
+		EC_AUCTION_ITEMIZE_HIST.HARGA ASC
+		";
+
 		// $ID_ITEM1 = str_replace(",", "','", $ID_ITEM);
 		$SQL = "
 		SELECT DISTINCT
@@ -1206,10 +1283,10 @@ class ec_auction_itemize_m extends CI_Model {
 		) AS TGL
 		FROM
 		EC_AUCTION_ITEMIZE_LOG H
-		
+
 		LEFT JOIN EC_AUCTION_ITEMIZE_PESERTA P ON H .VENDOR_NO = P .KODE_VENDOR
 		AND H .NO_TENDER = P .ID_HEADER
-		
+
 		LEFT JOIN EC_AUCTION_ITEMIZE_PRICE PR ON H .VENDOR_NO = PR.ID_PESERTA
 		AND H .NO_TENDER = PR.ID_HEADER
 		AND PR.ID_ITEM = H .ID_ITEM
@@ -1239,10 +1316,10 @@ class ec_auction_itemize_m extends CI_Model {
 		) AS TGL
 		FROM
 		EC_AUCTION_ITEMIZE_LOG H
-		
+
 		LEFT JOIN EC_AUCTION_ITEMIZE_PESERTA P ON H .VENDOR_NO = P .KODE_VENDOR
 		AND H .NO_TENDER = P .ID_HEADER
-		
+
 		LEFT JOIN EC_AUCTION_ITEMIZE_PRICE PR ON H .VENDOR_NO = PR.ID_PESERTA
 		AND H .NO_TENDER = PR.ID_HEADER
 		AND PR.ID_ITEM = H .ID_ITEM
@@ -1510,7 +1587,7 @@ class ec_auction_itemize_m extends CI_Model {
 						} else {
 							$KEIDR = $HARGA_BARANG;
 							$BM_HB = $HARGA_BARANG;
-							
+
 							$where_edit['ID_PESERTA'] 	= $KODE_VENDOR;
 							$where_edit['ID_USER'] 		= $iduser;
 							$where_edit['ID_HEADER'] 	= $NO_TENDER;
@@ -1557,7 +1634,7 @@ class ec_auction_itemize_m extends CI_Model {
 						$BM_HB 		= (($BEA_MASUK / 100) * $KEIDR) + $KEIDR;
 					}
 				}
-				
+
 				if(count($checkAdaTidak)>0){
 					//echo "update ?";
 					$where_edit['ID_ITEM'] 		= $KODE_BARANG;

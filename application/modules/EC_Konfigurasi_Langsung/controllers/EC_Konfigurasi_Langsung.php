@@ -132,11 +132,11 @@ class EC_Konfigurasi_Langsung extends MX_Controller
         }
         return $vnd;
     }
-
+ 
     public function getPlant($value = '')
     {
         $this->load->model('ec_konfigurasi_lansgung_m');
-        $plant=array('2701','2702','2703','2901','7701','7702');
+        $plant=array('2701','2703','2901','7901','7702');
         $result = $this->ec_konfigurasi_lansgung_m->getPlant($plant);
         echo json_encode(array('data' => $result));
     }
@@ -303,20 +303,12 @@ class EC_Konfigurasi_Langsung extends MX_Controller
 //        $dataAll = array();  
         foreach ($data as $datum) {
             if($datum['WERKS']==='2901'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Pengambilan Sendiri','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
-            }else if($datum['WERKS']==='2701'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Kantor Gresik','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
-            }else if($datum['WERKS']==='2702'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Kantor Tuban','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
-            }else if($datum['WERKS']==='2703'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Kantor Jakarta','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
-            }else if($datum['WERKS']==='7701'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Gudang Gresik','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
-            }else if($datum['WERKS']==='7702'){
-                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Gudang Tuban','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                        
+                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Pengambilan Sendiri','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                                    
+            }else if($datum['WERKS']==='7901'){
+                $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>'Pengambilan Sendiri','STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));                                    
             }else{
                 $this->ec_konfigurasi_lansgung_m->syncPlant(array('PLANT'=>$datum['WERKS'],'COMPANY'=>$datum['BUKRS'],'DESC'=>$datum['NAME1'],'STATUS'=>0, 'ALAMAT'=>$datum['STRAS'],'KODEPOS'=>$datum['PSTLZ'],'KOTA'=>$datum['ORT01']));
-            }               
+            }  
         }
 //        var_dump($dataAll);die();        
         // print_r($data);

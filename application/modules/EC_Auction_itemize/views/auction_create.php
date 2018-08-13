@@ -88,11 +88,24 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 												<td><?php echo number_format($value['PRICE'],0,",",".")?></td>
 												<td><?php echo ($value['TIPE']=="t") ? "Harga Total" : "Harga Satuan"; ?></td>
 												<td><?php echo $value['CURR']?></td>
-												<td><?php echo number_format($value['HPS'],0,",",".")?></td>
-											</tr>												
-											<?php } ?>
+												<td align="right"><?php echo number_format($value['HPS'],0,",",".")?></td>
+											</tr>
+											<?php } ?>												
 										</tbody>
 									</table>
+									<hr style="height:3px;border:none;color:#333;background-color:#333;">	
+									<table border="1">
+										<tr>
+											<?php if ($total_hps[0]['TOT_HPS'] == ''){ ?>
+											<td align="left" style="font-size:20px"><strong>Total HPS : 0</strong></td>
+											<?php } else { ?>
+											<!-- <input type="hidden" name="total_hps" value="<?php echo $total_hps[0]['TOT_HPS']?>"> -->
+											<td align="left" style="font-size:20px"><strong>Total HPS : &nbsp&nbsp<?php echo $items[0]['CURR']?> <?php echo number_format($total_hps[0]['TOT_HPS'],0,",",".")?></strong></td>
+											<?php } ?>
+										</tr>
+									</table>
+									
+									<!-- <label><strong>Total :</strong></label> -->
 								</div>
 							</div>
 						</div>
@@ -296,6 +309,7 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 			<form action="<?php echo base_url()?>EC_Auction_itemize/save" method="POST" class="submit">
 				<input type="hidden" id="hargaSatu" value="<?php echo sizeof($items)>0?number_format($items[0]['PRICE'],0,",","."):'0'?>" />
 				<input type="hidden" id="hargaTot" value="<?php echo number_format($HPS['HPS'],0,",",".") ?>" />
+				<input type="hidden" name="total_hps" value="<?php echo $total_hps[0]['TOT_HPS']?>">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Deskripsi Auction
@@ -323,6 +337,15 @@ $sisa = count($items) - $itemBatch[0]['JML'];
 							<td>Lokasi Auction</td>
 							<td>
 								<input type="text" class="form-control" required="" name="LOCATION" placeholder="Lokasi">
+							</td>
+						</tr>
+						<tr>
+							<td>Tipe Ranking</td>
+							<td>
+								<select class="form-control" name="tipe_ranking">
+									<option value="1">Ranking Satuan</option>
+									<option value="2">Ranking Total</option>
+								</select>
 							</td>
 						</tr>
 						<tr>

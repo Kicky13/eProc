@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class EC_Strategic_material extends CI_Controller
+class EC_Strategic_material extends MX_Controller
 {
 
     private $USER;
@@ -76,7 +76,7 @@ class EC_Strategic_material extends CI_Controller
     }
 
     public function upload($MATNR)
-    {
+    {        
         $this->load->library("file_operation");
         $this->load->helper('file');
         $this->load->model('EC_strategic_material_m');
@@ -92,16 +92,18 @@ class EC_Strategic_material extends CI_Controller
         if ($uploaded != null && $_FILES['picture']['name'] != "") {
             $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "PICTURE" => $uploaded['picture']['file_name']);
             if ($_FILES['drawing']['name'] != "") {
-                $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "DRAWING" => $uploaded['drawing']['file_name'], "PICTURE" => $uploaded['picture']['file_name']);
+                $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "DRAWING" => $uploaded['drawing']['file_name'], "PICTURE" => $uploaded['picture']['file_name'], "LONGTEXT" => $text);                
             }
+            $this->EC_strategic_material_m->upload($data);
         } else if ($uploaded != null && $_FILES['drawing']['name'] != "") {
             $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "DRAWING" => $uploaded['drawing']['file_name']);
             if ($_FILES['picture']['name'] != "") {
-                $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "DRAWING" => $uploaded['drawing']['file_name'], "PICTURE" => $uploaded['picture']['file_name']);
+                $data = array("MATNR" => $MATNR, "AENAM" => $this->USER[0], "LAEDA" => date("Ymd"), "DRAWING" => $uploaded['drawing']['file_name'], "PICTURE" => $uploaded['picture']['file_name'], "LONGTEXT" => $text);                
             }
-        }
-        $this->EC_strategic_material_m->upload($data);
+            $this->EC_strategic_material_m->upload($data);
+        }        
         $this->EC_strategic_material_m->setTAG(array('TAG' => $this->input->post('TAG'), "MATNR" => $MATNR));
+        $this->EC_strategic_material_m->setLongText(array('TDLINE' => $this->input->post('TDLINE'), "MATNR" => $MATNR));
         redirect("EC_Strategic_material/");
     }    
     public function get_data()

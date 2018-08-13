@@ -2,6 +2,13 @@ function numberWithCommas(x) {
     return x == null || x == "0" ? "" : x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function chkAll(elm, mode) {
+    if ($(elm).is(":checked"))
+        $('.' + mode).prop("checked", true);
+    else
+        $('.' + mode).prop("checked", false);
+}
+
 function loadTable_() {
 
     $('#table_inv').DataTable().destroy();
@@ -65,8 +72,9 @@ function loadTable_() {
         }, {
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:approve(' + (full.ID) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
-                    '<a href="javascript:reject(' + (full.ID) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    // '<a href="javascript:approve(' + (full.ID) + ')"><span title="Approve" class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    // '<a href="javascript:reject(' + (full.ID) + ')"><span title="Reject" class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<input type="checkbox" class="actionSelect" data-kode="' + full.ID + '">' +
                     // '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-vendorno="' + (full.NOMERPO) + '" data-curr="' + (full.CURR) + '" data-ven="' + (full.VENDORNO) + '"><span title="Detail PO" class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     // '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalHistory" data-vendorno="' + (full.NOMERPO) + '"><span title="Tracking" class="glyphicon glyphicon-search" aria-hidden="true"></span></a>' +
                     '</div>';
@@ -344,6 +352,7 @@ var t0 = true,
     clicks = 0,
     timer = null;
 var t = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9];
+var itemCheck = [];
 
 $(document).ready(function () {
 
@@ -366,6 +375,61 @@ $(document).ready(function () {
             e.preventDefault();
         });
     }
-    ;
 
+    $('#approveItem').click(function () {
+        $('.actionSelect').each(function () {
+            var kode = $(this).data("kode");
+            if ($(this).is(":checked")){
+                if (itemCheck.indexOf($(this).data("kode")) == -1)
+                    itemCheck.push(String($(this).data("kode")));
+            }
+        });
+        dataKode = JSON.stringify(itemCheck);
+        console.log(dataKode);
+        console.log($('#base_url').val());
+        if (itemCheck.length == 0){
+            alert('Pilih itemnya terlebih dahulu');
+        } else {
+            urlHead = 'EC_Approval_Material_Assign'
+            $.ajax({
+                url: 'EC_Approval_Material_Assign/approve',
+                type: 'POST',
+                data: {
+                    kode: dataKode
+                }
+            }).done(function (data) {
+                console.log(urlHead);
+                alert('Data Berhasil di Approve');
+                location.reload();
+            })
+        }
+    });
+
+    $('#rejectItem').click(function () {
+        $('.actionSelect').each(function () {
+            var kode = $(this).data("kode");
+            if ($(this).is(":checked")){
+                if (itemCheck.indexOf($(this).data("kode")) == -1)
+                    itemCheck.push(String($(this).data("kode")));
+            }
+        });
+        dataKode = JSON.stringify(itemCheck);
+        console.log(dataKode);
+        if (itemCheck.length == 0){
+            alert('Pilih itemnya terlebih dahulu');
+        } else {
+            urlHead = 'EC_Approval_Material_Assign'
+            $.ajax({
+                url: 'EC_Approval_Material_Assign/reject',
+                type: 'POST',
+                data: {
+                    kode: dataKode
+                }
+            }).done(function (data) {
+                console.log(urlHead);
+                alert('Data telah di Reject');
+                location.reload();
+            })
+        }
+    });
 });

@@ -43,11 +43,13 @@
                                                     <th class="text-center ts"><a href="javascript:void(0)">STATUS</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">KETERANGAN</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">TANGGAL TERIMA</th>
+                                                    <th class="text-center ts"><a href="javascript:void(0)">PESAN KEMBALI</th>
                                                     <th class="text-center ts"><a href="javascript:void(0)">ACTION</a></th>
                                                 </tr>
                                                 <tr class="sear">
                                                     <th></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
+                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                                     <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>

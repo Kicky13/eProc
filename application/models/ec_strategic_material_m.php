@@ -276,6 +276,12 @@ class ec_strategic_material_m extends CI_Model
         $this->db->where("MATNR", $data['MATNR'], TRUE);
         $this->db->update($this->table, array('TAG' => $data['TAG']));
     }
+    
+    function setLongText($data)
+    {
+        $this->db->where("MATNR", $data['MATNR'], TRUE);
+        $this->db->update('EC_M_LONGTEXT', array('TDLINE' => $data['TDLINE']));
+    }
 
     function insert_ecat($dataMSM, $dataMLT)
     {

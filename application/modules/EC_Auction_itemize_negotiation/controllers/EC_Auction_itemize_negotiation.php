@@ -185,6 +185,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 	function piala($no_tender = '') {
 		$this -> load -> model('ec_list_auction_itemize');
 		$data = $this -> ec_list_auction_itemize -> get_min_bid($no_tender);
+		// echo "<pre>";
+		// print_r($data);die;
 		// var_dump($this -> session -> userdata);
 		if ($data['KODE_VENDOR'] == $this -> session -> userdata['KODE_VENDOR']) {
 			echo json_encode(TRUE);
@@ -276,7 +278,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 						'CURR' => $data[0]['CURRENCY'],
 						'piala' => TRUE,
 						'piala_gmbr' => base_url().'upload/EC_auction/piala.gif',
-						'HARGATERKINI' => $data[0]['KONVERSI_IDR_UBAH'],
+						'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+						'HARGATERKINI' => $data[0]['HARGATERKINI'],
 						'RANKING' => '<div style=" visibility: hidden;">'.$data[0]['RANKING'].'</div>'
 						);
 				} else if(!empty($auction['PENUTUPAN'])){
@@ -286,7 +289,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 							'CURR' => $data[0]['CURRENCY'],
 							'piala' => TRUE,
 							'piala_gmbr' => base_url().'upload/EC_auction/piala.gif',
-							'HARGATERKINI' => $data[0]['KONVERSI_IDR_UBAH'],
+							'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+							'HARGATERKINI' => $data[0]['HARGATERKINI'],
 							'RANKING' => '<div style=" visibility: hidden;">'.$data[0]['RANKING'].'</div>'
 							);
 					} else { //waktu habis
@@ -295,7 +299,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 							'CURR' => $data[0]['CURRENCY'],
 							'piala' => FALSE,
 							'piala_gmbr' => '',
-							'HARGATERKINI' => $data[0]['KONVERSI_IDR_UBAH'],
+							'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+							'HARGATERKINI' => $data[0]['HARGATERKINI'],
 							'RANKING' => '<div style=" visibility: hidden;">'.$data[0]['RANKING'].'</div>'
 							);
 					}
@@ -305,7 +310,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 						'CURR' => $data[0]['CURRENCY'],
 						'piala' => FALSE,
 						'piala_gmbr' => '',
-						'HARGATERKINI' => $data[0]['KONVERSI_IDR_UBAH'],
+						'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+						'HARGATERKINI' => $data[0]['HARGATERKINI'],
 						'RANKING' => '<div style=" visibility: hidden;">'.$data[0]['RANKING'].'</div>'
 						);
 				}
@@ -316,7 +322,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 						'CURR' => $data[0]['CURRENCY'],
 						'piala' => TRUE,
 						'piala_gmbr' => base_url().'upload/EC_auction/piala.gif',
-						'HARGATERKINI' => $data[0]['KONVERSI_IDR_UBAH'],
+						'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+						'HARGATERKINI' => $data[0]['HARGATERKINI'],
 						'RANKING' => '<div style=" visibility: hidden;">'.$data[0]['RANKING'].'</div>'
 						);
 					//echo json_encode(TRUE);
@@ -328,7 +335,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 						'CURR' => $dataGakMenang['CURRENCY'],
 						'piala' => FALSE,
 						'piala_gmbr' => '',
-						'HARGATERKINI' => $dataGakMenang['KONVERSI_IDR_UBAH'],
+						'HARGAAKHIR' => $data[0]['HARGATERKINI'],
+						'HARGATERKINI' => $dataGakMenang['HARGATERKINI'],
 						'RANKING' => '<div style=" visibility: hidden;">'.$dataGakMenang['RANKING'].'</div>'
 						);
 					//echo json_encode(FALSE);
@@ -356,8 +364,8 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 		$this -> load -> model('ec_auction_itemize_m');
 
 		$auction = $this -> ec_list_auction_itemize -> get_detail_auction2($NO_TENDER, $NO_BATCH);
-		// print_r($auction);
-		//die;
+		// print_r($auction['TIPE_RANKING']);
+		// die;
 		$dateserver = date("Y-m-d H:i:s");
 		$dateauction = date("Y-m-d H:i:s", strtotime($auction['PENUTUPAN']));
 		$dateauction2 = date("Y-m-d H:i:s", strtotime($auction['PEMBUKAAN']));
@@ -426,7 +434,7 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 							$result 					= $this->ec_auction_itemize_m->updateItemPrice($set_edit, $where_edit);
 						}
 
-						$data = $this -> ec_list_auction_itemize -> bid($this -> session -> userdata['KODE_VENDOR'], $NO_TENDER, $newVals[$i], $newHargas[$i], $KEIDR, $BM_HB);
+						$data = $this -> ec_list_auction_itemize -> bid($this -> session -> userdata['KODE_VENDOR'], $NO_TENDER, $newVals[$i], $newHargas[$i], $KEIDR, $BM_HB, $auction);
 					} else {
 						$data0 .= $newVals[$i];
 					}
@@ -462,7 +470,7 @@ class EC_Auction_itemize_negotiation extends CI_Controller {
 						$result 					= $this->ec_auction_itemize_m->updateItemPrice($set_edit, $where_edit);
 					}
 
-					$data = $this -> ec_list_auction_itemize -> bid($this -> session -> userdata['KODE_VENDOR'], $NO_TENDER, $vals, $hargas, $KEIDR, $BM_HB);
+					$data = $this -> ec_list_auction_itemize -> bid($this -> session -> userdata['KODE_VENDOR'], $NO_TENDER, $vals, $hargas, $KEIDR, $BM_HB, $auction);
 				} else {
 					$data0 .= $vals;
 				}

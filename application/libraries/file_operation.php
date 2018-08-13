@@ -52,12 +52,12 @@ class File_operation {
 		return $data;
 	}
 
-	public function uploadT($dir_path, $files, $ignore_error = false) {
+	public function uploadTPL($dir_path, $files, $ignore_error = false) {
 		$data = array();
 		$dir_path = getcwd() . '/' . $dir_path;
 		$config['upload_path'] = $dir_path;
-		$config['allowed_types'] = 'jpeg|jpg|png|pdf';
-		$config['max_size'] = '500';// dalam kilobyte
+		$config['allowed_types'] = 'doc|docx|jpeg|jpg|png|pdf';
+		$config['max_size'] = '5000';// dalam kilobyte
 		$config['max_filename'] = '255';
 		$config['encrypt_name'] = true;
 		$config['remove_spaces'] = true;

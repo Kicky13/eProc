@@ -7,57 +7,215 @@
             <?php
             $pesannya = $this->session->flashdata('message');
             if (!empty($pesannya)) {
-                echo '<div class="alert alert-info">' . $pesannya . '</div>';
+                if(substr($pesannya,0,7) == '[ERROR]'){
+                    echo '<div class="alert alert-danger">' . $pesannya . '</div>';  
+                } else {
+                    echo '<div class="alert alert-info">' . $pesannya . '</div>';
+                }
             }
             ?>
-
             <div class="row">
                 <div class="row">
                     <div id="Invoiced">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="max-width:98%;overflow:auto">
-                                    <form id="etor-form" enctype="multipart/form-data" method="post">
-<!--                                         <select name="action">
-                                            <option value="">Pilih</option>
-                                            <option value="1">Approve</option>
-                                            <option value="0">Reject</option>
-                                        </select>
-                                        <button class="btn btn-info pull-right" type="submit" style="margin:auto;display:block;">Submit</button> -->
-                                        <button class="btn btn-info pull-right" type="submit" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approvePajak">TERIMA</button>&nbsp;&nbsp;&nbsp;
-                                        <button class="btn btn-danger pull-right" style="margin-right: 10px" type="cancel" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectPajak">KEMBALIKAN</button>
-                                        <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
-                                        <table id="table_inv" class="table table-striped nowrap" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center ts0"><a href="javascript:void(0)">NO</a></th>
-                                                    <th class="text-center ts1"><a href="javascript:void(0)">COMPANY</th>
-                                                    <th class="text-center ts2"><a href="javascript:void(0)">TANGGAL EKSPEDISI</th>
-                                                    <th class="text-center ts3"><a href="javascript:void(0)">NO EKSPEDISI</th>
-                                                    <th class="text-center ts4"><a href="javascript:void(0)">FAKTUR PAJAK</th>
-                                                    <th class="text-center ts5"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</th>
-                                                    <th class="text-center ts6"><a href="javascript:void(0)">PPN</th>
-                                                    <!-- <th class="text-center ts"><a href="javascript:void(0)">FILE FP</th> -->
-                                                    <th class="text-center ts7"><a href="javascript:void(0)">STATUS</th>
-                                                    <th class="text-center ts8"><a href="javascript:void(0)">ACTION</a></th>
-                                                </tr>
-                                                <tr class="sear">
-                                                    <th></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <!-- <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> -->
-                                                    <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </form>
+
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#home">Belum diterima</a></li>
+                                        <li><a data-toggle="tab" href="#menu1">Diterima</a></li>
+                                        <li><a data-toggle="tab" href="#menu2">All</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div id="home" class="tab-pane fade in active">
+                                            <p>
+                                                <form id="form1" enctype="multipart/form-data" method="post">
+
+                                                    <!-- Modal -->
+                                                    <div id="myModalKembali" class="modal fade" role="dialog" data-backdrop="false">
+                                                        <div class="modal-dialog">
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Pesan Kembalikan Faktur Pajak</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">PESAN</div>
+                                                                            <div class="col-md-8">
+                                                                                <textarea name="PESAN"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default submitkan" data-dismiss="modal">Submit</button>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <button class="btn btn-info pull-right" type="submit" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approvePajak">TERIMA</button>&nbsp;&nbsp;&nbsp;
+                                                    <!-- <button class="btn btn-danger pull-right kembalikan2" style="margin-right: 10px" type="cancel" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectPajak">KEMBALIKAN</button> -->
+                                                    
+                                                    <button type="button" style="margin-right: 10px" class="btn btn-danger pull-right kembalikan1">KEMBALIKAN</button>
+
+                                                    <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
+                                                    <table id="table_inv" class="table table-striped nowrap" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <!-- <th class="text-center ts2"><a href="javascript:void(0)">TANGGAL EKSPEDISI</a></th> -->
+                                                                <!-- <th class="text-center ts"><a href="javascript:void(0)">FILE FP</a></th> -->
+                                                                <th class="text-center ts0"><a href="javascript:void(0)">NO</a></th>
+                                                                <th class="text-center ts1"><a href="javascript:void(0)">COMPANY</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NO EKSPEDISI</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NAMA VENDOR</a></th>
+                                                                <th class="text-center ts4"><a href="javascript:void(0)">FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts5"><a href="javascript:void(0)">TANGGAL FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts6"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</a></th>
+                                                                <th class="text-center ts7"><a href="javascript:void(0)">PPN</a></th>
+                                                                <th class="text-center ts8"><a href="javascript:void(0)">STATUS</a></th>
+                                                                <th class="text-center ts9"><a href="javascript:void(0)">ACTION</a></th>
+                                                            </tr>
+                                                            <tr class="sear">
+                                                                <th></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </form>
+                                            </p>
+                                        </div>
+                                        <div id="menu1" class="tab-pane fade">
+                                            <p>
+                                                <form id="form2" enctype="multipart/form-data" method="post">
+
+
+                                                    <!-- Modal -->
+                                                    <div id="myModalKembali2" class="modal fade" role="dialog" data-backdrop="false">
+                                                        <div class="modal-dialog">
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Pesan Kembalikan Faktur Pajak</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">PESAN</div>
+                                                                            <div class="col-md-8">
+                                                                                <textarea name="PESAN"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default submitkan2" data-dismiss="modal">Submit</button>
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- <button class="btn btn-info pull-right" type="submit" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/approvePajak">TERIMA</button>&nbsp;&nbsp;&nbsp; -->
+                                                    <!-- <button class="btn btn-danger pull-right" style="margin-right: 10px" type="cancel" formaction="<?php echo base_url()?>EC_Invoice_fp_pjk/rejectPajak">KEMBALIKAN</button> -->
+                                                    <button type="button" style="margin-right: 10px" class="btn btn-danger pull-right kembalikan2">KEMBALIKAN</button>
+                                                    <!-- <input type="submit" name="submit" value="Expedisikan Faktur"> -->
+                                                    <table id="table_inv2" class="table table-striped nowrap" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <!-- <th class="text-center ts2"><a href="javascript:void(0)">TANGGAL EKSPEDISI</a></th> -->
+                                                                <!-- <th class="text-center ts"><a href="javascript:void(0)">FILE FP</a></th> -->
+                                                                <th class="text-center ts0"><a href="javascript:void(0)">NO</a></th>
+                                                                <th class="text-center ts1"><a href="javascript:void(0)">COMPANY</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NO EKSPEDISI</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NAMA VENDOR</a></th>
+                                                                <th class="text-center ts4"><a href="javascript:void(0)">FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts5"><a href="javascript:void(0)">TANGGAL FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts6"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</a></th>
+                                                                <th class="text-center ts7"><a href="javascript:void(0)">PPN</a></th>
+                                                                <th class="text-center ts8"><a href="javascript:void(0)">STATUS</a></th>
+                                                                <th class="text-center ts9"><a href="javascript:void(0)">ACTION</a></th>
+                                                            </tr>
+                                                            <tr class="sear">
+                                                                <th></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </form>
+
+                                            </p>
+                                        </div>
+                                        <div id="menu2" class="tab-pane fade">
+                                            <p>
+                                                <form id="etor-form" enctype="multipart/form-data" method="post">
+
+                                                    <table id="table_inv3" class="table table-striped nowrap" width="100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <!-- <th class="text-center ts2"><a href="javascript:void(0)">TANGGAL EKSPEDISI</a></th> -->
+                                                                <!-- <th class="text-center ts"><a href="javascript:void(0)">FILE FP</a></th> -->
+                                                                <th class="text-center ts0"><a href="javascript:void(0)">NO</a></th>
+                                                                <th class="text-center ts1"><a href="javascript:void(0)">COMPANY</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NO EKSPEDISI</a></th>
+                                                                <th class="text-center ts3"><a href="javascript:void(0)">NAMA VENDOR</a></th>
+                                                                <th class="text-center ts4"><a href="javascript:void(0)">FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts5"><a href="javascript:void(0)">TANGGAL FAKTUR PAJAK</a></th>
+                                                                <th class="text-center ts6"><a href="javascript:void(0)">DASAR PENGENAAN PAJAK</a></th>
+                                                                <th class="text-center ts7"><a href="javascript:void(0)">PPN</a></th>
+                                                                <th class="text-center ts8"><a href="javascript:void(0)">STATUS</a></th>
+                                                                <th class="text-center ts9"><a href="javascript:void(0)">ACTION</a></th>
+                                                            </tr>
+                                                            <tr class="sear">
+                                                                <th></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th> 
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </form>
+
+                                            </p>
+                                        </div>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -68,6 +226,7 @@
         </div >
     </div >
 </section>
+
 
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg">
@@ -402,85 +561,85 @@
             <div class="modal-body">
                 <div class="row">
                     <!-- <div class="form-group"> -->
-                    <!-- <label for="picure" class="col-sm-2 control-label">Picure</label> -->
-                    <div class="col-md-8 col-md-offset-2">
-                        <br><br>
-                        <img id="picInvoince" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
-                        src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
+                        <!-- <label for="picure" class="col-sm-2 control-label">Picure</label> -->
+                        <div class="col-md-8 col-md-offset-2">
+                            <br><br>
+                            <img id="picInvoince" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
+                            src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
+                        </div>
+                        <!-- </div> -->
                     </div>
+
                     <!-- </div> -->
                 </div>
-
-                <!-- </div> -->
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="modalFaktur">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title text-center"><strong><u>Faktur Pajak<!-- <?php //echo $baseLanguage ['principal_manufacturer_addTtl'] ;   ?> --></u></strong></h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-                        <br><br>
-                        <img id="picFaktur" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
-                        src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
+    <div class="modal fade" id="modalFaktur">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title text-center"><strong><u>Faktur Pajak<!-- <?php //echo $baseLanguage ['principal_manufacturer_addTtl'] ;   ?> --></u></strong></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <br><br>
+                            <img id="picFaktur" class="thumbnail zoom" onerror="this.onerror=null;this.src='<?php echo base_url(UPLOAD_PATH) . '/material_strategis/default_post_img.png'; ?>'"
+                            src="<?php echo base_url(UPLOAD_PATH) . '/EC_material_strategis/default_post_img.png'; ?>">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="modalTracking">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title text-center"><strong><u>Tracking Invoice</u></strong></h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1">
-                        <table id="tableTrack" class="table table-striped nowrap" width="100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-center ts0"><a href="javascript:void(0)">No</a></th>
-                                    <th class="text-center ts1"><a href="javascript:void(0)">Tanggal</a></th>
-                                    <th class="text-center ts2"><a href="javascript:void(0)">Status</a></th>
-                                    <th class="text-center ts2"><a href="javascript:void(0)">Keterangan</a></th>
-                                </tr>
-                            </thead>
-                            <tbody id="bodyTableTrack">
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">1-1-2011</td>
-                                    <td class="text-center">Draft</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">2</td>
-                                    <td class="text-center">2-1-2011</td>
-                                    <td class="text-center">Submitted</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">3</td>
-                                    <td class="text-center">3-1-2011</td>
-                                    <td class="text-center">Rejected</td>
-                                </tr>
-                            </tbody>
-                        </table>
+    <div class="modal fade" id="modalTracking">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title text-center"><strong><u>Tracking Invoice</u></strong></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <table id="tableTrack" class="table table-striped nowrap" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center ts0"><a href="javascript:void(0)">No</a></th>
+                                        <th class="text-center ts1"><a href="javascript:void(0)">Tanggal</a></th>
+                                        <th class="text-center ts2"><a href="javascript:void(0)">Status</a></th>
+                                        <th class="text-center ts2"><a href="javascript:void(0)">Keterangan</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyTableTrack">
+                                    <tr>
+                                        <td class="text-center">1</td>
+                                        <td class="text-center">1-1-2011</td>
+                                        <td class="text-center">Draft</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">2</td>
+                                        <td class="text-center">2-1-2011</td>
+                                        <td class="text-center">Submitted</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">3</td>
+                                        <td class="text-center">3-1-2011</td>
+                                        <td class="text-center">Rejected</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

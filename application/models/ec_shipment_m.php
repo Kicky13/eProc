@@ -563,7 +563,7 @@ class ec_shipment_m extends CI_Model
     TO_CHAR ((TO_DATE(TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy hh24:mi:ss\'), \'dd-mm-yyyy hh24:mi:ss\')+TO_NUMBER(PEN.DELIVERY_TIME)), \'dd-mm-yyyy\') EXPIRED_DATE', 
             false);
         $this->db->from('EC_T_SHIPMENT TS');
-        $this->db->join('(SELECT DS.* FROM EC_T_DETAIL_SHIPMENT DS WHERE DS.STATUS != 0) TB1', 'TB1.KODE_SHIPMENT=TS.KODE_SHIPMENT', 'inner');
+        $this->db->join('(SELECT DS.* FROM EC_T_DETAIL_SHIPMENT DS WHERE DS.STATUS != 2) TB1', 'TB1.KODE_SHIPMENT=TS.KODE_SHIPMENT', 'inner');
         $this->db->join('EC_T_CHART TC', 'TC.ID_CHART= TB1.ID_CHART', 'inner');
         $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'TC.MATNO=MAT.MATNR', 'inner');
         $this->db->join('EC_T_DETAIL_PENAWARAN PEN', 'TC.KODE_PENAWARAN=PEN.KODE_DETAIL_PENAWARAN', 'inner');
@@ -572,6 +572,8 @@ class ec_shipment_m extends CI_Model
         $this->db->where("TC.PO_NO", $PO, TRUE);     
         $this->db->where("TS.VENDORNO", $vendor, TRUE);
         $this->db->order_by("TB1.IN_DATE DESC, TC.LINE_ITEM ASC");        
+//        $this->db->get();
+//        echo $this->db->last_query();die();
         $result = $this->db->get();
         return (array)$result->result_array();                   
     }    

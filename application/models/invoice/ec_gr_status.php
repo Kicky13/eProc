@@ -16,6 +16,9 @@ class ec_gr_status extends MY_Model {
       return $this->db->update('EC_GR_STATUS',$data_update);
     }
 
+    public function getGRbyLot($id){
+      return $this->db->where('LOT_NUMBER',$id)->get($this->table)->result_array();
+    }
 
     /* approve tidaknya dilihat dari statusnya , 1 jika sudah approve */
     public function detailGrNotApprove($item){

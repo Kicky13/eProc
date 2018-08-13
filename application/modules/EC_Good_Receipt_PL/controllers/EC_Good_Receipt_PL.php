@@ -46,8 +46,18 @@ class EC_Good_Receipt_PL extends MX_Controller
         $this->layout->add_js('pages/EC_good_receipt.js');
         $this->load->library('sap_handler');
         $this->load->model('ec_ecatalog_m');
-        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);        
-        $data['anggaran'] = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0,1), $data['CCC']["COSTCENTER"], false);
+        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);                
+        $result = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0,1), $data['CCC']["COSTCENTER"], false);         
+        for ($i = 0; $i < sizeof($result); $i++) {
+            if($result[$i]['FIPEX']==$data['CCC']['GL_ACCOUNT']){
+                $data['anggaran'][$i]["FICTR"] = $result[$i]["FICTR"];
+                $data['anggaran'][$i]["BESCHR"] = $result[$i]["BESCHR"];
+                $data['anggaran'][$i]["AVAILBUDGET"] = $result[$i]["AVAILBUDGET"];
+                $data['anggaran'][$i]["FIPEX"] = $result[$i]["FIPEX"];
+                $data['anggaran'][$i]["BEZEI"] = $result[$i]["BEZEI"];
+            }                        
+        }
+//        var_dump($data['anggaran']);die();
         $this->layout->render('list', $data);
     }
 
@@ -155,39 +165,36 @@ class EC_Good_Receipt_PL extends MX_Controller
 		// var_dump($newpostdate);
 
         for ($j=0; $j < sizeof($itms); $j++) {
-        	$hasil = $this->ec_goodreceipt_m->getPOShipmentReview($itms[$j]);
+        	$hasil = $this->ec_goodreceipt_m->getPOShipmentReview($itms[$j]);                
+                $nilai=str_replace('[', '', str_replace(']', '', str_replace('"', '', $this->input->post('qtyreceipt'))));                                                
             $email = $this->ec_goodreceipt_m->getEmail($hasil['VENDORNO']);
         	$return = $this->sap_handler->creategr($newpostdate, $newdocdate, $hasil['NO_SHIPMENT'], $hasil['PO_NO'], $hasil['LINE_ITEM'], $itmqty[$j],$this->session->userdata['ID']);
 
 			// var_dump($return);
-		 	if($return['RETURN']!=null){
-                $sukses = 2;
-            	$gagalReturn[] = $return['RETURN'];
+		if($return['RETURN']!=null){
+                    $sukses = 2;
+                    $gagalReturn[] = $return['RETURN'];
          	}else{
-                $sukses = 1;
-            // echo json_encode($return['GR']);
-            // echo json_encode($return['GR_YEAR']);
-            	$this->ec_goodreceipt_m->insertGoodReceipt($hasil, $itmqty[$j], $return['GR'], $return['GR_YEAR'], $docdate, $postdate, $rating, $comment, $this->session->userdata['FULLNAME']);
-                $this->ec_goodreceipt_m->updateDetailShipment($itms[$j], $itmqty[$j], $return['GR'], $return['GR_YEAR']);
-                $this->ec_goodreceipt_m->updateheaderGr($hasil['ID_CHART'], $itmqty[$j], $hasil['PO_NO']);
-                $table[$j]['NO_SHIPMENT'] = $hasil['NO_SHIPMENT'];
-                $table[$j]['QTY_RECEIPT'] = $hasil['QTY_RECEIPT'] + $itmqty[$j];
-                $table[$j]['LAST_RECEIPT'] = $itmqty[$j];
-                $table[$j]['QTY_ORDER'] = $hasil['QTY'];
-                $table[$j]['MATNO'] = $hasil['MATNO'];
-                $table[$j]['MAKTX'] = $hasil['MAKTX'];
-                $table[$j]['PO_NO'] = $hasil['PO_NO'];
-                $table[$j]['VENDORNO'] = $hasil['VENDORNO'];
-                $table[$j]['MEINS'] = $hasil['MEINS'];
-                $table[$j]['PLANT'] = $hasil['PLANT'];
-                $table[$j]['PLANT_NAME'] = $hasil['PLANT_NAME'];
-                $table[$j]['VENDOR_NAME'] = $hasil['VENDOR_NAME'];
-                $table[$j]['VENDOR_EMAIL'] = $email['EMAIL_ADDRESS'];
-                $suksesReturn[] = array("PO_NO" => $hasil["PO_NO"], "LINE_ITEM" => $hasil["LINE_ITEM"], "GR" => $return['GR'], "GR_YEAR" => $return['GR_YEAR']);
-
-                // $dataAll[$j]["PO_NO"] = $hasil["PO_NO"];
-                // $dataAll[$j]["LINE_ITEM"] = $hasil["LINE_ITEM"];
-                // $dataAll[$j]["GR"] = $return['GR'];
+                    $sukses = 1;            
+                    $this->ec_goodreceipt_m->insertGoodReceipt($hasil, $itmqty[$j], $return['GR'], $return['GR_YEAR'], $docdate, $postdate, $rating, $comment, $this->session->userdata['FULLNAME']);
+                    $this->ec_goodreceipt_m->updateDetailShipment($itms[$j], $itmqty[$j], $return['GR'], $return['GR_YEAR']);
+                    $this->ec_goodreceipt_m->updateheaderGr($hasil['ID_CHART'], $itmqty[$j], $hasil['PO_NO']);
+                    $table[$j]['NO_SHIPMENT'] = $hasil['NO_SHIPMENT'];
+                    $table[$j]['QTY_RECEIPT'] = $hasil['QTY_RECEIPT'] + $itmqty[$j];
+                    $table[$j]['LAST_RECEIPT'] = $itmqty[$j];
+                    $table[$j]['QTY_ORDER'] = $hasil['QTY'];
+                    $table[$j]['MATNO'] = $hasil['MATNO'];
+                    $table[$j]['MAKTX'] = $hasil['MAKTX'];
+                    $table[$j]['PO_NO'] = $hasil['PO_NO'];
+                    $table[$j]['VENDORNO'] = $hasil['VENDORNO'];
+                    $table[$j]['MEINS'] = $hasil['MEINS'];
+                    $table[$j]['PLANT'] = $hasil['PLANT'];
+                    $table[$j]['PLANT_NAME'] = $hasil['PLANT_NAME'];
+                    $table[$j]['VENDOR_NAME'] = $hasil['VENDOR_NAME'];
+                    $table[$j]['VENDOR_EMAIL'] = $email['EMAIL_ADDRESS'];
+                    $suksesReturn[] = array("PO_NO" => $hasil["PO_NO"], "LINE_ITEM" => $hasil["LINE_ITEM"], "GR" => $return['GR'], "GR_YEAR" => $return['GR_YEAR']);
+                                        
+                    $this->ec_goodreceipt_m->update_stok_vendor($hasil['VENDORNO'],$hasil['MATNO'], (int)$nilai);                                        
          	}
         }
         if (isset($table)){
@@ -201,8 +208,7 @@ class EC_Good_Receipt_PL extends MX_Controller
 
         // $this->load->library('session');
         // $this->load->helper('url');
-        if($sukses==1){ 
-            // $this->load->helper('url');
+        if($sukses==1){                         
             $this->session->set_flashdata('data', $suksesReturn);
             $this->session->set_flashdata('sukses', $sukses);
             // redirect(site_url('EC_Good_Receipt_PL/index/'));
@@ -604,6 +610,7 @@ class EC_Good_Receipt_PL extends MX_Controller
         $company_data = $this->config->item('company_data');        
         $data['vendor']=$this->ec_shipment_m->get_vendor_detail($this->input->post('vendor'));
         $data['po']=$this->ec_shipment_m->get_shipment_detail($this->input->post('po_no'),$this->input->post('shipment'),$this->input->post('vendor'));
+//        var_dump($data['po']);die();
         $data['detail']=$this->ec_shipment_m->get_shipment($this->input->post('po_no'),$this->input->post('shipment'));
         $data['company']=$company_data[$data['detail'][0]['EM_COMPANY']];        
         $data['barcode']=$data['vendor'][0]['VENDOR_NAME'];

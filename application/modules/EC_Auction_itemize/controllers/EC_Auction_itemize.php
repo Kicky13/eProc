@@ -143,7 +143,7 @@ class EC_Auction_itemize extends CI_Controller {
 
 	/* create auction by ptm */
 	function create() {
-		// $this->sync_curr();
+		$this->sync_curr();
 		$data['title'] = 'Konfigurasi Auction';
 		$this -> load -> model('EC_pricelist_m');
 		$this -> load -> model('ec_auction_itemize_m');
@@ -166,6 +166,9 @@ class EC_Auction_itemize extends CI_Controller {
 		$data['currency'] = $this -> ec_auction_itemize_m -> getAllCurrency();
 		$data['tanggal'] = date("d-m-Y h:i:s");
 		$data['userid'] = "SMI" . str_pad($this -> getUSERID(), 6, "0", STR_PAD_LEFT);
+		$data['total_hps'] = $this -> ec_auction_itemize_m -> addHPStotal($this -> session -> userdata['ID']);
+		// echo "<pre>";
+		// print_r($data['items']);
 		$this -> layout -> set_datetimepicker();
 		$this -> layout -> set_table_js();
 		$this -> layout -> set_table_cs();
@@ -207,6 +210,7 @@ class EC_Auction_itemize extends CI_Controller {
 		$data['currency'] = $this -> ec_auction_itemize_m -> getAllCurrency();
 		$data['tanggal'] = date("d-m-Y h:i:s");
 		$data['userid'] = "SMI" . str_pad($this -> getUSERID(), 6, "0", STR_PAD_LEFT);
+		$data['total_hps'] = $this -> ec_auction_itemize_m -> addHPStotal($this -> session -> userdata['ID']);
 		$this -> layout -> set_datetimepicker();
 		$this -> layout -> set_table_js();
 		$this -> layout -> set_table_cs();
@@ -458,6 +462,7 @@ class EC_Auction_itemize extends CI_Controller {
 			$data[4] = $value['CURRENCY'] != null ? $value['CURRENCY'] : "";
 			// $data[5] = $value['BEA_MASUK'] != null ? $value['BEA_MASUK'] : "";
 			$data[6] = $value['KONVERSI'] != null ? $value['KONVERSI'] : "";
+			$data[7] = $value['TOTAL_HARGA'] != null ? $value['TOTAL_HARGA'] : "";
 			$data_tabel[] = $data;
 		}
 		return $data_tabel;
@@ -577,7 +582,10 @@ class EC_Auction_itemize extends CI_Controller {
 		// print_r($data['TGL_CREATED']);die;
 		//$data['NILAI_PENGURANGAN'] = str_replace(".", "", $this -> input -> post('NILAI_PENGURANGAN'));
 		// $data['CURR'] = $this -> input -> post('CURR');
-		// $data['TIPE'] = $this -> input -> post('TIPE');
+		$data['TIPE_RANKING'] = $this -> input -> post('tipe_ranking');
+		$data['TOTAL_HPS'] = $this -> input -> post('total_hps');
+		// echo "<pre>";
+		// print_r($data['TOTAL_HPS']);die;
 		$data['NOTE'] = "";
 		// $data['HPS'] = str_replace(".", "", $this -> input -> post('HPS'));
 		$data['NO_REF'] = $this -> input -> post('NO_REF');
@@ -814,10 +822,14 @@ class EC_Auction_itemize extends CI_Controller {
 						for ($i=0; $i < count($dataPeserta); $i++) { 
 
 							if ($cek_close != 0){
+								// echo "no";
 								$ambilRank = $this -> ec_auction_itemize_m -> getReportItemRanking2($this -> session -> userdata['ID'], $value['KODE_VENDOR'], $notender, ($i+1), $nobatch, $ketBatch[0]['ITEM']);    					
 							} else {
-								$ambilRank = $this -> ec_auction_itemize_m -> getReportItemRankingHist($this -> session -> userdata['ID'], $value['KODE_VENDOR'], $notender, ($i+1), $notender, $ketBatch[0]['ITEM']);    					
+								// echo "yess";
+								$ambilRank = $this -> ec_auction_itemize_m -> getReportItemRankingHist($this -> session -> userdata['ID'], $value['KODE_VENDOR'], $notender, ($i+1), $nobatch, $ketBatch[0]['ITEM']);    					
 							}
+							// echo "<pre>";
+							// print_r($notender);die;
 							// $ambilRank = $this->ec_auction_itemize_m->getReportItemRanking2($this -> session -> userdata['ID'], $value['KODE_VENDOR'], $notender, ($i+1), $nobatch, $ketBatch[0]['ITEM']);    					
 							$initialR .= '
 							<td class="Kiri Bawah Atas Kanan" align="center">
@@ -1134,7 +1146,7 @@ class EC_Auction_itemize extends CI_Controller {
 		unset($dompdf);
 
 		$dompdf = new DOMPDF();
-		$dompdf->set_paper('A4', 'potrait');
+		$dompdf->set_paper('A4', 'landscape');
 		$dompdf->load_html($tampil3);
 		$dompdf->render();
 
@@ -1142,10 +1154,10 @@ class EC_Auction_itemize extends CI_Controller {
 		$font = Font_Metrics::get_font("helvetica", "italic");
 		$font1 = Font_Metrics::get_font("helvetica", "bold");
 						//$canvas->line(30,740,570,740,array(0,0,0),1); // dari kiri, dari atas(garis kiri), dari kanan, dari atas(garis kanan), warna, ketebalan
-		$canvas->page_text(10, 795, "__________________________________________________________________________________________________________________", $font, 9, array(0,0,0));
-		$canvas->page_text(550, 810, "{PAGE_NUM} dari {PAGE_COUNT}", $font, 9, array(0,0,0));
-		$canvas->page_text(10, 810, "LAMPIRAN 2", $font1, 9, array(0,0,0));
-		$canvas->page_text(69, 810, "| Lampiran ini merupakan dokumen yang tidak terpisahkan dengan dokumen BA e-Auction nomor BA". str_pad($data['Detail_Auction']['NO_TENDER'], 8, "0", STR_PAD_LEFT) ."/"."B". str_pad($nobatch, 3, "0", STR_PAD_LEFT), $font, 9, array(0,0,0));
+		$canvas->page_text(30, 555, "___________________________________________________________________________________________________________________________________________________________", $font, 9, array(0,0,0));
+		$canvas->page_text(770, 570, "{PAGE_NUM} dari {PAGE_COUNT}", $font, 9, array(0,0,0));
+		$canvas->page_text(30, 570, "LAMPIRAN 2", $font1, 9, array(0,0,0));
+		$canvas->page_text(89, 570, "| Lampiran ini merupakan dokumen yang tidak terpisahkan dengan dokumen BA e-Auction nomor BA". str_pad($data['Detail_Auction']['NO_TENDER'], 8, "0", STR_PAD_LEFT) ."/"."B". str_pad($nobatch, 3, "0", STR_PAD_LEFT), $font, 9, array(0,0,0));
 
 		$output = $dompdf->output();
 		file_put_contents($target_file.'pdf3-'.$id_admin.'.pdf', $output);
@@ -1158,6 +1170,7 @@ class EC_Auction_itemize extends CI_Controller {
 		$pdf->addPDF($target_file.'pdf3-'.$id_admin.'.pdf', 'all');
 
 		//$pdf->merge('file', $target_file.'test.pdf'); // generate the file
+		ob_clean();
 		$pdf->merge('auction-'.$id_admin.'.pdf'); // force download
 	}
 
@@ -1478,6 +1491,7 @@ public function getUSERID_old($value = '') {
 
 public function importExcelEdit($notender)
 {
+	ini_set('memory_limit','-1');
 	$p = $this->input->post();
 	$iduser = $this -> session -> userdata['ID'];
 	$idx_baris_mulai = 2;
@@ -1573,6 +1587,7 @@ public function importExcelEdit($notender)
     public function importExcel()
     {
     	error_reporting(E_ALL);
+    	ini_set('memory_limit','-1');
     	$p = $this->input->post();
     	$iduser = $this -> session -> userdata['ID'];
     	$idx_baris_mulai = 2;
@@ -1641,6 +1656,8 @@ public function importExcelEdit($notender)
             		}
             	}
             }
+
+            
             // echo "<pre>";
             // print_r($data);            
             // die;
@@ -1788,7 +1805,7 @@ public function importExcelEdit($notender)
     	$harga_awal = $this ->input->post('harga_awal');
     	$result = $this -> ec_auction_itemize_m -> get_items($id_header);
     	$resultPT = $this -> ec_auction_itemize_m -> get_list_Peserta_id($id_header, $kd_peserta);
-    	//print_r($resultPT);
+    	// print_r($resultPT);
     	$tampil = '
     	<script type="text/javascript" src="http://10.15.5.150/dev/eproc/static/js/pages/EC_auction_only_number_format.js"></script>
     	';
@@ -1868,12 +1885,12 @@ public function importExcelEdit($notender)
     				$tampil.='
     			</tbody>
     		</table>
+    		<hr style="height:3px;border:none;color:#333;background-color:#333;">
+    		<tr>
+    			<input type="hidden" name="total_harga" id="total_harga" value="'.$resultPT[0]['TOTAL_HARGA'].'">
+    			<td align="right" style="font-size:20px"><strong>Total Harga : '.$resultPT[0]['CURRENCY'].' '.number_format($resultPT[0]['TOTAL_HARGA'],0,",",".").'</strong></td>
+    		</tr>
 
-    		<div class="form-group">
-    			<div class="col-sm-offset-3 col-sm-10">
-    				<button type="submit" class="btn btn-info">Kembali</button>
-    			</div>
-    		</div>
     	</form>
     	';
     	echo $tampil;
@@ -1890,7 +1907,9 @@ public function importExcelEdit($notender)
     	$harga_awal = $this ->input->post('harga_awal');
     	$result = $this -> ec_auction_itemize_m -> get_items_temp($this -> session -> userdata['ID']);
     	$resultPT = $this -> ec_auction_itemize_m -> get_list_Peserta_temp_id($this -> session -> userdata['ID'], $kd_peserta);
-    	//print_r($resultPT);
+    	$total_harga = $this -> ec_auction_itemize_m -> addHPStotalVendor($this -> session -> userdata['ID'], $kd_peserta);
+    	// echo "<pre>";
+    	// print_r($total_harga);die;
     	$tampil = '
     	<script type="text/javascript" src="http://10.15.5.150/dev/eproc/static/js/pages/EC_auction_only_number_format.js"></script>
     	';
@@ -1970,7 +1989,11 @@ public function importExcelEdit($notender)
     				$tampil.='
     			</tbody>
     		</table>
-
+    		<hr style="height:3px;border:none;color:#333;background-color:#333;">
+    		<tr>
+    			<input type="hidden" name="total_harga" id="total_harga" value="'.$total_harga[0]['TOT_HARGA'].'">
+    			<td align="right" style="font-size:20px"><strong>Total Harga : '.$resultPT[0]['CURRENCY'].' '.number_format($total_harga[0]['TOT_HARGA'],0,",",".").'</strong></td>
+    		</tr>
     		
     	</form>
     	';
@@ -2793,28 +2816,25 @@ public function importExcelEdit($notender)
 
         //Set Title
     	$objPHPExcel->getActiveSheet()->setTitle('Laporan Auction');
-    	
 
     	//Start adding next sheets
-   //  	$i=0;
-   //  	while ($i < 10) {
+    	$i=0;
+    	while ($i < 10) {
 
-	  //     // Add new sheet
-	      $objPHPExcel->createSheet()->setTitle('Laporan');
-	      $objPHPExcel->createSheet()->setCellValue('A1', 'Hello');
-	       //Setting index when creating
-	      // $objPHPExcel->getActiveSheet()->setTitle('Laporan Auction2');
-	  //     //Write cells
-	  //     $objWorkSheet->setCellValue('A1', 'Hello'.$i)
-	  //     ->setCellValue('B2', 'world!')
-	  //     ->setCellValue('C1', 'Hello')
-	  //     ->setCellValue('D2', 'world!');
+	      // Add new sheet
+	      $objWorkSheet = $objPHPExcel->createSheet($i); //Setting index when creating
 
-	  //     // Rename sheet
-	  //     $objWorkSheet->setTitle("testing");
+	      //Write cells
+	      $objWorkSheet->setCellValue('A1', 'Hello'.$i)
+	      ->setCellValue('B2', 'world!')
+	      ->setCellValue('C1', 'Hello')
+	      ->setCellValue('D2', 'world!');
 
-	  //     $i++;
-	  // }
+	      // Rename sheet
+	      $objWorkSheet->setTitle("testing");
+
+	      $i++;
+	  }
 
         //Save ke .xlsx, kalau ingin .xls, ubah 'Excel2007' menjadi 'Excel5'
 	  $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');

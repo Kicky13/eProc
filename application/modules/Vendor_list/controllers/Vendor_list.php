@@ -73,37 +73,56 @@ class Vendor_List extends CI_Controller {
 
 	function get_vendor() {
 		$opco = $this->session->userdata['EM_COMPANY'];
+        $role = $this->session->userdata['GRPAKSES'];
 
-		$this->load->model('vendor_detail');
-		$data_vendor = array();
+        $this->load->model('vendor_detail');
+        $data_vendor = array();
 
-		$prod = $this->input->post('item');
+        $prod = $this->input->post('item');
 
+        if ($role == 501){
+            $datatable_vnd = $this->vendor_detail->vnd_table_prod_all($prod);
+            if(!empty($datatable_vnd)){
+                foreach ($datatable_vnd as $key => $val) {
+                    array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS'], "STATUS_PERUBAHAN"=>$val['STATUS_PERUBAHAN']));
+                }
+            }
 
-		$datatable_vnd = $this->vendor_detail->vnd_table_prod($prod,$opco);
-		if(!empty($datatable_vnd)){
-			foreach ($datatable_vnd as $key => $val) {
-				array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS'], "STATUS_PERUBAHAN"=>$val['STATUS_PERUBAHAN']));
-			}
-		}
+            $datatable_tmp = $this->vendor_detail->tmp_table_prod_all($prod);
+            if(!empty($datatable_tmp)){
+                foreach ($datatable_tmp as $key => $val) {
+                    array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS']));
+                }
+            }
 
-		$datatable_tmp = $this->vendor_detail->tmp_table_prod($prod,$opco);
-		if(!empty($datatable_tmp)){
-			foreach ($datatable_tmp as $key => $val) {
-				array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS']));
-			}
-		}
-		$data = array('data' => $data_vendor); 
-		echo json_encode($data);
-	}
+        }else {
+            $datatable_vnd = $this->vendor_detail->vnd_table_prod($prod,$opco);
+            if(!empty($datatable_vnd)){
+                foreach ($datatable_vnd as $key => $val) {
+                    array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS'], "STATUS_PERUBAHAN"=>$val['STATUS_PERUBAHAN']));
+                }
+            }
 
-	public function exportKomoditi($item){
-		$opco = $this->session->userdata['EM_COMPANY'];
-		if ($opco == '7000' || $opco == '2000' || $opco == '5000') {
-			$opco = 'IN(\'7000\',\'2000\',\'5000\')';
-		} else {
-			$opco = '='.$opco.'';
-		} 
+            $datatable_tmp = $this->vendor_detail->tmp_table_prod($prod,$opco);
+            if(!empty($datatable_tmp)){
+                foreach ($datatable_tmp as $key => $val) {
+                    array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'],"VENDOR_NO" =>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "EMAIL_ADDRESS"=>$val['EMAIL_ADDRESS']));
+                }
+            }
+
+        }
+
+        $data = array('data' => $data_vendor); 
+        echo json_encode($data);
+    }
+
+    public function exportKomoditi($item){
+      $opco = $this->session->userdata['EM_COMPANY'];
+      if ($opco == '7000' || $opco == '2000' || $opco == '5000') {
+         $opco = 'IN(\'7000\',\'2000\',\'5000\')';
+     } else {
+         $opco = '='.$opco.'';
+     } 
         //membuat objek
     	$this->load->library('excel');//Load library excelnya
     	$this->load->model('vendor_detail');

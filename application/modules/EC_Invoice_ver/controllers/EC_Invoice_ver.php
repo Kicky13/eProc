@@ -691,6 +691,9 @@ class EC_Invoice_ver extends MX_Controller {
         $data['parcial'] = $this->checkParcial($noinvoice);
         $data['lot'] = $this->checkLot($noinvoice);
         $data['pomut'] = $this->checkPomut($data['invoice'][0]['POTMUT_PIC']);
+
+        // var_dump($data['pajak']);die();
+
         $this->layout->render('detail', $data);
     }
 

@@ -18,6 +18,10 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="pull-right">
+                                        <button type="button" id="approveItem" class="btn btn-success pull-right">Approve</button>&nbsp;&nbsp;
+                                        <button type="button" id="rejectItem" class="btn btn-danger pull-right">Reject</button>&nbsp;&nbsp;
+                                    </div>
                                     <table id="table_inv" class="table table-striped nowrap" width="100%">
                                         <thead>
                                         <tr>
@@ -30,7 +34,9 @@
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                            <th></th>
+                                            <th>
+                                                <input type="checkbox" onchange="chkAll(this, 'actionSelect')" title="Check All">
+                                            </th>
                                         </tr>
                                         </thead>
                                         <tbody>

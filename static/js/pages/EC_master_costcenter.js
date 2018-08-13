@@ -43,7 +43,14 @@ function loadTable_() {
                 a += "</div>";
                 return a;
             }
-        }, {
+        }, { 
+            mRender: function (data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += (full.GL_ACCOUNT);
+                a += "</div>";
+                return a;
+            }
+        },{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 //a += numberWithCommas(full.PRICE * full.STOK_COMMIT);
@@ -73,7 +80,7 @@ function loadTable_() {
         },{
             mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>" +
-                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-cc="' + (full.COSTCENTER) + '" data-fullname="' + (full.FULLNAME) + '" data-ccname="' + (full.COSTCENTER_NAME) + '" data-userid="' + (full.ID_USER) + '" data-id="' + (full.ID) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
+                    '<a href="javascript:void(0)" data-toggle="modal" data-target="#modalDetil" data-cc="' + (full.COSTCENTER) + '" data-fullname="' + (full.FULLNAME) + '" data-ccname="' + (full.COSTCENTER_NAME) + '" data-userid="' + (full.ID_USER) + '" data-id="' + (full.ID) + '" data-gl="' + (full.GL_ACCOUNT) + '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>&nbsp;&nbsp;' +
                     '<a href="javascript:deleteMaster(' + (full.ID) + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>&nbsp;&nbsp;' +    
                     '</div>';
                 return a;
@@ -137,6 +144,15 @@ function loadTable_() {
             t4 = true;
         }
     });    
+    $('.ts5').on('dblclick', function () {
+        if (t0) {
+            mytable.order([0, 'asc']).draw();
+            t0 = false;
+        } else {
+            mytable.order([0, 'desc']).draw();
+            t0 = true;
+        }
+    });
 }
 
 function approve(PO) {
@@ -165,6 +181,7 @@ $('#modalDetil').on('show.bs.modal', function (event) {
     $("#viewid").val(button.data('id')).trigger("change");
     $("#viewusername").val(button.data('userid')).trigger("change");
     $("#costCenter").val(button.data('cc'));    
+    $("#viewgl").val(button.data('gl'));
 
 });
 
@@ -200,7 +217,8 @@ function simpan() {
                     "cc": $('#cc').val(),
                     "userid": $("#ID_USER").val(),
                     "username": $("#txt_Nama").val(),
-                    "gudang": $('input[name="gudang"]:checked').val()
+                    "gudang": $('input[name="gudang"]:checked').val(),
+                    "gl_account": $("#gl_account").val(),
                 },
                 type: 'POST',
                 dataType: 'json'
@@ -232,7 +250,8 @@ function update() {
                     "id":$('#viewid').val(),
                     "costCenter": $('#viewcc').val(),
                     "userid": $('#viewusername').val(),
-                    "gudang": $('input[name="gudang_update"]:checked').val()
+                    "gudang": $('input[name="gudang_update"]:checked').val(),
+                    "gl_account": $('#viewgl').val()
                 },
                 type: 'POST',
                 dataType: 'json'

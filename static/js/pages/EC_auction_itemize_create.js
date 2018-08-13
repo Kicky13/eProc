@@ -184,6 +184,7 @@ function pilih() {
 }
 
 $(document).ready(function() {
+	$("#total_harga1").val($("#total_harga").val());
 
 	$(".select2").select2();
 

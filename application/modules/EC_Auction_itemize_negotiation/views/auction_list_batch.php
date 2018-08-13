@@ -30,40 +30,36 @@
                                     </thead>
                                     <tbody>
 
-                                        <?php //$start = null; foreach ($batch as $val){ 
-                                        //     if($val['IS_ACTIVE']=='1'){
-                                        //         $start = $val['NAME'];
-                                        //         break;
-                                        //     }
-                                        // } 
-                                        ?>
+                                        <?php $start = null; foreach ($batch as $val){ 
+                                            if($val['IS_ACTIVE']=='1'){
+                                                $start = $val['NAME'];
+                                                break;
+                                            }
+                                        } ?>
 
 
-                                        <?php //$jml_batch=count($batch); $i=0; foreach ($batch as $value){ $i++;
-                                            // if($value['NAME'] == $start){
-                                            //     // muncul tombol
-                                            //     $link = base_url().'EC_Auction_itemize_negotiation/detail_auction/'.$notender.'/'.$value["NAME"];
-                                            //     $tombol = '<a class="btn btn-info btn-xs" href="'.$link.'">Proses</a>';
-                                            // }else{
-                                            //     if($value['IS_ACTIVE']=='0'){
-                                            //         $link = base_url().'EC_Auction_itemize_negotiation/detail_auction/'.$notender.'/'.$value["NAME"];
-                                            //         $tombol = '<a class="btn btn-info btn-xs" href="'.$link.'">Proses</a>';
-                                            //     }else{
-                                            //         $tombol = "";
-                                            //     }
-                                            // }
+                                        <?php $jml_batch=count($batch); $i=0; foreach ($batch as $value){ $i++;
+                                            if($value['NAME'] == $start){
+                                                // muncul tombol
+                                                $link = base_url().'EC_Auction_itemize_negotiation/detail_auction/'.$notender.'/'.$value["NAME"];
+                                                $tombol = '<a class="btn btn-info btn-xs" href="'.$link.'">Proses</a>';
+                                            }else{
+                                                if($value['IS_ACTIVE']=='0'){
+                                                    $link = base_url().'EC_Auction_itemize_negotiation/detail_auction/'.$notender.'/'.$value["NAME"];
+                                                    $tombol = '<a class="btn btn-info btn-xs" href="'.$link.'">Proses</a>';
+                                                }else{
+                                                    $tombol = "";
+                                                }
+                                            }
                                             ?> 
-                                            <?php $i=1; foreach ($batch as $value){?> 
+                                            
                                             <tr>
-                                                <td><?php echo $i++?></td>
+                                                <td><?php echo ++$i?></td>
                                                 <td><?php echo $value['NAME']?></td>
                                                 <td><?php echo $value['QTY_ITEM']?></td>
                                                 <th class="text-center <?php if($value['IS_ACTIVE']=='1') echo 'success'; else echo 'danger';?>"><?php if($value['IS_ACTIVE']=='1') echo 'ACTIVE'; else echo 'CLOSED';?></th> 
                                                 <td>
-                                                    <!-- <a class="btn btn-info btn-xs" href="<?php echo base_url(); ?>EC_Auction_itemize/show_detail/<?php echo $notender; ?>/<?php echo $value['NAME']; ?>">Proses</a> -->
-
-                                                    <a class="btn btn-info btn-xs" href="<?php echo base_url(); ?>EC_Auction_itemize_negotiation/detail_auction/<?php echo $notender; ?>/<?php echo $value['NAME']; ?>">Proses</a>
-                                                    <!-- <?php echo $tombol; ?> -->
+                                                    <?php echo $tombol; ?>
                                                 </td>
                                             </tr>                                               
                                             <?php } ?>

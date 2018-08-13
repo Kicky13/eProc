@@ -85,7 +85,7 @@
                     <label for="TDLINE"
                            class="col-sm-2 control-label"><?php echo $baseLanguage ['strategic_material_long_txt']; ?></label>
                     <div class="col-sm-9">
-                        <textarea class="form-control" rows="5" id="TDLINE" readonly></textarea>
+                        <textarea class="form-control" rows="5" id="TDLINE" name="TDLINE"></textarea>
                     </div>
                 </div>
 

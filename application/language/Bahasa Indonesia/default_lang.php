@@ -293,6 +293,7 @@ $lang["konfigurasi_pl"] = "Konfigurasi Pembelian Langsung";
 $lang["auction_multi_item"] = "Auction Multi Item";
 $lang["auction_multi_set"] = "Auction Set";
 $lang["auction_multi_list"] = "Auction List";
+$lang["auction_multi_hist"] = "History Auction";
 
 $lang["master_company_plant"] = "Master Company Plant";
 
@@ -368,4 +369,30 @@ $lang["list_tor"] = "List E-Tor";
 $lang["create_tor"] = "Buat E-Tor";
 $lang["e_tor"] = "E-Tor";
 
-$lang["Master Costcenter"] = "Master Costcenter";
+
+/* E-CATALOG */
+$lang["catalog"] = "Catalog";
+$lang["konfigurasi_pembelian_langsung"] = "Konfigurasi Pembelian Langsung";
+$lang["master_data"] = "Master Data";
+$lang["cost_center"] = "Cost Center";
+$lang["kategori"] = "Kategori";
+$lang["user_akses_kategori"] = "User Akses Kategori";
+$lang["strategic_material_assignment"] = "Strategic Material Assignment";
+$lang["company"] = "Company";
+$lang["akses_company_plant"] = "Akses Company Plant";
+$lang["document_type"] = "Document Type"; 
+$lang["purchase_organization"] = "Purchase Organization";
+$lang["approval_konfigurasi"] = "Approval Konfigurasi";
+$lang["pembelian_langsung"] = "Pembelian Langsung";
+$lang["approval_pl"] = "Approval";
+$lang["penerimaan_barang"] = "GR";
+$lang["report_pl"] = "Report";
+$lang["penawaran_vendor"] = "Penawaran Harga Vendor";
+$lang["approval_konfigurasi_pengadaan"] = "Konfigurasi Approval Pengadaan";
+$lang["approval_pengadaan"] = "Approval Pengadaan";
+$lang["approval_cataloging"] = "Approval Cataloging";
+$lang["konfigurasi_cataloging"] = "Konfigurasi Cataloging";
+$lang["report_pengadaan"] = "Report Pengadaan";
+$lang["report_cataloging"] = "Report Cataloging";
+$lang["history_log_vendor"] = "History Assign Vendor";
+$lang["history_log_plant"] = "History Assign Plant";

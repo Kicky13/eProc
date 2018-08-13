@@ -55,7 +55,7 @@ function chk23() {
 
             qty = '<div class="row"><div class="input-group col-md-11">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="minqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>'
-            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + data.data[i].STOK + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\', \'' + data.data[i].STOK +'\', \'' + data.data[i].QTY + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             qty += '<span class="input-group-addon">' + data.data[i].MEINS + '</span>'
             qty += '</div></div><br>'
@@ -96,18 +96,24 @@ function chk23() {
             // }
             if (i == data.data.length - 1) {
                 teks = ('<div class=""  style="margin:3px; border-bottom: 1px solid #ccc;">')
-            }
+            }                       
             teks += header
             teks += '<div class="row" style=" margin:10px; padding:3px;">'
             teks += '<div class="col-md-2' + disable + '" style="  padding-left: 5px;">'
-            teks += '<a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modaldetail" data-produk="' + data.data[i].MATNR + '"><img src="' + $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/" + data.data[i].PICTURE + '" class="img-responsive"></a>'
+            if(data.data[i].PICTURE != null){
+                teks += '<a href="javascript:void(0)" data-backdrop="true"><img src="' + $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/"+data.data[i].PICTURE+'" class="img-responsive"></a>'
+            }else{
+                teks += '<a href="javascript:void(0)" data-backdrop="true"><img src="' + $("#base-url").val() + $("#UPLOAD_PATH").val() + "EC_material_strategis/default_post_img.png"+'" class="img-responsive"></a>'
+            } 
             teks += '</div>' + '<div class="col-md-3' + disable + '" style="  padding-left: 35px;">'
             teks += '<div class="row" style="font-size:11px">Kategori: (' + data.data[i].NAMA_PARENT + ') <br> ' + data.data[i].DESC +'</div>'
             //teks += '<div class="row" style="font-size:11px">' + plant + '-' + data.data[i][11] + '</div>'
             teks += '<div class="row" style="font-size:18px"><strong><a href="javascript:void(0)" data-backdrop="true" data-toggle="modal" data-target="#modaldetail" data-produk="' + data.data[i].MATNR + '">' + data.data[i].MAKTX + '</a></strong></div>'
             teks += '</div><div class="col-md-4' + disable + '" style="padding-left: 35px;">' + '<div class="row" style="font-size:14px;color: #E74C3C;">' + '<strong>Plant: ' + data.data[i].PLANT + " &mdash; " + data.data[i].NAMA_PLANT + '</strong>' + '</div>'
             teks += '<div class="row" style="font-size:14px">Harga: <span id="lblprice"><strong>' + data.data[i].CURRENCY + ' ' + numberWithCommas(data.data[i].PRICE) + '</strong></span></div>'
-            teks += '<div class="row" style="font-size:12px">Stok: <strong>' + data.data[i].STOK + ' ' + data.data[i].MEINS + '</strong></div>'
+            teks += '<div class="row" style="font-size:12px">Stok Vendor: <strong>' + data.data[i].STOK + ' ' + data.data[i].MEINS + '</strong></div>'
+            teks += '<div class="row" style="font-size:12px">Stok Konfirmasi: <strong>' + data.data[i].STOK_KONFIRMASI + ' ' + data.data[i].MEINS + '</strong></div>'
+            teks += '<div class="row" style="font-size:12px">Stok Avalaible: <strong>' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + ' ' + data.data[i].MEINS + '</strong></div>'
             teks += '<div class="row" style="font-size:12px">Delivery Time: <strong>' + data.data[i].DELIVERY_TIME + ' Days</strong></div>'
             teks += '<div class="row" style="font-size:12px">Nomor Material: <strong>' + data.data[i].MATNO + '</strong></div>'//" &mdash; " + "" + (data.data[i].CC_NAME == null ? "" : data.data[i].CC_NAME)            
             teks += '</div>' + '<div class="col-md-3">' + qty + '<form class="form-horizontal">'
@@ -279,14 +285,14 @@ function confirm(elm, id) {
 
 
         $('#modalPO').modal('show')
-        var fiveMinutes = 10,
-            display = document.querySelector('#dtk');
-        startTimer(fiveMinutes, display);
-        setTimeout(function () {
-            if (sukses == 1) {
-                window.location.reload();
-            }
-        }, 10000);
+//        var fiveMinutes = 10,
+//            display = document.querySelector('#dtk');
+//        startTimer(fiveMinutes, display);
+//        setTimeout(function () {
+//            if (sukses == 1) {
+//                window.location.reload();
+//            }
+//        }, 10000);
 
     });
 }

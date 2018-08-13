@@ -29,8 +29,8 @@ function log(NO_TENDER,ID_PESERTA,ID_ITEM){
 		if (data.length == 0)
 			$("#Log").append('<div class="row text-center">Data Tidak Ditemukan!!</div>')
 			//$("#tbh-Log").modal() 
-		else
-			$("#tbh-Log").modal();
+			else
+				$("#tbh-Log").modal();
 			for (var i = 0; i < data.length; i++) {
 				teks = '<tr style="border-bottom: 1px solid #ccc;">'
 				teks += '<td class="text-left">' + (i + 1) + '</td>'
@@ -48,12 +48,13 @@ function log(NO_TENDER,ID_PESERTA,ID_ITEM){
 	}).always(function(data) {
 		// console.log(data);
 	});
-	alert(NO_TENDER+" "+ID_PESERTA+" "+ID_ITEM);
+	// alert(NO_TENDER+" "+ID_PESERTA+" "+ID_ITEM);
 }
 function loadTable() {
 	// no = 1;
 	var NO_TENDER = $('.NO_TENDER').val();
 	var NO_BATCH = $('.NO_BATCH').val();
+	var TYPE_RANKING = $('#type_ranking').val();
 	mytable = $('#tableMT').DataTable({
 		"bSort" : true,
 		"info" : false,
@@ -158,7 +159,7 @@ function loadTable() {
 					a += '<input type="hidden" class="item item'+full[5]+'" value="'+full[3]+'">';
 					a += '<input type="hidden" class="itemReset itemReset'+full[5]+'" value="'+full[3]+'">';
 					a += '<input type="hidden" class="itemCheck itemCheck'+full[5]+'" value="'+full[10]+'">';
-					a += '<input type="text" style="font-weight: bold; text-align: center;" class="itemGanti itemGanti'+full[5]+'" value="'+numberWithDot(full[13])+'" readonly>';
+					a += '<input type="text" style="font-weight: bold; text-align: center;" class="itemGanti itemGanti'+full[5]+'" value="'+numberWithDot(full[3])+'" readonly>';
 					a += "</div>";
 					return a;
 				} else
@@ -181,13 +182,17 @@ function loadTable() {
 			}
 		},{
 			mRender : function(data, type, full) {
-				if (full[2] != null) {
-					a = "<div class='col-md-12 text-center itemGambar itemGambar"+full[5]+"'>";
-					a += full[8]+full[9];
-					a += "</div>";
-					return a;
-				} else
-				return "";
+				if (TYPE_RANKING == 1){
+					if (full[2] != null) {
+						a = "<div class='col-md-12 text-center itemGambar itemGambar"+full[5]+"'>";
+						a += full[8]+full[9];
+						a += "</div>";
+						return a;
+					} else
+					return "";
+				} else {
+					return "";
+				}
 			}
 		}],
 	});
@@ -507,7 +512,7 @@ function loadTable() {
 		$('#loading').remove();
 		mulai = 1
 		var timeInterval3 = setInterval(function() {
-			//piala($('#no_tender').text());
+			piala($('#no_tender').text());
 			$.ajax({
 				url : $("#base-url").val() + 'EC_Auction_itemize_negotiation/getTimeServer/',
 				type : 'POST',

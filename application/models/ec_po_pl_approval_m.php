@@ -302,7 +302,7 @@ class ec_po_pl_approval_m extends CI_Model
     {
         foreach ($data as $value) {
 
-            $est=$value['EST_DELIV2'];
+            $est=$value['EST_DELIV'];
             $this->db->where("PO_NO", $value['PO_NO'], TRUE);
             $this->db->where("MATNO", $value['MATNO'], TRUE);
             $this->db->where("LINE_ITEM", $value['LINE_ITEM'], TRUE);

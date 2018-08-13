@@ -95,7 +95,7 @@
         </td>
         <td valign="top" align="center" colspan="8">
           <div style="height:100px;font-weight:bold">
-            <h2>SHIPMENT PEMBELIAN LANGSUNG</h2>
+            <h2>CHECKLIST SHIPMENT PEMBELIAN LANGSUNG</h2>
             <br >
 <!--            ( Receiving Report )-->
           </div>

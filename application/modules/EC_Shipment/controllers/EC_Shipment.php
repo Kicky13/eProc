@@ -341,7 +341,7 @@ class EC_Shipment extends MX_Controller
         if ($this->ec_po_pl_approval_m->approve($PO)) {
             $this->load->library('sap_handler');
             $data = $this->ec_po_pl_approval_m->detailCart($PO);
-            var_dump($data);die();
+//            var_dump($data);die();
             $data2 = $this->sap_handler->PO_CHANGE($PO, $data, false);            
             //var_dump($data);
             if($data2==1){

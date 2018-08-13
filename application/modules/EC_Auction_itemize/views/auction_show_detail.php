@@ -57,6 +57,15 @@
 								</div>
 								<div class="row" style="border-bottom: 1px solid #ccc; padding-bottom: 3px; padding-top: 3px;">
 									<div class="col-lg-2">
+										Type Ranking
+									</div>
+									<div class="col-lg-10">
+										<input type="hidden" id="type_ranking" name="type_ranking" value="<?php echo $Detail_Auction['TIPE_RANKING']?>"/>
+										:&nbsp<strong><?php echo $Detail_Auction['TIPE_RANKING'] == 1 ? 'Ranking Satuan' : 'Ranking Total' ?></strong>
+									</div>
+								</div>
+								<div class="row" style="border-bottom: 1px solid #ccc; padding-bottom: 3px; padding-top: 3px;">
+									<div class="col-lg-2">
 										Unit Peminta
 									</div>
 									<div class="col-lg-10">
@@ -106,148 +115,164 @@
 											<a href="<?php echo base_url();?>EC_Auction_itemize/indexBatch/<?php echo $Detail_Auction['NO_TENDER']; ?>" type="button" style="margin-top: 15px; margin-left:10px;" class="btn btn-danger pull-left" aria-label="Left Align" >
 											DONE
 											</a>
-										<?php }?> -->
+											<?php }?> -->
 
+										</div>
 									</div>
-								</div>
-							</form>                               
-						</div>                
+								</form>                               
+							</div>                
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							Waktu Tersisa
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								Waktu Tersisa
+							</div>
+							<div class="panel-body">
+								<div class="col-md-5 col-md-offset-4">
+									<h3 id="BELUM">AUCTION BELUM DIMULAI</h3>
+								</div>
+								<div class="col-md-5 col-md-offset-4">
+									<h3 id="SELESAI">AUCTION SELESAI</h3>
+								</div>
+								<div class="col-md-5 col-md-offset-4">
+									<h3 id="CLOSED">AUCTION CLOSED</h3>
+								</div>
+								<div class="col-md-5 col-md-offset-4">
+									<div class="my-clock"></div>
+								</div>
+								<div class="col-md-12">
+									<form action="<?php echo base_url()?>EC_Auction_itemize/close" method="post" >
+										<input type="hidden" name="NO_TENDER" value="<?php echo $Detail_Auction['NO_TENDER'] ?>" />
+										<input type="hidden" name="NO_BATCH" value="<?php echo $nobatch ?>" />
+
+										<button id="closeBTN" type="submit" class="main_button color1 small_btn pull-right">
+											CLOSE AUCTION
+										</button>
+									</form>
+								</div>
+							</div>                
 						</div>
-						<div class="panel-body">
-							<div class="col-md-5 col-md-offset-4">
-								<h3 id="BELUM">AUCTION BELUM DIMULAI</h3>
-							</div>
-							<div class="col-md-5 col-md-offset-4">
-								<h3 id="SELESAI">AUCTION SELESAI</h3>
-							</div>
-							<div class="col-md-5 col-md-offset-4">
-								<h3 id="CLOSED">AUCTION CLOSED</h3>
-							</div>
-							<div class="col-md-5 col-md-offset-4">
-								<div class="my-clock"></div>
-							</div>
-							<div class="col-md-12">
-								<form action="<?php echo base_url()?>EC_Auction_itemize/close" method="post" >
-									<input type="hidden" name="NO_TENDER" value="<?php echo $Detail_Auction['NO_TENDER'] ?>" />
-									<input type="hidden" name="NO_BATCH" value="<?php echo $nobatch ?>" />
-
-									<button id="closeBTN" type="submit" class="main_button color1 small_btn pull-right">
-										CLOSE AUCTION
-									</button>
-								</form>
-							</div>
-						</div>                
 					</div>
 				</div>
-			</div>
 
 
-			<div class="nav-tabs-custom">
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#ticket" data-toggle="tab" aria-expanded="false">Report Tab</a></li>
-					<li><a href="#task" data-toggle="tab" aria-expanded="false">Item Tab</a></li>
-					<li><a href="#task1" data-toggle="tab" aria-expanded="false">Peserta Tab</a></li>
+				<div class="nav-tabs-custom">
+					<?php if ($Detail_Auction['TIPE_RANKING'] == 1) {?>
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#ticket" data-toggle="tab" aria-expanded="false">Report Tab</a></li>
+						<li><a href="#task" data-toggle="tab" aria-expanded="false">Item Tab</a></li>
+						<li><a href="#task1" data-toggle="tab" aria-expanded="false">Peserta Tab</a></li>
+					</ul>
+					<?php } else {?>
+					<ul class="nav nav-tabs">
+						<!-- <li class="active"><a href="#ticket" data-toggle="tab" aria-expanded="false">Report Tab</a></li> -->
+						<li class="active"><a href="#task1" data-toggle="tab" aria-expanded="false">Peserta Tab</a></li>
+						<li><a href="#task" data-toggle="tab" aria-expanded="false">Item Tab</a></li>
+					</ul>
+					<?php } ?>
+					<p>&nbsp;</p>
 
-				</ul>
-				<p>&nbsp;</p>
+					<div class="tab-content">
+						<?php if ($Detail_Auction['TIPE_RANKING'] == 1) {?>
+						<div class="tab-pane active" id="ticket">
+						<?php } else {?>
+						<div class="tab-pane" id="ticket">
+						<?php } ?>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											Akumulasi Perolehan Ranking Perpemasok
+										</div>
+										<div class="panel-body reportOlehRanking">
 
-				<div class="tab-content">
-					<div class="tab-pane active" id="ticket">
-						
-						<div class="row">
-							<div class="col-md-12">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										Akumulasi Perolehan Ranking Perpemasok
+										</div>                
 									</div>
-									<div class="panel-body reportOlehRanking">
-										
-									</div>                
 								</div>
 							</div>
-						</div>
 
-					</div><!-- /.tab-pane -->
-					<div class="tab-pane" id="task">
+						</div><!-- /.tab-pane -->
+						<div class="tab-pane" id="task">
 
-						<div class="row">
-							<div class="col-md-12">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										Item
+							<div class="row">
+								<div class="col-md-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											Item
+										</div>
+										<div class="panel-body">
+											<table class="table table-hover" id="negotiation_list">
+												<thead>
+													<tr>
+														<th class="text-left">No</th>
+														<th class="text-left">Kode Item</th>
+														<th class="text-left">Deskripsi</th>
+														<th class="text-center">Kuantitas</th>
+														<th class="text-center">Uom</th>
+														<th class="text-center">Tipe</th>
+														<th class="text-center">Price</th>
+														<th class="text-center">HPS</th>
+													</tr>
+												</thead>
+												<tbody id="item">
+
+												</tbody>
+											</table>
+										</div>                
 									</div>
-									<div class="panel-body">
-										<table class="table table-hover" id="negotiation_list">
-											<thead>
-												<tr>
-													<th class="text-left">No</th>
-													<th class="text-left">Kode Item</th>
-													<th class="text-left">Deskripsi</th>
-													<th class="text-center">Kuantitas</th>
-													<th class="text-center">Uom</th>
-													<th class="text-center">Tipe</th>
-													<th class="text-center">Price</th>
-													<th class="text-center">HPS</th>
-												</tr>
-											</thead>
-											<tbody id="item">
-
-											</tbody>
-										</table>
-									</div>                
 								</div>
 							</div>
+
 						</div>
+						<?php if ($Detail_Auction['TIPE_RANKING'] == 1) {?>
+						<div class="tab-pane" id="task1">
+						<?php } else {?>
+						<div class="tab-pane active" id="task1">
+						<?php } ?>
+						<!-- <div class="tab-pane" id="task1"> -->
 
-					</div>
-					<div class="tab-pane" id="task1">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											Peserta
+										</div>
+										<div class="panel-body">
+											<table class="table table-hover" id="negotiation_list">
+												<thead>
+													<tr>
+														<th class="text-left">No</th>
+														<th class="text-left">Kode Peserta</th>
+														<th class="text-left">Nama Peserta</th>
+														<th class="text-center">Initial</th>
+														<th class="text-center">Currency</th>
+														<!-- <th class="text-center">Bea Masuk</th> -->
+														<th class="text-center">Nilai Tukar</th>
+														<th class="text-center">Total Harga</th>
+													</tr>
+												</thead>
+												<tbody id="peserta">
 
-						<div class="row">
-							<div class="col-md-12">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										Peserta
+												</tbody>
+											</table>
+										</div>                
 									</div>
-									<div class="panel-body">
-										<table class="table table-hover" id="negotiation_list">
-											<thead>
-												<tr>
-													<th class="text-left">No</th>
-													<th class="text-left">Kode Peserta</th>
-													<th class="text-left">Nama Peserta</th>
-													<th class="text-center">Initial</th>
-													<th class="text-center">Currency</th>
-													<!-- <th class="text-center">Bea Masuk</th> -->
-													<th class="text-center">Nilai Tukar</th>
-												</tr>
-											</thead>
-											<tbody id="peserta">
-
-											</tbody>
-										</table>
-									</div>                
 								</div>
 							</div>
-						</div>
 
-					</div><!-- /.tab-pane -->
-				</div><!-- nav-tabs-custom -->
-			</div>
+						</div><!-- /.tab-pane -->
+					</div><!-- nav-tabs-custom -->
+				</div>
 
-			<br>
-			<br>
+				<br>
+				<br>
 
 
-			
+
 
 			<!-- <div class="row">
 				<div class="col-md-12">
