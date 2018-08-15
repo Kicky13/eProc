@@ -209,11 +209,11 @@ class EC_Shipment extends MX_Controller
     public function approveVendor($po)
     {
         header('Content-Type: application/json');
-        $this->load->model('ec_shipment_m');
+        $this->load->model('ec_shipment_m');        
         if ($this->ec_shipment_m->approveVendor($po)){
             $this->userNotification('Approve', $po);
         }
-        $this->index();
+        redirect("EC_Shipment/");
     }
 
     public function rejectVendor($po)
@@ -223,17 +223,36 @@ class EC_Shipment extends MX_Controller
         if ($this->ec_shipment_m->rejectVendor($po)){
             $this->userNotification('Reject', $po);
         }
-        $this->index();
+        redirect("EC_Shipment/");
+    }
+
+    public function test()
+    {
+        $PO = '4500001270';
+        $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC" AS PLANT_NAME, MAT.MAKTX, MAT.MEINS, MAT.MATNR, (TC.QTY*DP.PRICE) TOTAL,
+            TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE,
+            TO_CHAR(GM.CHDATE,\'YYYY-MM-DD HH24:MI:SS\') AS EXPIRED_DATE, GM.QTY_SHIPMENT AS QTY_RECEIPT',
+            false);
+        $this->db->from('EC_T_SHIPMENT TS');
+        $this->db->join('EC_T_CHART TC', 'TC.PO_NO=TS.PO_NO', 'left');
+        $this->db->join('EC_T_DETAIL_PENAWARAN DP', 'TC.KODE_PENAWARAN=DP.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('EC_M_PLANT PLN', 'DP.PLANT=PLN.PLANT', 'inner');
+        $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'TC.MATNO=MAT.MATNR', 'inner');
+        $this->db->join('EC_GR_MATERIAL GM', 'GM.PO_NO=TS.PO_NO AND GM.MATNO=TC.MATNO AND GM.LINE_ITEM=TC.LINE_ITEM', 'INNER');
+        $this->db->where("TC.PO_NO", $PO, TRUE);
+        $this->db->order_by("TC.PO_NO DESC, TC.LINE_ITEM ASC");
+        $result = $this->db->get();
+        echo json_encode((array)$result->result_array());
     }
 
     public function userNotification($action, $po)
     {
         $this->load->model('ec_shipment_m');
-        $info = $this->ec_shipment_m->getPOHistory($po);
-        $vendor = $this->ec_shipment_m->getVendorInfo($po);
-        $tableData = $this->ec_shipment_m->detailPO($po);
-        $send = 'kicky120@gmail.com';
-        if (isset($tableData)){
+        $info = $this->ec_shipment_m->getPOHistory($po);        
+        $vendor = $this->ec_shipment_m->getVendorInfo($po);        
+        $tableData = $this->ec_shipment_m->getTableData($po);
+        $send = 'kicky120@gmail.com';        
+        if (isset($tableData)){            
             $table = $this->buildTableNotification($tableData);
             $data = array(
                 'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
@@ -243,7 +262,7 @@ class EC_Shipment extends MX_Controller
             $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
             $subject = 'PO No. '.$po.' Berhasil di '.$action.'.[E-Catalog Semen Indonesia] Fwd To : '.$info['EMAIL'];
             Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $send, $message, $subject);
-        }
+        }        
     }
 
     private function buildTableNotification($tableData) {
@@ -254,24 +273,24 @@ class EC_Shipment extends MX_Controller
             <tr>
                 <th style="font-weight:600;" class="text-center"> No.</th>
                 <th style="font-weight:600;"> No. PO</th>
-                <th style="font-weight:600;"> Nama Vendor</th>
                 <th style="font-weight:600;"> No. Material</th>
                 <th style="font-weight:600;"> Nama Material</th>
                 <th style="font-weight:600;"> Jumlah Order</th>
+                <th style="font-weight:600;"> Satuan</th>
                 <th style="font-weight:600;"> Plant</th>                
               </tr>        
               </thead>';
         $tbody = array();
         $no=1;
         foreach ($tableData as $d) {
-            if (isset($d['MATNO'])){
+            if (isset($d['MATNR'])){
                 $_tr = '<tr>
                     <td> '.$no++.'</td>
-                    <td> '.$d['PO_NO'].'</td>                      
-                    <td> '.$d['VENDOR_NAME'].'</td>
-                    <td> '.$d['MATNO'].'</td>
+                    <td> '.$d['PO_NO'].'</td>
+                    <td> '.$d['MATNR'].'</td>
                     <td> '.$d['MAKTX'].'</td>                   
-                    <td> '.$d['QTY_ORDER'].'</td>                      
+                    <td> '.$d['QTY'].'</td>
+                    <td> '.$d['MEINS'].'</td>                      
                     <td> '.$d['PLANT'].' - '.$d['PLANT_NAME'].'</td>                            
                   </tr>';
                 array_push($tbody, $_tr);

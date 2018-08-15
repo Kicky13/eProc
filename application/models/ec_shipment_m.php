@@ -15,11 +15,28 @@ class ec_shipment_m extends CI_Model
         $this->db->select('EC_T_SHIPMENT.*, EC_PL_APPROVAL.*,TO_CHAR (EC_T_SHIPMENT.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE', 
             false);
         $this->db->from($this->tableShipment);
-        $this->db->join('EC_PL_APPROVAL', 'EC_T_SHIPMENT.PO_NO=EC_PL_APPROVAL.PO_NO', 'inner');
+        $this->db->join('EC_PL_APPROVAL', 'EC_T_SHIPMENT.PO_NO = EC_PL_APPROVAL.PO_NO', 'inner');
         $this->db->where("EC_T_SHIPMENT.VENDORNO", $VENDORNO, TRUE);
         $this->db->order_by("EC_T_SHIPMENT.PO_NO DESC");
 //        $this->db->get();
 //        echo $this->db->last_query();die();
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
+    public function getTableData($PO){
+        $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC" AS PLANT_NAME, MAT.MAKTX, MAT.MEINS, MAT.MATNR, (TC.QTY*DP.PRICE) TOTAL,
+            TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE,
+            TO_CHAR(GM.CHDATE,\'YYYY-MM-DD HH24:MI:SS\') AS EXPIRED_DATE, GM.QTY_SHIPMENT AS QTY_RECEIPT',
+            false);
+        $this->db->from('EC_T_SHIPMENT TS');
+        $this->db->join('EC_T_CHART TC', 'TC.PO_NO=TS.PO_NO', 'left');
+        $this->db->join('EC_T_DETAIL_PENAWARAN DP', 'TC.KODE_PENAWARAN=DP.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('EC_M_PLANT PLN', 'DP.PLANT=PLN.PLANT', 'inner');
+        $this->db->join('EC_M_STRATEGIC_MATERIAL MAT', 'TC.MATNO=MAT.MATNR', 'inner');
+        $this->db->join('EC_GR_MATERIAL GM', 'GM.PO_NO=TS.PO_NO AND GM.MATNO=TC.MATNO AND GM.LINE_ITEM=TC.LINE_ITEM', 'INNER');
+        $this->db->where("TC.PO_NO", $PO, TRUE);
+        $this->db->order_by("TC.PO_NO DESC, TC.LINE_ITEM ASC");
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -59,7 +76,7 @@ class ec_shipment_m extends CI_Model
     }*/
 
     public function getPODetail($PO){
-        $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC" AS PLANT_NAME, MAT.MAKTX, MAT.MEINS, (TC.QTY*DP.PRICE) TOTAL,
+        $this->db->select('TS.*, TC.*, DP.PLANT, DP.DELIVERY_TIME, DP.PRICE, DP.CURRENCY, PLN."DESC" AS PLANT_NAME, MAT.MAKTX, MAT.MEINS, MAT.MATNR, (TC.QTY*DP.PRICE) TOTAL,
             TO_CHAR (TS.IN_DATE, \'dd-mm-yyyy\' ) APPROVE_DATE,
             TO_CHAR(GM.CHDATE,\'YYYY-MM-DD HH24:MI:SS\') AS EXPIRED_DATE, GM.QTY_SHIPMENT AS QTY_RECEIPT', 
             false);
