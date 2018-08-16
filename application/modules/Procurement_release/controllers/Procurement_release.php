@@ -147,7 +147,7 @@ class Procurement_release extends CI_Controller {
 	}
 
 	public function save_bidding() {
-		error_reporting(E_ALL);
+		// error_reporting(E_ALL);
 		$this->load->library("file_operation");
 		$this->load->model('prc_tender_main');
 		$this->load->model('prc_tender_main_log');

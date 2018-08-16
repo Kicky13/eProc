@@ -2,9 +2,9 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ec_uang_muka extends CI_Model {
+class ec_open_um extends CI_Model {
 
-    protected $table = 'EC_GR', $tableHeader = 'EC_INVOICE_HEADER', $tableDenda = "EC_T_DENDA_INV", $tableDoc = "EC_T_DOC_INV", $tableCOMPANY = 'EC_C_COMPANY', $tablePURC_ORG = 'EC_C_PURC_ORG', $tableDOC = "EC_C_DOCTYPE", $tableTracking = "EC_TRACKING_INVOICE", $tableUm = 'EC_UM_HEADER';
+    protected $table = 'EC_GR', $tableHeader = 'EC_UM_HEADER', $tableDenda = "EC_T_DENDA_INV", $tableDoc = "EC_T_DOC_INV", $tableCOMPANY = 'EC_C_COMPANY', $tablePURC_ORG = 'EC_C_PURC_ORG', $tableDOC = "EC_C_DOCTYPE", $tableTracking = "EC_TRACKING_UM";
 
     public function __construct() {
         parent::__construct();
@@ -1109,15 +1109,6 @@ SQL;
       return $this->db->query($sql)->result_array();
     }
 
-
-    public function getManUm($VND_NO){
-        $this->db->from($this->tableUm);
-        $this->db->join('EC_TRACKING_UM', 'EC_TRACKING_UM.ID_UM = EC_UM_HEADER.ID_UM', 'left');
-        $this->db->where("VENDOR_NO = ".$VND_NO);
-        $result = $this->db->get();
-        return (array) $result->result_array();
-    }
-
     public function getGRVND($venno = '', $noinvoice = '', $status = '') {
         $this->db->select("EC_GR.*,EC_M_STRATEGIC_MATERIAL.*,EC_INVOICE_HEADER.*,
 							TO_CHAR (\"EC_INVOICE_HEADER\".\"INVOICE_DATE\",'DD/MM/YYYY') AS INVOICE_DATE2,
@@ -1408,7 +1399,7 @@ SQL;
 		,ETI.STATUS_DOC
 		,ETI.POSISI
               --  ,(select name1 FROM ec_gr_sap WHERE EBELN = EIH.NO_SP_PO AND ROWNUM = 1) VEND_NAME
-                ,VH.VENDOR_NAME VEND_NAME, EGS.BSART, EGS.BWART
+                ,VH.VENDOR_NAME VEND_NAME, EGS.BSART
                 FROM EC_INVOICE_HEADER EIH
                 JOIN VND_HEADER VH ON lpad(VH.VENDOR_NO,10,0) = EIH.VENDOR_NO
                 JOIN (SELECT max("DATE") LAST_UPDATE,ID_INVOICE FROM EC_TRACKING_INVOICE GROUP BY ID_INVOICE) TT
@@ -1418,18 +1409,7 @@ SQL;
                 ' . $where_str . '
                 ' . $order . '
 ';
-        $result = $this->db->query($sql);
-
-        return (array) $result->result_array();
-    }
-
-    public function get_Um($where_str = '', $order = '') {
-        $sql = 'SELECT distinct EGS.*,VH.VENDOR_NAME VEND_NAME
-                FROM EC_GR_SAP EGS
-                JOIN VND_HEADER VH ON lpad(VH.VENDOR_NO,10,0) = EGS.LIFNR
-                ' . $where_str . '
-                ' . $order . '
-';
+  //echo '<pre>'.$sql;
         $result = $this->db->query($sql);
 
         return (array) $result->result_array();
@@ -1463,26 +1443,26 @@ SQL;
     }
 
     public function tracking($ID_INVOICE) {
-        $this->db->select("EC_TRACKING_INVOICE.*,EC_INVOICE_HEADER.*,
-		TO_CHAR (\"EC_TRACKING_INVOICE\".\"DATE\",'dd/mm/yyyy hh24:mi:ss') AS TRACK_DATE", false);
+        $this->db->select("EC_TRACKING_UM.*,EC_UM_HEADER.*,
+		TO_CHAR (\"EC_TRACKING_UM\".\"DATE\",'dd/mm/yyyy hh24:mi:ss') AS TRACK_DATE", false);
         $this->db->from($this->tableTracking);
-        $this->db->where("EC_TRACKING_INVOICE.ID_INVOICE", $ID_INVOICE, TRUE);
-        $this->db->join('EC_INVOICE_HEADER', 'EC_TRACKING_INVOICE.ID_INVOICE = EC_INVOICE_HEADER.ID_INVOICE', 'inner');
-        $this->db->order_by('EC_TRACKING_INVOICE.DATE', 'DESC');
+        $this->db->where("EC_TRACKING_UM.ID_UM", $ID_INVOICE, TRUE);
+        $this->db->join('EC_UM_HEADER', 'EC_TRACKING_UM.ID_UM = EC_UM_HEADER.ID_UM', 'inner');
+        $this->db->order_by('EC_TRACKING_UM.DATE', 'DESC');
         $result = $this->db->get();
         return (array) $result->result_array();
     }
 
     public function setStatus_Invoice($ID_INVOICE, $status, $NAMA) {
-        $this->db->where("EC_INVOICE_HEADER.ID_INVOICE", $ID_INVOICE, TRUE);
+        $this->db->where("EC_UM_HEADER.ID_UM", $ID_INVOICE, TRUE);
         $this->db->update($this->tableHeader, array("STATUS_HEADER" => $status));
 
-        $this->db->set('ID_INVOICE', $ID_INVOICE, FALSE);
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
         $this->db->set('DATE','sysdate', FALSE);
         $this->db->set('STATUS_TRACK', $status, FALSE);
         $this->db->set('DESC', "EDIT", TRUE);
-        $this->db->set('STATUS_DOC', "BELUM KIRIM", TRUE);
-        $this->db->set('POSISI', "VENDOR", TRUE);
+        $this->db->set('STATUS_DOC', "KIRIM", TRUE);
+        $this->db->set('POSISI', "VERIFIKASI", TRUE);
         $this->db->set('USER', $NAMA, TRUE);
         $this->db->insert($this->tableTracking);
     }

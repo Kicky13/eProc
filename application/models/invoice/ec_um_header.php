@@ -3,7 +3,7 @@
 class ec_um_header extends MY_Model {
     public $table = 'EC_UM_HEADER';
     protected $timestamp = FALSE;
-    public $primary_key = 'ID_INVOICE';
+    public $primary_key = 'ID_UM';
 
     public function update($data,$where){
         $this->db->set('CHDATE','sysdate',FALSE);

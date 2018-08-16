@@ -252,14 +252,14 @@
                 </div>
             </div>
 
-            <div class="form-group" id='ref_fp'>
+<!--             <div class="form-group" id='ref_fp'>
                 <label for="faktur" class="col-sm-3 control-label">Referensi No. Faktur Pajak </label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control format-pajak" readonly="" id="ref_faktur" name="ref_faktur_no" >
                 </div>
                 <div class="col-sm-3" id='link_ref_fp'>
                 </div>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label for="Invoice No" class="col-sm-3 control-label">No. SP/PO *</label>

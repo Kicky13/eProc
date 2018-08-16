@@ -78,6 +78,17 @@ class vnd_perf_sanction_approve extends CI_Model {
 		return $result->result_array();
 	}
 
+	public function list_sanction_approve_1($urutan){
+
+		$this->db->select('h.VENDOR_NO,h.VENDOR_ID,h.VENDOR_NAME,h.COMPANYID,(CASE WHEN "vpsa"."STATUS"=0 THEN \'SANCTION APPROVAL\' ELSE \'SANCTION APPROVED\' END) AS STATUS,APPROVED_DATE');
+		$this->db->from($this->table.' "vpsa"');
+		$this->db->where(array('vpsa.URUTAN'=>$urutan,'vpsa.STATUS'=>0));
+		$this->db->join('VND_PERF_SANCTION "vps"','vps.SANCTION_ID=vpsa.SANCTION_ID','inner');
+		$this->db->join('VND_HEADER "h"','h.VENDOR_NO=vps.VENDOR_NO','left');
+		$result = $this->db->get();
+		return $result->result_array();
+	}
+
 	public function join_employe(){
 		$this->db->select('ADM_EMPLOYEE.FULLNAME');
 		$this->db->join('ADM_EMPLOYEE', "ADM_EMPLOYEE.ID = $this->table.APPROVED_BY", 'inner');

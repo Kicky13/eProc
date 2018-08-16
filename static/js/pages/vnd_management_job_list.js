@@ -270,6 +270,7 @@ $(document).ready(function(){
                 var form_data = $('#term_payment').val();
                 var vendor = $('.vendor_id').val();
                 var data_comment = $('#vnd_comment').val();
+                var account_group = $('#account_group').val();
 
                 e.preventDefault();
                 swal({
@@ -304,7 +305,7 @@ $(document).ready(function(){
                         $.ajax({
                             url : urlnya,
                             method : 'post',
-                            data : { vendor_id : vendor, term : form_data, comment : data_comment},
+                            data : { vendor_id : vendor, term : form_data, comment : data_comment, account_group : account_group},
                             dataType : "json"
                         })
                         .done(function(result) {

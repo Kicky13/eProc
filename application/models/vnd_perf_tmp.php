@@ -27,6 +27,22 @@ class vnd_perf_tmp extends CI_Model {
         return $result;
     }
 
+    public function list_perencanaan_1($urutan)
+    { 	
+    	$subquery0 = "SELECT VENDOR_CODE,PERF_TMP_ID,STATUS FROM VND_PERF_TMP WHERE STATUS >-1";
+        $subquery1 = "SELECT VENDOR_CODE,max(perf_tmp_id) as MAXID from (".$subquery0.") z GROUP BY VENDOR_CODE";
+		$subquery2 = "SELECT T2.* FROM VND_PERF_TMP T2 INNER JOIN ( ".$subquery1." ) T1 ON T1.MAXID = T2.PERF_TMP_ID";
+		$subquery4 = "SELECT ADM_PURCH_GRP.COMPANY_ID,ADM_PURCH_GRP.KEL_PURCH_GRP FROM ADM_PURCH_GRP GROUP BY ADM_PURCH_GRP.KEL_PURCH_GRP,ADM_PURCH_GRP.COMPANY_ID";
+		$subquery3 = "SELECT ROWNUM RNUM, VPA.APPROVE_ID, VPA.TMP_ID, VPA.EMP_ID, VPA.APPROVED_DATE, VPA.URUTAN, VPA.STATUS_APRV, VND_HEADER.VENDOR_ID, VND_HEADER.VENDOR_NAME, VND_HEADER.EMAIL_ADDRESS, VND_HEADER.VENDOR_NO, VND_HEADER.STATUS_PERUBAHAN, VND_HEADER.STATUS, VND_HEADER.NEXT_PAGE, VND_HEADER.COMPANYID,ADM_PURCH_GRP.KEL_PURCH_GRP  FROM VND_HEADER INNER JOIN ( ".$subquery2." ) T3 ON T3.VENDOR_CODE = VND_HEADER.VENDOR_NO INNER JOIN VND_PERF_APPROVE VPA ON VPA.TMP_ID=T3.PERF_TMP_ID LEFT JOIN ( ".$subquery4." ) ADM_PURCH_GRP ON ADM_PURCH_GRP.COMPANY_ID = VND_HEADER.COMPANYID WHERE VND_HEADER.STATUS=3 AND VND_HEADER.VENDOR_NO IS NOT NULL AND VPA.STATUS_APRV=0 AND VPA.URUTAN = ".$urutan." ";
+		
+        $this->db->select("*");
+        $this->db->from("(".$subquery3.")");
+
+        $query = $this->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+
 	function get_id() {
 		$this->db->select_max($this->primary_key, 'MAX');
 		$max = $this->db->get($this->table)->row_array();

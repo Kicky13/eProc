@@ -333,7 +333,10 @@ status registrasi "STATUS"
 	 	$id = $this->session->userdata['ID'];
 	 	$opco = $this->session->userdata['EM_COMPANY'];
 	 	$kl_opco = $this->session->userdata['KEL_PRGRP'];
+	 	$role = $this->session->userdata['GRPAKSES'];
 	 	$data_emp = $this->vendor_employe->getemplo($id);
+	 	// echo "<pre>";
+	 	// print_r($kl_opco);die;
 
 	 	if ($opco == '7000' || $opco == '2000' || $opco == '5000') {
 	 		$whereopco = array(7000,2000,5000);
@@ -349,7 +352,11 @@ status registrasi "STATUS"
 		if ($emp['LEVEL'] == 1) { //supervisor
 			$this->load->model(array('tmp_vnd_header', 'vnd_header','vnd_perf_tmp'));
 			$data_vendor = array();
-			$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(1, 2, 7))->where("COMPANYID",$whereopco)->get_all());
+			if ($role == 501) {
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(1, 2, 7))->get_all());				
+			}else{
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(1, 2, 7))->where("COMPANYID",$whereopco)->get_all());	
+			}
 			// 99 = fix registration hide
 			if(!empty($datatable_reg)){
 				foreach ($datatable_reg as $key => $val) {
@@ -357,7 +364,11 @@ status registrasi "STATUS"
 				}
 			}
 
-			$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3))->where("STATUS_PERUBAHAN",array(2,8,9))->where("COMPANYID",$whereopco)->get_all());
+			if ($role == 501) {
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3))->where("STATUS_PERUBAHAN",array(2,8,9))->get_all());
+			}else{
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3))->where("STATUS_PERUBAHAN",array(2,8,9))->where("COMPANYID",$whereopco)->get_all());
+			}
 			if(!empty($datatable_update)){
 				foreach ($datatable_update as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "PRODUCT_TYPE_PROC"=>$val['PRODUCT_TYPE_PROC'], "UPDATED_AT"=>$val['MODIFIED_DATE']));
@@ -365,7 +376,11 @@ status registrasi "STATUS"
 			}
 
 			$urutan = 1 ;
-			$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			if ($role == 501){
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan_1($urutan));
+			}else{
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			}
 			if(!empty($datatable_perf_tmp)){
 				foreach ($datatable_perf_tmp as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS_APRV'], "UPDATED_AT"=>$val['APPROVED_DATE']));
@@ -377,7 +392,11 @@ status registrasi "STATUS"
 		if ($emp['LEVEL'] == 2) { //manager
 			$this->load->model(array('tmp_vnd_header', 'vnd_header','vnd_perf_tmp','vnd_perf_sanction_approve'));
 			$data_vendor = array();
-			$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(5))->where("COMPANYID", $whereopco)->get_all());
+			if ($role == 501){
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(5))->get_all());
+			}else{
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(5))->where("COMPANYID", $whereopco)->get_all());
+			}
 
 			if(!empty($datatable_reg)){
 				foreach ($datatable_reg as $key => $val) {
@@ -385,7 +404,11 @@ status registrasi "STATUS"
 				}
 			}
 
-			$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>4))->where("COMPANYID",$whereopco)->get_all());
+			if ($role == 501){
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>4))->get_all());
+			}else{
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>4))->where("COMPANYID",$whereopco)->get_all());
+			}
 			if(!empty($datatable_update)){
 				foreach ($datatable_update as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'],"PRODUCT_TYPE_PROC"=>$val['PRODUCT_TYPE_PROC'], "UPDATED_AT"=>$val['MODIFIED_DATE']));
@@ -393,14 +416,22 @@ status registrasi "STATUS"
 			}
 
 			$urutan = 2 ;
-			$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			if ($role == 501){
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan_1($urutan));
+			}else{
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			}
 			if(!empty($datatable_perf_tmp)){
 				foreach ($datatable_perf_tmp as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS_APRV'], "UPDATED_AT"=>$val['APPROVED_DATE']));
 				}
 			}
 
-			$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve($urutan,$opco));
+			if ($role == 501){
+				$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve_1($urutan));
+			}else{
+				$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve($urutan,$opco));
+			}
 			if(!empty($datatable_perf_sanction)){
 				foreach ($datatable_perf_sanction as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "UPDATED_AT"=>$val['APPROVED_DATE']));
@@ -411,7 +442,11 @@ status registrasi "STATUS"
 		if ($emp['LEVEL'] == 3) { //senior manager
 			$this->load->model(array('tmp_vnd_header', 'vnd_header','vnd_perf_tmp','vnd_perf_sanction_approve'));
 			$data_vendor = array();
-			$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(6))->where("COMPANYID",$whereopco)->get_all());
+			if ($role == 501){
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(6))->get_all());
+			}else{
+				$datatable_reg = cleanDateinArray($this->tmp_vnd_header->with_regcode()->where("STATUS",array(6))->where("COMPANYID",$whereopco)->get_all());
+			}
 
 			if(!empty($datatable_reg)){
 				foreach ($datatable_reg as $key => $val) {
@@ -419,7 +454,11 @@ status registrasi "STATUS"
 				}
 			}
 
-			$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>5))->where("COMPANYID",$whereopco)->get_all());
+			if ($role == 501){
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>5))->get_all());
+			}else{
+				$datatable_update = cleanDateinArray($this->vnd_header->where(array("STATUS"=>3 ,"STATUS_PERUBAHAN"=>5))->where("COMPANYID",$whereopco)->get_all());
+			}
 			if(!empty($datatable_update)){
 				foreach ($datatable_update as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'],"PRODUCT_TYPE_PROC"=>$val['PRODUCT_TYPE_PROC'], "UPDATED_AT"=>$val['MODIFIED_DATE']));
@@ -427,14 +466,22 @@ status registrasi "STATUS"
 			}
 
 			$urutan = 3;
-			$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			if ($role == 501){
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan_1($urutan));
+			}else{
+				$datatable_perf_tmp = cleanDateinArray($this->vnd_perf_tmp->list_perencanaan($urutan,$kl_opco));
+			}
 			if(!empty($datatable_perf_tmp)){
 				foreach ($datatable_perf_tmp as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_ID'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS_APRV'], "UPDATED_AT"=>$val['APPROVED_DATE']));
 				}
 			}
 
-			$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve($urutan,$opco));
+			if ($role == 501){
+				$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve_1($urutan));
+			}else{
+				$datatable_perf_sanction = cleanDateinArray($this->vnd_perf_sanction_approve->list_sanction_approve($urutan,$opco));
+			}
 			if(!empty($datatable_perf_sanction)){
 				foreach ($datatable_perf_sanction as $key => $val) {
 					array_push($data_vendor, array("VENDOR_ID"=>$val['VENDOR_NO'], "VENDOR_NAME"=>$val['VENDOR_NAME'], "STATUS"=>$val['STATUS'], "UPDATED_AT"=>$val['APPROVED_DATE']));
@@ -550,6 +597,8 @@ function update_approve_staff() {
 	$term = $this->input->post('term');
 	$comen = $this->input->post('comen');
 	$account_group = $this->input->post('account_group');
+	// echo "<pre>";
+	// print_r($account_group);die;
 
 	$data_insert = array();
 
@@ -689,7 +738,8 @@ function update_approve_staff() {
 		$tmp_reconc = $this->m_vnd_reconc_acc->get(array('VENDOR_TYPE'=>$vendor_type));
 		$data_vendor['AKONT'] = $tmp_reconc[0]['GL_ACCOUNT'];
 
-		// var_dump($data_vendor);
+		// echo "<pre>";
+		// print_r($data_vendor);die;
 		$this->load->library('sap_handler');
 		$param_sap = $data_vendor;
 		$return_sap = $this->sap_handler->createVendor($data_vendor);
@@ -1843,6 +1893,7 @@ function update_approve_staff() {
 		$this->load->model('vendor_employe');
 		$this->load->model('vnd_vendor_comment');
 		$idem = $this->session->userdata['ID'];
+		$role = $this->session->userdata['GRPAKSES'];
 		$employ = $this->vendor_employe->getemplo($idem);
 
 		$comen = $this->input->post('comment');
@@ -1852,7 +1903,11 @@ function update_approve_staff() {
 			$ven= $temp;
 			if ($employ[0]['LEVEL'] == 1) { 
 
-				$this->tmp_vnd_header->update(array("STATUS" => '5', "NEXT_PAGE" => "Approve Registrasi Kasi Perencanaan"),array("VENDOR_ID" => intval($ven)));
+				if ($role == 501){
+					$this->tmp_vnd_header->update(array("STATUS" => '6', "NEXT_PAGE" => "Approve Registrasi Vendor Strategis"),array("VENDOR_ID" => intval($ven)));
+				}else{
+					$this->tmp_vnd_header->update(array("STATUS" => '5', "NEXT_PAGE" => "Approve Registrasi Kasi Perencanaan"),array("VENDOR_ID" => intval($ven)));
+				}
 
 				
 				$cmt["VENDOR_ID"] = intval($ven);
@@ -1870,9 +1925,15 @@ function update_approve_staff() {
 					$this->authorization->getCurrentRole(),'Registration ( Approve Perencanaan )','APPROVE',$this->input->ip_address());
 				$LM_ID = $this->log_data->last_id();
 			//--END LOG MAIN--//
-				$data['STATUS'] = '5';
-				$data['NEXT_PAGE'] = 'Approve Registrasi Kasi Perencanaan';
-				$where['VENDOR_ID'] = intval($ven);
+				if ($role == 501){
+					$data['STATUS'] = '5';
+					$data['NEXT_PAGE'] = 'Approve Registrasi Vendor Strategis';
+					$where['VENDOR_ID'] = intval($ven);
+				}else{
+					$data['STATUS'] = '5';
+					$data['NEXT_PAGE'] = 'Approve Registrasi Kasi Perencanaan';
+					$where['VENDOR_ID'] = intval($ven);
+				}
 
 			//--LOG DETAIL--//
 				$this->log_data->detail($LM_ID,'Vendor_management/do_approve_regis','tmp_vnd_header','update',$data,$where);

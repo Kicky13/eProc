@@ -1,6 +1,43 @@
 var amountOLD = 0;
 var total_amount = 0
 $(document).ready(function() {
+
+    $("#dp_req_amount").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+             // Allow: Ctrl/cmd+A
+             (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: Ctrl/cmd+C
+             (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: Ctrl/cmd+X
+             (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: home, end, left, right
+             (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+               return;
+             }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+          e.preventDefault();
+        }
+      });
+
+  $('#dp_req_amount').keyup(function(event) {
+    if(event.which >= 37 && event.which <= 40){
+      event.preventDefault();
+    }
+    $(this).val(function(index, value) {
+      value = value.replace(/,/g,'');
+      return numberWithCommas(value);
+    });
+  });
+
+  function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+  
     $('.tab2').on('shown.bs.tab', function(e) {
         $("#create").hide();
     });
@@ -9,9 +46,9 @@ $(document).ready(function() {
         $("#create").show();
     });
 
+    loadTable();
     loadTable_invoice();
     //loadTableProposal();
-    loadTable();
 
     $("#alasanreject").val('');
     $(".sear").hide();
@@ -67,7 +104,7 @@ function loadTable() {
         "language": {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data List Contract...</b></center>"
         },
-        "ajax": $("#base-url").val() + 'EC_Invoice_um/get_data',
+        "ajax": $("#base-url").val() + 'EC_Invoice_um/get_data_um',
 
         "columnDefs": [{
             "searchable": false,
@@ -85,106 +122,56 @@ function loadTable() {
                 $(this).find('td').attr('nowrap', 'nowrap');
             });
         },
-        "columns": [{
+        "columns": [
+        {
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.GR_NO;
+                a += full.EBELN;
                 a += "</div>";
                 return a;
             }
         },{
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.RR_NO;
+                a += full.BEDAT.substring(6) + '/' + full.BEDAT.substring(4, 6) + '/' + full.BEDAT.substring(0, 4);
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function(data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.MATNR;
                 a += "</div>";
                 return a;
             }
         },{
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.GR_ITEM_NO;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.CREATE_ON.substring(6) + '/' + full.CREATE_ON.substring(4, 6) + '/' + full.CREATE_ON.substring(0, 4);
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.GR_DATE.substring(6) + '/' + full.GR_DATE.substring(4, 6) + '/' + full.GR_DATE.substring(0, 4);
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.DESCRIPTION == null ? "-" : full.DESCRIPTION;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += number_format(full.AVAILABLE_QTY, 2, ',', '.');
-                a += " <a href='#' data-qtyasli='"+number_format(full.AVAILABLE_QTY, 2, ',', '.')+"' data-qtybaru='"+number_format(full.AVAILABLE_QTY, 2, ',', '.')+"' onclick='updateQty(this)'><i class='glyphicon glyphicon-pencil'></i></a>";
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.GR_ITEM_UNIT == null ? "-" : full.GR_ITEM_UNIT;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += numberWithCommas(full.GR_AMOUNT_IN_DOC * (full.AVAILABLE_QTY /full.GR_ITEM_QTY));
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.GR_CURR == null || full.GR_CURR == 'null' ? "-" : full.GR_CURR;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.PO_NO;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center'>";
-                a += full.PO_ITEM_NO;
-                a += "</div>";
-                return a;
-            }
-        }, {
-            mRender: function(data, type, full) {
-                var val = full.LOT_NUMBER == null ? '-' : full.LOT_NUMBER;
-
-                a = "<div class='col-md-12 text-center'>";
-                a += val;
+                a += full.TXZ01;
                 a += "</div>";
                 return a;
             }
         },{
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                // onchange="ckbk(this,\'' + full.GR_NO + '\',\'' + full.GR_ITEM_NO + '\')"
-                a += '<input type="checkbox"class="lot'+full.LOT_NUMBER+'" onclick="cekGRSelected(this)" class="ckb" value="' + full.PO_NO + '" data-curr="' + full.GR_CURR + '"  data-gr="' + full.GR_NO + '" data-amount="' + full.GR_AMOUNT_IN_DOC + '" data-grl="' + full.GR_ITEM_NO + '" data-tahun="' + full.GR_YEAR + '" data-uom="' + full.GR_ITEM_UNIT + '" data-item_qty="' + full.AVAILABLE_QTY + '" data-av_qty="' + full.AVAILABLE_QTY + '" data-qtyasli="' + full.GR_ITEM_QTY +'" data-po_item_no="' + full.PO_ITEM_NO + '"data-no_ba="' + full.NO_BA + '" ';
-                a += 'data-norr="'+full.RR_NO+'" data-grdate="' + full.CREATE_ON + '"  data-grposting="' + full.GR_DATE + '" data-description="' + full.DESCRIPTION + '" data-item_cat="' + full.TYPE_TRANSAKSI + '" data-lot_number="' + full.LOT_NUMBER + '"  data-print_type="' + full.PRINT_TYPE + '"';
+                a += number_format(full.NETPRC, 2, ',', '.')
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function(data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                a += full.WAERS;
+                a += "</div>";
+                return a;
+            }
+        },{
+            mRender: function(data, type, full) {
+                a = "<div class='col-md-12 text-center'>";
+                //a += '<input type="checkbox"class="lot'+full.BWART+'" onclick="cekGRSelected(this)" class="ckb" value="' + full.EBELN + '" data-curr="' + full.WAERS + '"  data-gr="' + full.NO + '" data-amount="' + full.WRBTR + '" data-grl="' + full.BUZEI + '" data-tahun="' + full.GR_YEAR + '" data-uom="' + full.MEINS + '" data-item_qty="' + full.MENGE + '" data-av_qty="' + full.MENGE + '" data-qtyasli="' + full.GR_ITEM_QTY +'" data-po_item_no="' + full.EBELP + '"data-no_ba="' + full.NO_BA + '" ';
+                // a += '<input type="checkbox"class="lot'+full.BWART+'" class="ckb" value="' + full.EBELN + '" data-curr="' + full.WAERS + '"  data-gr="' + full.NO + '" data-amount="' + full.WRBTR + '" data-grl="' + full.BUZEI + '" data-tahun="' + full.GR_YEAR + '" data-uom="' + full.MEINS + '" data-item_qty="' + full.MENGE + '" data-av_qty="' + full.MENGE + '" data-qtyasli="' + full.GR_ITEM_QTY +'" data-po_item_no="' + full.EBELP + '"data-no_ba="' + full.NO_BA + '" ';
+                // a += 'data-norr="'+full.BELNR+'" data-grdate="' + full.BLDAT + '"  data-grposting="' + full.BUDAT + '" data-description="' + full.TXZ01 + '" data-item_cat="' + full.TYPE_TRANSAKSI + '" data-lot_number="' + full.BWART + '"  data-print_type="' + full.PRINT_TYPE + '"';
+                a += '<input type="checkbox"class="lot'+full.EBELN+'" onclick="cekGRSelected(this)" class="ckb" value="' + full.EBELN + '" data-amount="' + full.NETPRC + '"';
                 // '
                 if (full.STATUS == 1)
                     a += " checked>";
@@ -324,7 +311,7 @@ function loadTable_invoice() {
         "language": {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data List Contract...</b></center>"
         },
-        "ajax": $("#base-url").val() + 'EC_Invoice_um/get_data_invoice',
+        "ajax": $("#base-url").val() + 'EC_Invoice_um/get_data',
 
         "columnDefs": [{
             "searchable": false,
@@ -352,14 +339,9 @@ function loadTable_invoice() {
             });
 
         },
-        "columns": [{
-            mRender: function(data, type, full) {
-                a = "<div class='col-md-12 text-center ds'>";
-                a += full.NO;
-                a += "</div>";
-                return a;
-            }
-        }, {
+        "columns": [
+        {
+
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center '>";
                 a += full.INVOICE_DATE;
@@ -369,7 +351,7 @@ function loadTable_invoice() {
         }, {
             mRender: function(data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
-                a += full.NO_INVOICE;
+                a += full.ID_UM;
                 a += "</div>";
                 return a;
             }
@@ -439,34 +421,34 @@ function loadTable_invoice() {
     },  {
         mRender: function(data, type, full) {
             a = "<div class='col-md-12 '>";
-            a += "<a href='" + $("#base-url").val() + "EC_Invoice_um/detail/" + full.ID_INVOICE + "/" + full.STATUS_HEADER + "' title='View / Edit Invoice'><span class='glyphicon glyphicon-list-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;";
+            a += "<a href='" + $("#base-url").val() + "EC_Invoice_um/detail/" + full.ID_UM + "/" + full.STATUS_HEADER + "' title='View / Edit Invoice'><span class='glyphicon glyphicon-list-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;";
             if (full.STATUS_HEADER == '1') {
-                a += "<a href=\"javascript:deleteInv(this," + full.ID_INVOICE + ")\" title='Hapus Invoice'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>&nbsp;&nbsp;"
-                a += "<a href=\"javascript:setStatus(this," + full.ID_INVOICE + ",2)\" title='Submit Invoice'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                a += "<a href=\"javascript:deleteInv(this," + full.ID_UM + ")\" title='Hapus Invoice'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                a += "<a href=\"javascript:setStatus(this," + full.ID_UM + ",2)\" title='Submit Invoice'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;"
             } else if (full.STATUS_HEADER == '2') {
 
             } else if (full.STATUS_HEADER == '3') {
                 if (full.STATUS_DOC == 'BELUM KIRIM' && full.POSISI == 'VENDOR') {
-                    a += "<a href='#' data-invoice='" + full.ID_INVOICE + "' onclick='kirimDokumen(this)' title='Kirim Dokumen'><span class='glyphicon glyphicon-share' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                    a += "<a href='#' data-invoice='" + full.ID_UM + "' onclick='kirimDokumen(this)' title='Kirim Dokumen'><span class='glyphicon glyphicon-share' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 }
                 if (full.STATUS_DOC == 'KIRIM' && full.POSISI == 'EKSPEDISI') {
-                    a += "<a href='EC_Invoice_um/cetakDokumenEkspedisi/" + full.ID_INVOICE + "' target='_blank' data-invoice='" + full.ID_INVOICE + "' title='Cetak Dokumen'><span class='glyphicon glyphicon-print' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                    a += "<a href='EC_Invoice_um/cetakDokumenEkspedisi/" + full.ID_UM + "' target='_blank' data-invoice='" + full.ID_UM + "' title='Cetak Dokumen'><span class='glyphicon glyphicon-print' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 }
                 if (full.STATUS_DOC == 'RETUR' && full.POSISI == 'EKSPEDISI') {
-                    a += "<a href='#' data-proses='terima_retur' data-invoice='" + full.ID_INVOICE + "' onclick='terimaDokumen(this)' title='Terima Dokumen'><span class='glyphicon glyphicon-check' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                    a += "<a href='#' data-proses='terima_retur' data-invoice='" + full.ID_UM + "' onclick='terimaDokumen(this)' title='Terima Dokumen'><span class='glyphicon glyphicon-check' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 }
                 if (full.STATUS_DOC == 'TERIMA' && full.POSISI == 'VENDOR') {
-                    a += "<a href='#' data-invoice='" + full.ID_INVOICE + "' data-status='kirimUlang' onclick='kirimDokumen(this)' title='Kirim Ulang Dokumen'><span class='glyphicon glyphicon-share' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                    a += "<a href='#' data-invoice='" + full.ID_UM + "' data-status='kirimUlang' onclick='kirimDokumen(this)' title='Kirim Ulang Dokumen'><span class='glyphicon glyphicon-share' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 }
             } else if (full.STATUS_HEADER == '4') {
-                a += "<a href=\"javascript:deleteInv(this," + full.ID_INVOICE + ")\" title='Hapus Invoice'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>&nbsp;&nbsp;"
-                a += "<a href=\"javascript:setStatus(this," + full.ID_INVOICE + ",2)\" title='Submit Invoice'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                a += "<a href=\"javascript:deleteInv(this," + full.ID_UM + ")\" title='Hapus Invoice'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                a += "<a href=\"javascript:setStatus(this," + full.ID_UM + ",2)\" title='Submit Invoice'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;"
             } else if (full.STATUS_HEADER == '5') {
 
             } else if (full.STATUS_HEADER == '6') {
 
             }
-            a += "<a href='javascript:void(0)' data-toggle=\"modal\" data-id_invoice='" + full.ID_INVOICE + "' data-target=\"#modalTracking\" title='History Invoice'><span class='glyphicon glyphicon-search' aria-hidden='true'></span></a>"
+            a += "<a href='javascript:void(0)' data-toggle=\"modal\" data-id_invoice='" + full.ID_UM + "' data-target=\"#modalTracking\" title='History Invoice'><span class='glyphicon glyphicon-search' aria-hidden='true'></span></a>"
             a += "</div>";
             return a;
         }
@@ -1007,62 +989,19 @@ function createInvoice(elm) {
         var _lot_no = grTerpilih.eq(0).data('lot_number');                        
         grTerpilih.each(function() {
             _tmpgr = $(this).data('gr');
+            _amount = $(this).data('amount');
             _tmprr = $(this).data('norr');
             _templt = $(this).data('lot_number');
             print_type = $(this).data('print_type');
             var temp_ba = $(this).data('no_ba');            
 
-            if(temp_ba!=null){_no_ba.push(temp_ba);}
-
-            rr_ref_fp.push(_tmprr);                      
-            if(lot_tan!=_templt){
-                lot_tan.push(_templt);
-            }           
-            var base_qty = $(this).data('qtyasli'); // Quantity Total
-            var available = $(this).attr('data-av_qty'); // Quantity yang Tersedia
-            var cur_qty = $(this).attr('data-item_qty'); // Quantity yang akan diinvoicekan
-
-            var base_amount = $(this).data('amount'); // Amount Total
-
-            var cur_amount = base_amount * (cur_qty/base_qty); // Amount yang Akan diinvoicekan
-
-            var check_qty = available == cur_qty ? 1 : 0; // Cek Ketersediaan Quantity untuk diinvoicekan lagi
-            var check_first_inv = base_qty == available ? 1 : 0;
-
-            gr = $(this).data('gr') + '#' + $(this).data('grl') + '#' + $(this).data('tahun') + '#' + $(this).val() + '#';
-            gr += $(this).data('po_item_no') + '#' + $(this).data('curr') + '#' + cur_amount + '#' + $(this).data('uom') + '#' + $(this).data('item_qty');
-            gr += '#' + $(this).data('grdate') + '#' + $(this).data('grposting') + '#' + $(this).data('description')+ '#' + check_qty+ '#' + check_first_inv;
-
-            arrGR.push(gr);
-
-
-            /* no_gr#gr_item_no#tahun#po#po_item_no#curr#amount#uom#item_qty#grdate#grposting#description
-            gr = $(this).data('gr') + '#' + $(this).data('grl') + '#' + $(this).data('tahun') + '#' + $(this).val() + '#' + $(this).data('po_item_no') + '#' + $(this).data('curr') + '#' + $(this).data('amount') + '#' + $(this).data('uom') + '#' + $(this).data('item_qty');
-            gr += '#' + $(this).data('grdate') + '#' + $(this).data('grposting') + '#' + $(this).data('description');
-
-            arrGR.push(gr);*/
-
-          //  itemCat = '1'; /* nanti harus dikomentar */
-          if(!empty(_tmprr) && itemCat != '9'){ /* jika jasa maka tidak perlu ditampilkan nomer RR */
-              if(no_rr[_tmprr] == undefined){
-                no_rr[_tmprr] = _tmprr;
-            }
-        }
-
-        if(!empty(_tmprr) && itemCat == '9'){
-          _cariBapp.push({gr_no : $(this).data('gr'), gr_item_no : $(this).data('grl'),gr_year : $(this).data('tahun'), po_no : no_po, po_item :$(this).data('po_item_no') });
-      }
-      /* dinullkan dulu, nanti dihapus jika gr online sudah diupload */
-      if(_templt == null){
-        no_rr = [];
-    }
-    jumlah += parseInt($(this).data('amount'));
-});
+            jumlah += parseInt($(this).data('amount'));
+        });
 
 
 
         bootbox.dialog({
-            title: 'Create Invoice No. PO ' + no_po,
+            title: 'Create Uang Muka No. PO ' + no_po,
             message: $('#divCreateInvoice').html(),
             className: 'mediumWidth',
             callback: function() {}
@@ -1217,55 +1156,18 @@ $(':file').on('change', function() {
 
     if (_error == 1) {
         alert('Ukuran File Anda Lebih Besar Dari 4MB atau Tipe File Tidak Sesuai');
-                    //$("input[name=fileInv]").html("File size is greater than 2MB");
-                    //$('input[name=fileInv]').css("border-color","#FF0000");
-                    $(this).val('');
-                }
+        $(this).val('');
+    }
 
-            });
+});
 var _form = $(this).find('form');
 _form.submit(function(e){
     var currentForm = this;
     e.preventDefault();
-    /* cek apakah ada errornya */
     var _error = 0;
     var _message = [];
     var _pajak = _form.find('select[name=pajak]').val();
-    /* jika pajak */
-    if(_pajak != 'VZ'){
-
-      var _nomerPajak = _form.find('input[name=faktur_no]').val();
-      var _tglFaktur = _form.find('input[name=FakturDate]').val();
-      var _cekPajak = harusAngka(_nomerPajak,'nomer faktur',16);
-      /* pastikan tgl faktur diisi */
-    //   if(_tglFaktur == ''){
-    //     _error++;
-    //     _message.push('Tanggal faktur harus diisi');
-    // }
-    // if(!_cekPajak['status']){
-    //     _error++;
-    //     _message.push(_cekPajak['message']);
-    // }
-    
-    // if(!_error){
-    //     var _url = $("#base-url").val() + 'EC_Invoice_um/validFakturPajak/';
-    //     var _po = _form.find('input[name=sppo_no]').val();
-    //     var _invoice_date = _form.find('input[name=invoice_date]').val();
-    //     $.get(_url,{no_faktur : hanyaAngka(_nomerPajak), no_po : _po, invoice_date : _invoice_date},function(data){
-    //       if(data.status){
-    //         currentForm.submit();
-    //     }else{
-    //         bootbox.alert(data.message);
-    //     }
-    // },'json');
-    // }else{
-    //     bootbox.alert(_message.join(' '));
-    // }
-    /* pastikan pajaknya valid di SAP */
-
-}else{
-  currentForm.submit();
-}
+    currentForm.submit();
 });
 });
 

@@ -42,7 +42,7 @@ class Email extends MX_Controller {
   }
 
     public function ecatalogNotifikasi($to,$message,$subject,$from = NULL,$cc = NULL, $bcc = NULL,$attachment = NULL){
-        $from = 'Tim E-Invoice Semen Indonesia';
+        $from = 'Tim E-Catalog Semen Indonesia';
         //$bcc = 'nur.syamsu@sisi.id,ahmad.afandi@sisi.id,alimutaqin@gmail.com';
         $bcc = '';
         $cc = NULL;
