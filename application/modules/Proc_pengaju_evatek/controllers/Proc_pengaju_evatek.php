@@ -357,7 +357,7 @@ class Proc_pengaju_evatek extends CI_Controller {
 		// $next_process = $this->input->post('next_process');
 		if($submit == '1'){
 			$ptm = $this->prc_tender_main->ptm($id);
-			$pti = $this->prc_tender_item->get(array('PTM_NUMBER'=>$ptm['PTM_NUMBER']));
+			$pti = $this->prc_tender_item->get(array('PTM_NUMBER'=>$id));
 			// echo "<pre>";
 			// print_r($pti);die;
 			$pri = $this->prc_pr_item->where_ppiId($pti[0]['PPI_ID']);

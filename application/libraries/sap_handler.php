@@ -63,158 +63,158 @@ class sap_handler {
 	public function getStrategicMaterial($NOW) {
 		$this->openFunction('ZCMM_MAT_MASTER');
 
-                $this->fce->S_MATNR->row['SIGN'] = 'I';
-                $this->fce->S_MATNR->row['OPTION'] = 'BT';
-                $this->fce->S_MATNR->row['LOW'] = '503-000000';
-                $this->fce->S_MATNR->row['HIGH'] = '504-999999';                
-                $this->fce->S_MATNR->Append($this->fce->S_MATNR->row);
+        $this->fce->S_MATNR->row['SIGN'] = 'I';
+        $this->fce->S_MATNR->row['OPTION'] = 'BT';
+        $this->fce->S_MATNR->row['LOW'] = '503-000000';
+        $this->fce->S_MATNR->row['HIGH'] = '504-999999';                
+        $this->fce->S_MATNR->Append($this->fce->S_MATNR->row);
 //		$this->fce->S_ERSDA->row['SIGN'] = 'I';
 //		$this->fce->S_ERSDA->row['OPTION'] = 'BT';
 //		$this->fce->S_ERSDA->row['LOW'] = '20161208';
 //		$this->fce->S_ERSDA->row['HIGH'] = date('Ymd');
 //		$this->fce->S_ERSDA->Append($this->fce->S_ERSDA->row);
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->T_OUTPUT->Reset();
-			while ($this->fce->T_OUTPUT->Next()) {
-				$itTampung[] = $this->fce->T_OUTPUT->row;
+        $this->fce->call();
+        $i = 0;
+        $itTampung = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+         $this->fce->T_OUTPUT->Reset();
+         while ($this->fce->T_OUTPUT->Next()) {
+            $itTampung[] = $this->fce->T_OUTPUT->row;
                 // if ($itTampung[$i]['MATNR'] == "222"||$itTampung[$i++]['MAKTX'] == ("S_RAJALELE") )
                 // print_r($itTampung[$i++]);
                 // $itTampung['MATNR'] = "S_RAJALELEEEEEEEE";
-			}
-		}
-		$return['T_OUTPUT'] = $itTampung;
+        }
+    }
+    $return['T_OUTPUT'] = $itTampung;
         //var_dump($itTampung);
-		return $return;
-	}
+    return $return;
+}
 
-	public function getDoctype() {
-		$this->openFunction('Z_MST_DOCINV');
+public function getDoctype() {
+  $this->openFunction('Z_MST_DOCINV');
 
-		$this->fce->R_SPRAS->row['SIGN'] = 'I';
-		$this->fce->R_SPRAS->row['OPTION'] = 'EQ';
-		$this->fce->R_SPRAS->row['LOW'] = 'EN';
-		$this->fce->R_SPRAS->Append($this->fce->R_SPRAS->row);
+  $this->fce->R_SPRAS->row['SIGN'] = 'I';
+  $this->fce->R_SPRAS->row['OPTION'] = 'EQ';
+  $this->fce->R_SPRAS->row['LOW'] = 'EN';
+  $this->fce->R_SPRAS->Append($this->fce->R_SPRAS->row);
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->T_DATA->Reset();
-			while ($this->fce->T_DATA->Next()) {
-				$itTampung[] = $this->fce->T_DATA->row;
+  $this->fce->call();
+  $i = 0;
+  $itTampung = array();
+  if ($this->fce->GetStatus() == SAPRFC_OK) {
+     $this->fce->T_DATA->Reset();
+     while ($this->fce->T_DATA->Next()) {
+        $itTampung[] = $this->fce->T_DATA->row;
                 // if ($itTampung[$i]['MATNR'] == "222"||$itTampung[$i++]['MAKTX'] == ("S_RAJALELE") )
                 // print_r($itTampung[$i++]);
                 // $itTampung['MATNR'] = "S_RAJALELEEEEEEEE";
-			}
-		}
-		$return['T_DATA'] = $itTampung;
+    }
+}
+$return['T_DATA'] = $itTampung;
         //var_dump($itTampung);
-		return $return;
-	}
+return $return;
+}
 
-	public function getPayblock() {
-		$this->openFunction('Z_MST_PMNT_BLOCK');
+public function getPayblock() {
+  $this->openFunction('Z_MST_PMNT_BLOCK');
 
-		$this->fce->R_SPRAS->row['SIGN'] = 'I';
-		$this->fce->R_SPRAS->row['OPTION'] = 'EQ';
-		$this->fce->R_SPRAS->row['LOW'] = 'EN';
-		$this->fce->R_SPRAS->Append($this->fce->R_SPRAS->row);
+  $this->fce->R_SPRAS->row['SIGN'] = 'I';
+  $this->fce->R_SPRAS->row['OPTION'] = 'EQ';
+  $this->fce->R_SPRAS->row['LOW'] = 'EN';
+  $this->fce->R_SPRAS->Append($this->fce->R_SPRAS->row);
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->T_DATA->Reset();
-			while ($this->fce->T_DATA->Next()) {
-				$itTampung[] = $this->fce->T_DATA->row;
+  $this->fce->call();
+  $i = 0;
+  $itTampung = array();
+  if ($this->fce->GetStatus() == SAPRFC_OK) {
+     $this->fce->T_DATA->Reset();
+     while ($this->fce->T_DATA->Next()) {
+        $itTampung[] = $this->fce->T_DATA->row;
                 // if ($itTampung[$i]['MATNR'] == "222"||$itTampung[$i++]['MAKTX'] == ("S_RAJALELE") )
                 // print_r($itTampung[$i++]);
                 // $itTampung['MATNR'] = "S_RAJALELEEEEEEEE";
-			}
-		}
-		$return['T_DATA'] = $itTampung;
+    }
+}
+$return['T_DATA'] = $itTampung;
         // var_dump($itTampung);
-		return $return;
-	}
+return $return;
+}
 
-	public function getPaymeth() {
-		$this->openFunction('Z_MST_PYMT_METH');
+public function getPaymeth() {
+  $this->openFunction('Z_MST_PYMT_METH');
 
-		$this->fce->R_LAND1->row['SIGN'] = 'I';
-		$this->fce->R_LAND1->row['OPTION'] = 'EQ';
-		$this->fce->R_LAND1->row['LOW'] = 'ID';
-		$this->fce->R_LAND1->Append($this->fce->R_LAND1->row);
+  $this->fce->R_LAND1->row['SIGN'] = 'I';
+  $this->fce->R_LAND1->row['OPTION'] = 'EQ';
+  $this->fce->R_LAND1->row['LOW'] = 'ID';
+  $this->fce->R_LAND1->Append($this->fce->R_LAND1->row);
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->T_DATA->Reset();
-			while ($this->fce->T_DATA->Next()) {
-				$itTampung[] = $this->fce->T_DATA->row;
+  $this->fce->call();
+  $i = 0;
+  $itTampung = array();
+  if ($this->fce->GetStatus() == SAPRFC_OK) {
+     $this->fce->T_DATA->Reset();
+     while ($this->fce->T_DATA->Next()) {
+        $itTampung[] = $this->fce->T_DATA->row;
                 // if ($itTampung[$i]['MATNR'] == "222"||$itTampung[$i++]['MAKTX'] == ("S_RAJALELE") )
                 // print_r($itTampung[$i++]);
                 // $itTampung['MATNR'] = "S_RAJALELEEEEEEEE";
-			}
-		}
-		$return['T_DATA'] = $itTampung;
+    }
+}
+$return['T_DATA'] = $itTampung;
         // var_dump($itTampung);
-		return $return;
-	}
+return $return;
+}
 
-	public function getTax() {
-		$this->openFunction('Z_MST_TAX');
+public function getTax() {
+  $this->openFunction('Z_MST_TAX');
 
-		$this->fce->R_ZTERM->row['SIGN'] = 'I';
-		$this->fce->R_ZTERM->row['OPTION'] = 'EQ';
-		$this->fce->R_ZTERM->row['LOW'] = 'EN';
+  $this->fce->R_ZTERM->row['SIGN'] = 'I';
+  $this->fce->R_ZTERM->row['OPTION'] = 'EQ';
+  $this->fce->R_ZTERM->row['LOW'] = 'EN';
         // $this->fce->R_ZTERM->Append($this->fce->R_ZTERM->row);
 
-		$this->fce->R_KALSM->row['SIGN'] = 'I';
-		$this->fce->R_KALSM->row['OPTION'] = 'EQ';
-		$this->fce->R_KALSM->row['LOW'] = 'TAXID';
-		$this->fce->R_KALSM->Append($this->fce->R_KALSM->row);
+  $this->fce->R_KALSM->row['SIGN'] = 'I';
+  $this->fce->R_KALSM->row['OPTION'] = 'EQ';
+  $this->fce->R_KALSM->row['LOW'] = 'TAXID';
+  $this->fce->R_KALSM->Append($this->fce->R_KALSM->row);
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->T_DATA->Reset();
-			while ($this->fce->T_DATA->Next()) {
-				$itTampung[] = $this->fce->T_DATA->row;
-			}
-		}
-		$return['T_DATA'] = $itTampung;
+  $this->fce->call();
+  $i = 0;
+  $itTampung = array();
+  if ($this->fce->GetStatus() == SAPRFC_OK) {
+     $this->fce->T_DATA->Reset();
+     while ($this->fce->T_DATA->Next()) {
+        $itTampung[] = $this->fce->T_DATA->row;
+    }
+}
+$return['T_DATA'] = $itTampung;
         //	var_dump($itTampung);
-		return $return;
-	}
-	public function getECPlant($debug) {
-		$this->openFunction('Z_ZCMM_PLANT_GETLIST');
+return $return;
+}
+public function getECPlant($debug) {
+  $this->openFunction('Z_ZCMM_PLANT_GETLIST');
 
-		$this->fce->call();
-		$i = 0;
-		$itTampung = array();
-		if ($this->fce->GetStatus() == SAPRFC_OK) {
-			$this->fce->FT_PLANT->Reset();
-			while ($this->fce->FT_PLANT->Next()) {
-				$itTampung[] = $this->fce->FT_PLANT->row;
-			}
-		}
-		if ($debug) {
-			header('Content-Type: application/json');
-			echo json_encode($itTampung);
-		}
-		return $itTampung;
-	}
+  $this->fce->call();
+  $i = 0;
+  $itTampung = array();
+  if ($this->fce->GetStatus() == SAPRFC_OK) {
+     $this->fce->FT_PLANT->Reset();
+     while ($this->fce->FT_PLANT->Next()) {
+        $itTampung[] = $this->fce->FT_PLANT->row;
+    }
+}
+if ($debug) {
+ header('Content-Type: application/json');
+ echo json_encode($itTampung);
+}
+return $itTampung;
+}
 
-	public function createPOCatalog($comp, $id = '10164', $chart, $DOC_DATE, $DOC_TYPE, $DELIVERY_DATE, $purch_org, $PUR_GROUP, $debug = true) {
-		$this->openFunction('ZCMM_GET_USERATTRIBUTE');
-		$this->fce->R_PERNR->row['SIGN'] = 'I';
-		$this->fce->R_PERNR->row['OPTION'] = 'EQ';
+public function createPOCatalog($comp, $id = '10164', $chart, $DOC_DATE, $DOC_TYPE, $DELIVERY_DATE, $purch_org, $PUR_GROUP, $debug = true) {
+  $this->openFunction('ZCMM_GET_USERATTRIBUTE');
+  $this->fce->R_PERNR->row['SIGN'] = 'I';
+  $this->fce->R_PERNR->row['OPTION'] = 'EQ';
         // $this->fce->R_PERNR->row['LOW'] =10164;// $id; //
         $this->fce->R_PERNR->row['LOW'] = $id; //
         $this->fce->R_PERNR->Append($this->fce->R_PERNR->row);
@@ -809,12 +809,12 @@ class sap_handler {
         	return array(
         		'data' => array('invoicenumber' => $invoicenumber, 'fiscalyear' => $fiscalyear),
         		'status' => 1,
-              );
+          );
         } else {
         	return array(
         		'data' => $error,
         		'status' => 0,
-              );
+          );
         }
     }
 
@@ -947,12 +947,12 @@ class sap_handler {
         	return array(
         		'data' => 'Nomer mir '.$noinvoice.' tahun '.$tahun.' changed',
         		'status' => 1,
-              );
+          );
         }else{
         	return array(
         		'data' => $error,
         		'status' => 0,
-              );
+          );
         }
 
     }
@@ -980,12 +980,12 @@ class sap_handler {
     		return array(
     			'data' => $pesan,
     			'status' => 1,
-             );
+           );
     	}else{
     		return array(
     			'data' => $error,
     			'status' => 0,
-             );
+           );
     	}
     }
 
@@ -1783,6 +1783,95 @@ class sap_handler {
     	$return['IT_SERVICE'] = $it_service;
 
     	return $return;
+    }
+
+    public function getPROpenEtor($data = false, $by = 'plant') {
+        $this->openFunction('ZCMM_GET_PR_OPEN');
+
+        $this->fce->I_SREAL = '03';
+        $this->fce->I_DEL = '';
+        switch ($by) {
+            case 'pr':
+            $this->fce->S_PR->row['SIGN'] = 'I';
+            $this->fce->S_PR->row['OPTION'] = 'EQ';
+            $this->fce->S_PR->row['LOW'] = $data;
+            $this->fce->S_PR->row['HIGH'] = '';
+            $this->fce->S_PR->Append($this->fce->S_PR->row);
+            echo $data;
+            break;
+            case 'request':
+            $this->fce->S_REQUESTIONER->row['SIGN'] = 'I';
+            $this->fce->S_REQUESTIONER->row['OPTION'] = 'EQ';
+            $this->fce->S_REQUESTIONER->row['LOW'] = $data;
+            $this->fce->S_REQUESTIONER->row['HIGH'] = '';
+            $this->fce->S_REQUESTIONER->Append($this->fce->S_REQUESTIONER->row);
+            break;
+            case 'all':
+            $data = intval(intval($data) / 1000) * 1000;
+            $this->fce->S_PLANT->row['SIGN'] = 'I';
+            $this->fce->S_PLANT->row['OPTION'] = 'BT';
+            $this->fce->S_PLANT->row['LOW'] = $data;
+            $this->fce->S_PLANT->row['HIGH'] = $data + 999;
+            $this->fce->S_PLANT->Append($this->fce->S_PLANT->row);
+            break;
+            case 'mrp':
+            foreach ($data as $val) {
+                $this->fce->S_MRP->row['SIGN'] = 'I';
+                $this->fce->S_MRP->row['OPTION'] = 'EQ';
+                $this->fce->S_MRP->row['LOW'] = $val['mrp'];
+                $this->fce->S_MRP->row['HIGH'] = '';
+                $this->fce->S_MRP->Append($this->fce->S_MRP->row);
+
+                $this->fce->S_PLANT->row['SIGN'] = 'I';
+                $this->fce->S_PLANT->row['OPTION'] = 'EQ';
+                $this->fce->S_PLANT->row['LOW'] = $val['plant'];
+                $this->fce->S_PLANT->row['HIGH'] = '';
+                $this->fce->S_PLANT->Append($this->fce->S_PLANT->row);
+            }
+            break;
+            case 'plant':
+            if (empty($data)) {
+                $data = 2702;
+            }
+            $this->fce->S_PLANT->row['SIGN'] = 'I';
+            $this->fce->S_PLANT->row['OPTION'] = 'EQ';
+            $this->fce->S_PLANT->row['LOW'] = $data;
+            $this->fce->S_PLANT->row['HIGH'] = '';
+            $this->fce->S_PLANT->Append($this->fce->S_PLANT->row);
+            break;
+        }
+        $return['S_PR'] = $this->fce->S_PR;
+        $return['S_REQUESTIONER'] = $this->fce->S_REQUESTIONER;
+        $return['S_PLANT'] = $this->fce->S_PLANT;
+        $return['S_MRP'] = $this->fce->S_MRP;
+
+        $this->fce->call();
+
+        $availabledata = array('PRNO', 'PRITEM', 'DOCTYPE', 'DOC_CAT', 'DEL', 'NOMAT', 'PLANT', 'DECMAT', 'QUANTOPEN', 'POQUANTITY', 'PRQUANTITY', 'HANDQUANTITY', 'RATAGI', 'MAXGI', 'LASTGI', 'UOM', 'REALDATE', 'POSTDATE', 'MAX_GI_YEAR', 'MAX_YEAR_GI', 'NETPRICE', 'PER', 'CURR', 'MATGROUP', 'PORG', 'REQUESTIONER', 'PGRP', 'MRPC', 'DDATE', 'BSMNG', 'PACKNO', 'STATU','CREATED_BY','BANPR');
+        $itTampung = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->IT_DATA->Reset();
+            while ($this->fce->IT_DATA->Next()) {
+                $hold = $this->fce->IT_DATA->row;
+                $hold = array_intersect_key($hold, array_flip((array) $availabledata));
+                $itTampung[] = $hold;
+            }
+        }
+        $return['IT_DATA'] = $itTampung;
+
+        $availableservice = array('PACKNO', 'EXTROW', 'SRVPOS', 'MENGE', 'MEINS', 'SUB_PACKNO', 'MATKL', 'BRTWR', 'NETWR', 'TBTWR', 'KTEXT1');
+        $it_service = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->IT_SERVICE->Reset();
+            while ($this->fce->IT_SERVICE->Next()) {
+                $hold = $this->fce->IT_SERVICE->row;
+                $hold = array_intersect_key($hold, array_flip((array) $availableservice));
+                $it_service[] = $hold;
+            }
+        }
+        $return['IT_SERVICE'] = $it_service;
+
+        return $return;
     }
 
     public function getMaterial($material, $submaterial) {
@@ -3293,6 +3382,7 @@ class sap_handler {
         
         $this->fce->call();
         
+        $itTampung = array();
         if ($this->fce->GetStatus() == SAPRFC_OK) {
             $this->fce->T_DATA ->Reset();
             while ($this->fce->T_DATA->Next()) {
@@ -3304,6 +3394,38 @@ class sap_handler {
             var_dump($itTampung);
             print_r('<br>');
         }
+        return $itTampung;
+    }
+
+    public function changeDeliveryDateRfq($poitem) {
+        // echo "<pre>";
+        // print_r($poitem);die;
+        $this->openFunction('ZCMM_CHANGE_RFQ');
+        // foreach ($poitem as $val) {
+        $this->fce->T_INPUT->row['EBELN'] = $poitem['rfq_no'];
+        $this->fce->T_INPUT->row['EBELP'] = $poitem['rfq_item'];
+        $this->fce->T_INPUT->row['DEL_DATE'] = $poitem['delivery_date'];
+        $this->fce->T_INPUT->Append($this->fce->T_INPUT->row);
+        // }
+
+        // echo "<pre>";
+        // print_r($poitem);
+        // print_r($this->fce->T_INPUT);die;
+        $this->fce->call();
+        
+        $itTampung = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->T_RETURN->Reset();
+            while ($this->fce->T_RETURN->Next()) {
+                $itTampung[] = $this->fce->T_RETURN->row;
+            }
+        }
+        // echo "<pre>";
+        // print_r($poitem);
+        // print_r($itTampung);
+        // print_r($this->fce);
+        // print_r($this->fce->T_RETURN);
+        // die;
         return $itTampung;
     }
 }

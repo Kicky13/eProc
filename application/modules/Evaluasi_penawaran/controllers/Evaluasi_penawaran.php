@@ -647,6 +647,8 @@ class Evaluasi_Penawaran extends CI_Controller {
 					}
 				}
 			}
+			echo "<pre>";
+			print_r($counter);die;
 			$counter = count($counter);
 		}
 		$t = 2;
@@ -671,6 +673,8 @@ class Evaluasi_Penawaran extends CI_Controller {
 				$lanjut = true;
 			}
 		}
+		// echo "<pre>";
+		// print_r($counter);die;
 		$data['can_continue'] = $lanjut;
 		
 		$this->layout->add_js('pages/evaluasi_harga.js');

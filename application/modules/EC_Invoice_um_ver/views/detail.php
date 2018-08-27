@@ -7,7 +7,9 @@
             
             <div class="row">
                 <div class="col-sm-12 col-lg-12 col-lg-12">
-                    <?php echo form_open_multipart('EC_Invoice_um/createInvoice/', array('method' => 'POST', 'class' => 'form-horizontal formCreate')); ?>
+                    <?php echo form_open_multipart('EC_Invoice_um_ver/update_invoice/', array('method' => 'POST', 'class' => 'form-horizontal formCreate')); ?>
+                    <input type="hidden" name="id_um" value="<?php echo $noinvoice; ?>">
+                    <input type="hidden" name="status" value="<?php echo $status; ?>">
                     <div class="form-group">
                         <label for="Invoice Date" class="col-sm-3 control-label">Tanggal Invoice *</label>
                         <div class="col-sm-4 tgll">
@@ -45,8 +47,13 @@
                                 <option value="">Pilih Jenis Pajak</option>
                                 <?php
                                 $nilaiPajakLama = 0;
-                                for ($i = 0; $i < sizeof($pajak); $i++) { ?>
-                                    <option value="<?php echo $pajak[$i]['ID_JENIS'] ?>" data-pajak="<?php echo $pajak[$i]['PAJAK'] ?>">
+                                for ($i = 0; $i < sizeof($pajak); $i++) { 
+                                    $selected = "";
+                                    if($detail_um['PAJAK']==$pajak[$i]['ID_JENIS']){
+                                        $selected = "selected";
+                                    }
+                                    ?>
+                                    <option <?php echo $selected; ?> value="<?php echo $pajak[$i]['ID_JENIS'] ?>" data-pajak="<?php echo $pajak[$i]['PAJAK'] ?>">
                                         <?php
                                         if($pajak[$i]['ID_JENIS'] == "VN"){
                                             echo "PPN";
@@ -168,21 +175,56 @@
                                 <input type="hidden" name="dp_req_amount" id="dp_req_amount" class="form-control" value="<?php echo $detail_um['DP_REQ_AMOUNT']; ?>"/>
                             </div>
                         </div>
-
-                        <div class="col-sm-offset-3 col-sm-9">
-                            <p class="help-block"><small>ukuran upload file maks 4MB, file: *.jpg / *.png / *.pdf</small></p>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <input type="hidden" id="arrGR" name="arrgr" />
-                                <input type="hidden" id="curr" name="curr" />
-                                <input type="hidden" id="itemCat" name="itemCat" />
-                                <input type="hidden" id="jmlDenda" name="jmlDenda" />
-                                <input type="hidden" id="jmlDoc" name="jmlDoc" />
-                                <button class="btn btn-info pull-right" type="submit">Simpan</button>
+                        <?php 
+                        if ($status == 2) {
+                            ?>
+                            <div class="form-group">
+                                <label for="note" class="col-sm-2 control-label"></label>
+                                <div class="col-sm-2">
+                                    <select class="form-control" name="next_action">
+                                        <option value="3">Approve</option>
+                                        <option value="4">Reject</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="form-group" style="display:none">
+                                <div class="col-sm-6">
+                                    <textarea maxlength="255" name="alasan_reject" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <input type="hidden" id="arrGR" name="arrgr" />
+                                    <input type="hidden" id="curr" name="curr" />
+                                    <input type="hidden" id="itemCat" name="itemCat" />
+                                    <input type="hidden" id="jmlDenda" name="jmlDenda" />
+                                    <input type="hidden" id="jmlDoc" name="jmlDoc" />
+                                    <button class="btn btn-info pull-right btn-simpan" type="submit">Simpan</button>
+                                </div>
+                            </div>                            
+                            <?php
+                        } else if ($status == 3) {
+                            ?>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <button class="btn btn-info pull-right btn-simpan" type="submit">Posting</button>
+                                </div>
+                            </div>
+                            <?php
+                        } else if ($status == 5) {
+                            ?>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <button class="btn btn-info pull-right btn-simpan" type="submit">Ekspedisi Ke Bendahara</button>
+                                </div>
+                            </div>
+                            <?php
+                        } 
+                        ?>
+
                     </form>
                 </div>
             </div>

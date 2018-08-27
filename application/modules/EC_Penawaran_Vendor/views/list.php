@@ -29,6 +29,7 @@
                               <li>Update Harga dan Delivery Time hanya dapat dilakukan ketika <span style="font-weight:bold;">Tanggal Sekarang</span> sudah mencapai <span style="font-weight:bold;">Next Update</span></li>
                               <li>Barang yang dikirimkan harus sesuai dengan informasi barang yang telah tertera (keterangan dan foto)</li>
                               <li>Khusus Harga <span style="font-weight:bold;">Pengambilan Sendiri (2901 dan 7901)</span> memiliki harga yang sama berdasarkan satu produk.</li>
+                              <li><span style="font-weight:bold;">Userguide</span> bisa di unduh di button unduh <a href="<?=base_url()?>upload/userguide/UG-E-Catalog-Pembelian-Langsung-Vendor.pdf" class='btn btn-primary' target="new_blank">Unduh</a></li>
                           </ol>                                                                        
                     </div>
                 </div>

@@ -76,7 +76,7 @@ class Job_list extends CI_Controller {
 			// $kelprgrp = $this->session->userdata('KEL_PRGRP');
 			// $this->prc_tender_main->where_kel_plant_pro($kelprgrp);
 			// baru
-			$this->prc_tender_main->where_pgrp_in($pgrp);
+			// $this->prc_tender_main->where_pgrp_in($pgrp);
 			// $pgrp = $this->session->userdata('PRGRP');
 			// $this->prc_tender_main->where_pgrp_in($pgrp);
 

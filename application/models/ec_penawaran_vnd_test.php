@@ -78,6 +78,26 @@ class ec_penawaran_vnd_test extends CI_Model
         return $a;
     }
 
+    function get_stok_commit($vendorno, $matno)
+    {
+//        $this->db->select('SUM(STOK_COMMIT)')->from('EC_T_CHART');
+//        $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
+//        $this->db->join('EC_GR_DETAIL_PL', 'EC_GR_DETAIL_PL.PO_NO = EC_T_CHART.PO_NO', 'left');
+//        $this->db->where("EC_T_DETAIL_PENAWARAN.VENDORNO", $vendorno, TRUE);
+//        $this->db->where("EC_T_DETAIL_PENAWARAN.MATNO", $matno, TRUE);
+//        $this->db->where("STATUS_CHART IN", "(1, 0)");
+//        $this->db->where("EC_GR_DETAIL_PL.GR_NO IS NULL");
+        $query = "SELECT SUM(STOK_COMMIT) FROM EC_T_CHART
+                JOIN EC_T_DETAIL_PENAWARAN ON EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN
+                LEFT JOIN EC_GR_DETAIL_PL ON EC_GR_DETAIL_PL.PO_NO = EC_T_CHART.PO_NO
+                WHERE EC_T_DETAIL_PENAWARAN.VENDORNO = '".$vendorno."'
+                AND EC_T_DETAIL_PENAWARAN.MATNO= '".$matno."'
+                AND STATUS_CHART IN (1, 0)
+                AND EC_GR_DETAIL_PL.GR_NO IS NULL";
+        $result = $this->db->query($query);
+        return (array)$result->row_array();
+    }
+
     public function get_Count_produk($vendorno)
     {
         $SQL = "SELECT  DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, ASS.*,
@@ -252,13 +272,16 @@ class ec_penawaran_vnd_test extends CI_Model
 
     function insertStok($venno, $matno, $harga, $curr, $deliverytime, $stok, $in_date, $stokc, $deskripsi)
     {
-        $this->db->select('MAX(STOK_COMMIT)')->from('EC_T_CHART');
+        $this->db->select('SUM(STOK_COMMIT)')->from('EC_T_CHART');
         $this->db->join('EC_T_DETAIL_PENAWARAN', 'EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN', 'inner');
+        $this->db->join('EC_GR_DETAIL_PL', 'EC_GR_DETAIL_PL.PO_NO = EC_T_CHART.PO_NO', 'left');
         $this->db->where("EC_T_DETAIL_PENAWARAN.VENDORNO", $venno, TRUE);
         $this->db->where("EC_T_DETAIL_PENAWARAN.MATNO", $matno, TRUE);
+        $this->db->where("STATUS_CHART IN", "(1, 0)");
+        $this->db->where("EC_GR_DETAIL_PL.GR_NO", null);
         $query = $this->db->get();
         $result = $query->row_array();
-        $count = $result['MAX(STOK_COMMIT)'];
+        $count = $result['SUM(STOK_COMMIT)'];
         if ($stok >= $count) 
             $SQL = "INSERT INTO \"EC_PL_PENAWARAN\" (\"VENDORNO\", \"MATNO\", \"HARGA_PENAWARAN\", \"DELIVERY_TIME\", \"INDATE\", \"CURR\", \"STOK\",\"STOK_COMMIT\",\"DESKRIPSI_ITEM\") 
                 VALUES ('" . $venno . "', '" . $matno . "', '" . $harga . "', '" . $deliverytime . "', TO_DATE('" . $in_date . "', 'yyyy-mm-dd hh24:mi:ss'), '" . $curr . "', '" . $stok . "','" . $count . "','" . $deskripsi . "')";

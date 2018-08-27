@@ -290,7 +290,11 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         // $this -> listCatalog($dataa);
     }
 
-
+    public function testi($value = '')
+    {
+        header('Content-Type: application/json');
+        echo(json_encode($this->session->userdata));
+    }
 
     public function simpanCC()
     {
@@ -1434,8 +1438,9 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             // $dataa[] = $data;
         }
 
-        $data['deals_raw'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);
-        $data['deals']=$this->unique_multidim_array($data['deals_raw'], 'VENDORNO');
+        $data['deals'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);
+//        var_dump($data['deals_raw']);die();
+//        $data['deals']=$this->unique_multidim_array($data['deals_raw'], 'VENDORNO');
         $data['deals2']=array();
 //        var_dump(count($data['deals']));die();
 //        var_dump($data['deals']);die();
@@ -1445,10 +1450,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
                 $data['deals'][$j]['STOK_KONFIRMASI'] = $stok_konfirmasi[0]['STOK_KONFIRMASI'];
             } else {
                 $data['deals'][$j]['STOK_KONFIRMASI'] = 0;
-}
-////            var_dump($stok_konfirmasi[0]['STOK_KONFIRMASI']);
-////            $data['deals2'][$j]['STOK_KONFIRMASI']=$stok_konfirmasi[0]['STOK_KONFIRMASI'];
-////            var_dump($data['deals'][$j]['STOK_KONFIRMASI']);
+            }
         }
         $data['plant'] = $this->ec_ecatalog_m->get_m_plant($plant);        
         $data['cart'] = count($this->ec_ecatalog_m->get_data_checkout_pl($this->session->userdata['ID']));
@@ -2336,24 +2338,6 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         header('Content-Type: application/json');
         $this->load->model('ec_ecatalog_m');
         echo json_encode($this->ec_ecatalog_m->tracking_po_pl($pono));
-    }
-
-    public function testi($mins = 0, $max = 12, $COMPANY_ID)
-    {
-        if ($mins == 0) {
-            $this->db->limit(13);
-        } else{
-            $this->db->where("ROWNUM <=", $max, false);
-        }
-
-        $this->db->from($this->table);
-        $this->db->join('EC_M_STRATEGIC_MATERIAL', 'EC_T_CONTRACT.matno = EC_M_STRATEGIC_MATERIAL.MATNR', 'left');
-        $this->db->join('EC_R1', 'EC_T_CONTRACT.vendorno = EC_R1.VENDOR_ID', 'left');
-        $this->db->join('EC_M_CATEGORY', 'EC_M_STRATEGIC_MATERIAL.ID_CAT = EC_M_CATEGORY.ID_CAT', 'left');
-        $this->db->join('EC_PRINCIPAL_MANUFACTURER', 'EC_PRINCIPAL_MANUFACTURER.PC_CODE = EC_R1.PC_CODE', 'left');
-        $this->db->where("published = 1 and \"plant\" IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY= ". $COMPANY_ID .")");
-        $result = $this->db->get();
-        return (array)$result->result_array();
     }
 
     public function tesUplaod()

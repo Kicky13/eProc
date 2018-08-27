@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_open_um extends CI_Model {
 
-    protected $table = 'EC_GR', $tableHeader = 'EC_UM_HEADER', $tableDenda = "EC_T_DENDA_INV", $tableDoc = "EC_T_DOC_INV", $tableCOMPANY = 'EC_C_COMPANY', $tablePURC_ORG = 'EC_C_PURC_ORG', $tableDOC = "EC_C_DOCTYPE", $tableTracking = "EC_TRACKING_UM";
+    protected $table = 'EC_GR', $tableHeader = 'EC_UM_HEADER', $tableDenda = "EC_T_DENDA_INV", $tableDoc = "EC_T_DOC_INV", $tableCOMPANY = 'EC_C_COMPANY', $tablePURC_ORG = 'EC_C_PURC_ORG', $tableDOC = "EC_C_DOCTYPE", $tableTracking = "EC_TRACKING_UM", $tableTrackingLog = "EC_TRACKING_UM_LOG";
 
     public function __construct() {
         parent::__construct();
@@ -1443,12 +1443,12 @@ SQL;
     }
 
     public function tracking($ID_INVOICE) {
-        $this->db->select("EC_TRACKING_UM.*,EC_UM_HEADER.*,
-		TO_CHAR (\"EC_TRACKING_UM\".\"DATE\",'dd/mm/yyyy hh24:mi:ss') AS TRACK_DATE", false);
-        $this->db->from($this->tableTracking);
-        $this->db->where("EC_TRACKING_UM.ID_UM", $ID_INVOICE, TRUE);
-        $this->db->join('EC_UM_HEADER', 'EC_TRACKING_UM.ID_UM = EC_UM_HEADER.ID_UM', 'inner');
-        $this->db->order_by('EC_TRACKING_UM.DATE', 'DESC');
+        $this->db->select("EC_TRACKING_UM_LOG.*,EC_UM_HEADER.*,
+		TO_CHAR (\"EC_TRACKING_UM_LOG\".\"DATE\",'dd/mm/yyyy hh24:mi:ss') AS TRACK_DATE", false);
+        $this->db->from($this->tableTrackingLog);
+        $this->db->where("EC_TRACKING_UM_LOG.ID_UM", $ID_INVOICE, TRUE);
+        $this->db->join('EC_UM_HEADER', 'EC_TRACKING_UM_LOG.ID_UM = EC_UM_HEADER.ID_UM', 'inner');
+        $this->db->order_by('EC_TRACKING_UM_LOG.DATE', 'DESC');
         $result = $this->db->get();
         return (array) $result->result_array();
     }
@@ -1460,27 +1460,84 @@ SQL;
         $this->db->set('ID_UM', $ID_INVOICE, FALSE);
         $this->db->set('DATE','sysdate', FALSE);
         $this->db->set('STATUS_TRACK', $status, FALSE);
-        $this->db->set('DESC', "EDIT", TRUE);
-        $this->db->set('STATUS_DOC', "KIRIM", TRUE);
-        $this->db->set('POSISI', "VERIFIKASI", TRUE);
+        $this->db->set('DESC', "SUBMIT", TRUE);
+        $this->db->set('STATUS_DOC', "BELUM KIRIM", TRUE);
+        $this->db->set('POSISI', "VENDOR", TRUE);
+        $this->db->set('USER', $NAMA, TRUE);
+        $this->db->insert($this->tableTrackingLog);
+
+        $this->db->where("ID_UM", $ID_INVOICE, TRUE);
+        $this->db->delete($this->tableTracking);
+
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
+        $this->db->set('DATE','sysdate', FALSE);
+        $this->db->set('STATUS_TRACK', $status, FALSE);
+        $this->db->set('DESC', "SUBMIT", TRUE);
+        $this->db->set('STATUS_DOC', "BELUM KIRIM", TRUE);
+        $this->db->set('POSISI', "VENDOR", TRUE);
         $this->db->set('USER', $NAMA, TRUE);
         $this->db->insert($this->tableTracking);
     }
 
+    public function setStatus_Invoice_ver34($ID_INVOICE, $status, $NAMA, $ALASAN_REJECT) {
+        $this->db->where("EC_UM_HEADER.ID_UM", $ID_INVOICE, TRUE);
+        $this->db->update($this->tableHeader, array("STATUS_HEADER" => $status, "ALASAN_REJECT" => $ALASAN_REJECT));
+
+        if($status==3 || $status=="3"){
+          $DESC = 'APPROVED';
+        } else {
+          $DESC = 'REJECTED';
+        }
+
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
+        $this->db->set('DATE','sysdate', FALSE);
+        $this->db->set('STATUS_TRACK', $status, FALSE);
+        $this->db->set('DESC', $DESC, TRUE);
+        $this->db->set('STATUS_DOC', "BELUM KIRIM", TRUE);
+        $this->db->set('POSISI', "VENDOR", TRUE);
+        $this->db->set('USER', $NAMA, TRUE);
+        $this->db->insert($this->tableTrackingLog);
+
+        $this->db->where("ID_UM", $ID_INVOICE, TRUE);
+        $this->db->delete($this->tableTracking);
+
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
+        $this->db->set('DATE','sysdate', FALSE);
+        $this->db->set('STATUS_TRACK', $status, FALSE);
+        $this->db->set('DESC', $DESC, TRUE);
+        $this->db->set('STATUS_DOC', "BELUM KIRIM", TRUE);
+        $this->db->set('POSISI', "VENDOR", TRUE);
+        $this->db->set('USER', $NAMA, TRUE);
+        $this->db->insert($this->tableTracking);
+    }
+
+    public function setStatus_Invoice_ver5($ID_INVOICE, $status) {
+        $this->db->where("EC_UM_HEADER.ID_UM", $ID_INVOICE, TRUE);
+        $this->db->update($this->tableHeader, array("STATUS_HEADER" => $status));
+    }
+
     public function delete_Invoice($ID_INVOICE, $NAMA) {
-        $this->db->where("EC_INVOICE_HEADER.ID_INVOICE", $ID_INVOICE, TRUE);
+        $this->db->where("EC_UM_HEADER.ID_UM", $ID_INVOICE, TRUE);
         $this->db->delete($this->tableHeader);
 
-        $this->db->where("EC_GR.INV_NO", $ID_INVOICE, TRUE);
-        $this->db->set('INV_NO', NULL, FALSE);
-        $this->db->update($this->table, array("STATUS" => "0"));
-
-        $this->db->set('ID_INVOICE', $ID_INVOICE, FALSE);
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
         $this->db->set('DATE', "TO_DATE('" . date("d-m-Y H:i:s") . "', 'dd-mm-yyyy hh24:mi:ss')", FALSE);
         $this->db->set('STATUS_TRACK', 9, FALSE);
         $this->db->set('DESC', "HAPUS", TRUE);
         $this->db->set('STATUS_DOC', "-", TRUE);
         $this->db->set('POSISI', "VENDOR", TRUE);
+        $this->db->set('USER', $NAMA, TRUE);
+        $this->db->insert($this->tableTrackingLog);
+
+        $this->db->where("ID_UM", $ID_INVOICE, TRUE);
+        $this->db->delete($this->tableTracking);
+
+        $this->db->set('ID_UM', $ID_INVOICE, FALSE);
+        $this->db->set('DATE','sysdate', FALSE);
+        $this->db->set('STATUS_TRACK', $status, FALSE);
+        $this->db->set('DESC', "EDIT", TRUE);
+        $this->db->set('STATUS_DOC', "KIRIM", TRUE);
+        $this->db->set('POSISI', "VERIFIKASI", TRUE);
         $this->db->set('USER', $NAMA, TRUE);
         $this->db->insert($this->tableTracking);
     }

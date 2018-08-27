@@ -1248,4 +1248,59 @@ class sap_invoice extends sap_handler{
     }
 
 
+    public function getPOUm($COMPANYID, $VENDOR_NO, $NO_PO) {
+
+        $debug = false;
+        $this->openFunction('ZCFI_GET_PO_LIST');
+        if($COMPANYID == '2000' || $COMPANYID == '7000' || $COMPANYID == '5000'){
+            $this->fce->S_BUKRS->row['SIGN'] = 'I';
+            $this->fce->S_BUKRS->row['OPTION'] = 'BT';
+            $this->fce->S_BUKRS->row['LOW'] = '2000';
+            $this->fce->S_BUKRS->row['HIGH'] = '7000';
+        } else {
+            $this->fce->S_BUKRS->row['SIGN'] = 'I';
+            $this->fce->S_BUKRS->row['OPTION'] = 'EQ';
+            $this->fce->S_BUKRS->row['LOW'] = $COMPANYID;
+        }
+        $this->fce->S_BUKRS->Append($this->fce->S_BUKRS->row);
+
+        $this->fce->S_LIFNR->row['SIGN'] = 'I';
+        $this->fce->S_LIFNR->row['OPTION'] = 'EQ';
+        $this->fce->S_LIFNR->row['LOW'] = $VENDOR_NO;
+        $this->fce->S_LIFNR->Append($this->fce->S_LIFNR->row);
+
+        $this->fce->S_BSART->row['SIGN'] = 'I';
+        $this->fce->S_BSART->row['OPTION'] = 'EQ';
+        $this->fce->S_BSART->row['LOW'] = 'ZO03';
+        $this->fce->S_BSART->Append($this->fce->S_BSART->row);
+
+        $this->fce->S_EBELN->row['SIGN'] = 'I';
+        $this->fce->S_EBELN->row['OPTION'] = 'EQ';
+        $this->fce->S_EBELN->row['LOW'] = $NO_PO;
+        $this->fce->S_EBELN->Append($this->fce->S_EBELN->row);
+
+        $this->fce->S_BEDAT->row['SIGN'] = 'I';
+        $this->fce->S_BEDAT->row['OPTION'] = 'BT';
+        $this->fce->S_BEDAT->row['LOW'] = '20180101';
+        $this->fce->S_BEDAT->row['HIGH'] = date('Ymd');
+        $this->fce->S_BEDAT->Append($this->fce->S_BEDAT->row);
+        
+        $this->fce->call();
+        
+        $itTampung = array();
+        if ($this->fce->GetStatus() == SAPRFC_OK) {
+            $this->fce->IT_OUT ->Reset();
+            while ($this->fce->IT_OUT->Next()) {
+                $itTampung[] = $this->fce->IT_OUT ->row;
+            }
+        }
+
+        if ($debug) {
+            var_dump($itTampung);
+            print_r('<br>');
+        }
+        return $itTampung;
+    }
+
+
     }

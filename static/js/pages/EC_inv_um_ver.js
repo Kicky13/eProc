@@ -296,7 +296,7 @@ function loadTable_invoice() {
         "language": {
             "loadingRecords": "<center><b>Please wait - Updating and Loading Data List Contract...</b></center>"
         },
-        "ajax": $("#base-url").val() + 'EC_Invoice_um/get_data',
+        "ajax": $("#base-url").val() + 'EC_Invoice_um_ver/get_data',
 
         "columnDefs": [{
             "searchable": false,
@@ -349,13 +349,13 @@ function loadTable_invoice() {
             }
         },
         {
-         mRender: function(data, type, full) {
-             a = "<div class='col-md-12 text-center'>";
-             a += full.FI_NUMBER_SAP;
-             a += "</div>";
-             return a;
-         }
-     }, {
+           mRender: function(data, type, full) {
+               a = "<div class='col-md-12 text-center'>";
+               a += full.FI_NUMBER_SAP;
+               a += "</div>";
+               return a;
+           }
+       }, {
         mRender: function(data, type, full) {
             a = "<div class='col-md-12 text-center'>";
             a += full.CURRENCY + " <strong>" + numberWithCommas(full.BASE_AMOUNT) + "</strong>";
@@ -413,7 +413,7 @@ function loadTable_invoice() {
     },  {
         mRender: function(data, type, full) {
             a = "<div class='col-md-12 '>";
-            a += "<a href='" + $("#base-url").val() + "EC_Invoice_um/detail/" + full.ID_UM + "/" + full.STATUS_HEADER + "' title='View / Edit Invoice'><span class='glyphicon glyphicon-list-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;";
+            a += "<a href='" + $("#base-url").val() + "EC_Invoice_um_ver/detail/" + full.ID_UM + "/" + full.STATUS_HEADER + "' title='View / Edit Invoice'><span class='glyphicon glyphicon-list-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;";
             if (full.STATUS_HEADER == '1') {
                 a += "<a href=\"javascript:deleteInv(this," + full.ID_UM + ")\" title='Hapus Invoice'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 a += "<a href=\"javascript:setStatus(this," + full.ID_UM + ",2)\" title='Submit Invoice'><span class='glyphicon glyphicon-share-alt' aria-hidden='true'></span></a>&nbsp;&nbsp;"
@@ -425,6 +425,7 @@ function loadTable_invoice() {
                 }
                 if (full.STATUS_DOC == 'KIRIM' && full.POSISI == 'EKSPEDISI') {
                     a += "<a href='EC_Invoice_um/cetakDokumenEkspedisi/" + full.ID_UM + "' target='_blank' data-invoice='" + full.ID_UM + "' title='Cetak Dokumen'><span class='glyphicon glyphicon-print' aria-hidden='true'></span></a>&nbsp;&nbsp;"
+                    a += "<a href='#' data-proses='terima' data-invoice='" + full.ID_UM + "' onclick='terimaDokumen(this)' title='Terima Dokumen'><span class='glyphicon glyphicon-check' aria-hidden='true'></span></a>&nbsp;&nbsp;"
                 }
                 if (full.STATUS_DOC == 'RETUR' && full.POSISI == 'EKSPEDISI') {
                     a += "<a href='#' data-proses='terima_retur' data-invoice='" + full.ID_UM + "' onclick='terimaDokumen(this)' title='Terima Dokumen'><span class='glyphicon glyphicon-check' aria-hidden='true'></span></a>&nbsp;&nbsp;"
@@ -549,22 +550,22 @@ $('.ts9').on('dblclick', function() {
     }
 });
 $('.ts10').on('dblclick', function() {
-   if (t10) {
-       mytable_inv.order([10, 'asc']).draw();
-       t10 = false;
-   } else {
-       mytable_inv.order([10, 'desc']).draw();
-       t10 = true;
-   }
+ if (t10) {
+     mytable_inv.order([10, 'asc']).draw();
+     t10 = false;
+ } else {
+     mytable_inv.order([10, 'desc']).draw();
+     t10 = true;
+ }
 });
 $('.ts11').on('dblclick', function() {
-   if (t10) {
-       mytable_inv.order([10, 'asc']).draw();
-       t10 = false;
-   } else {
-       mytable_inv.order([10, 'desc']).draw();
-       t10 = true;
-   }
+ if (t10) {
+     mytable_inv.order([10, 'asc']).draw();
+     t10 = false;
+ } else {
+     mytable_inv.order([10, 'desc']).draw();
+     t10 = true;
+ }
 });
 }
 
@@ -824,7 +825,7 @@ function kirimDokumen(elm) {
 function terimaDokumen(elm) {
     var id_invoice = $(elm).data('invoice');
     var _proses = $(elm).data('proses');
-    var url = $("#base-url").val() + 'EC_Invoice_um/listDokumen';
+    var url = $("#base-url").val() + 'EC_Invoice_um_ver/listDokumen';
     $.get(url, {
         invoice: id_invoice,
         proses: _proses
@@ -840,6 +841,14 @@ function terimaDokumen(elm) {
     }, 'html');
 }
 
+function Select(elm){
+    if($(elm).is(':checked')){
+        $('.item-cb').selected(true);
+    }else{
+        $('.item-cb').selected(false);
+    }
+}
+
 function kirimDokumenReject(elm){
     /* pastikan semua checkbox sudah dipilih */
     var _table = $(elm).closest('table');
@@ -852,7 +861,7 @@ function kirimDokumenReject(elm){
     //alert (_proses + "XXX");
     //$(elm).hide();
     if (_ld.length == _totalDoc) {
-        var _url = $("#base-url").val() + 'EC_Invoice_um/updatePosisiDokumen';
+        var _url = $("#base-url").val() + 'EC_Invoice_um_ver/updatePosisiDokumen';
 
         bootbox.prompt({
             title: "Catatan untuk Verifikator",
@@ -860,7 +869,7 @@ function kirimDokumenReject(elm){
             callback: function (result) {
                 //var alasan = result;
                 //console.log(result);
-                if(result){var _url = $("#base-url").val() +'EC_Invoice_um/updatePosisiDokumen';
+                if(result){var _url = $("#base-url").val() +'EC_Invoice_um_ver/updatePosisiDokumen';
                 $.post(_url,{invoice : _invoice, catatan_vendor: result},function(data){
                     if(data.status){
                         bootbox.alert(data.message,function(){
@@ -899,7 +908,7 @@ function SubmitDokumen(elm) {
     var _proses = $(elm).data('proses');
     $(elm).hide();
     if (_ld.length == _totalDoc) {
-        var _url = $("#base-url").val() + 'EC_Invoice_um/updatePosisiDokumen';
+        var _url = $("#base-url").val() + 'EC_Invoice_um_ver/updatePosisiDokumen';
         $.post(_url, {
             invoice: _invoice,
             proses: _proses
@@ -926,6 +935,44 @@ function SubmitDokumen(elm) {
 
 
 }
+
+
+function RejectDokumen(elm){
+    /* pastikan semua checkbox sudah dipilih */
+    var _table = $(elm).closest('table');
+    var _tbody = _table.find('tbody');
+    var _ld = _tbody.find('input:checked');
+    var _totalDoc = _tbody.find('tr').length;
+    var _invoice = $(elm).data('invoice');
+    //$(elm).closest('div').hide();
+  
+    
+   bootbox.prompt({
+        title: "Alasan Dokumen Di Reject",
+        inputType: 'textarea',
+        callback: function (result) {
+                //var alasan = result;
+                console.log(result);
+                if(result){var _url = $("#base-url").val() +'EC_Invoice_um_ver/updatePosisiDokumen';
+                $.post(_url,{invoice : _invoice, alasan_reject: result, reject : 1},function(data){
+                    if(data.status){
+                        bootbox.alert(data.message,function(){
+                            // refresh datatable 
+                            bootbox.hideAll();
+                            loadTable_invoice();
+                        });
+                    }else{
+                        bootbox.alert(data.message);
+                    }
+                },'json');
+            }
+        }
+
+    });
+
+        
+}
+
 
 function cekGRSelected(elm) {
     /* pastikan nomer PO dan item_cat sama */
@@ -1022,7 +1069,6 @@ function createInvoice(elm) {
             $(this).find("#totalview").data('baseamount', jumlah);
             $(this).find("#base_amount").val(jumlah);
             $(this).find("#totalAmount").val(numberWithCommas(jumlah));
-            $(this).find("#dp_req_amount").val(numberWithCommas(0.5 * jumlah));
             $(this).find("#total").val(jumlah);
 
             var url_check_ref_fp = $('#base-url').val() + 'EC_Invoice_um/getRefFP';
@@ -1178,7 +1224,7 @@ $(".format-koma").keyup(function() {
     if ($(this).val() < 0 || $(this).val().search(/[A-Za-z]/g) != -1)
         $(this).val(1)
     else
-        $(this).val(numberWithCommas(removeCommas($(this).val())))
+        $(this).val(numberWithDot(removeDot($(this).val())))
 })
 
 } else {

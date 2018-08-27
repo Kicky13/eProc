@@ -1570,6 +1570,8 @@ class Tender_winner extends CI_Controller {
 		$IS_SUBMIT = $this->input->post('IS_SUBMIT');	
 
 		$pesan_ganti_delivery_date = "";
+		$check_delivery_date = "";
+
 		// die(var_dump($this->input->post()));
 			//--LOG MAIN--//
 		$prosess = 'Create LP3';
@@ -1839,6 +1841,11 @@ class Tender_winner extends CI_Controller {
 
 			if($IS_SUBMIT==1 || $IS_SUBMIT=="1"){
 				$ganti_delivery_date = $this->change_delivery_date($po_id);
+				$check_delivery_date = $ganti_delivery_date[0]['TYPE'];
+				if($check_delivery_date == 'E'){
+					$this->po_header->update(array("IS_SUBMIT" => 0),array('PO_ID' => $po_id));
+				} else {
+				}
 				$pesan_ganti_delivery_date .= '<br>'.$ganti_delivery_date[0]['MESSAGE'];
 				// echo "<pre>";
 				// echo $ganti_delivery_date[0]['MESSAGE'];
@@ -2010,6 +2017,19 @@ class Tender_winner extends CI_Controller {
 					}
 				}
 			}
+			if($IS_SUBMIT==1 || $IS_SUBMIT=="1"){
+				$ganti_delivery_date = $this->change_delivery_date($po_id);
+				$check_delivery_date = $ganti_delivery_date[0]['TYPE'];
+				if($check_delivery_date == 'E'){
+					$this->po_header->update(array("IS_SUBMIT" => 0),array('PO_ID' => $po_id));
+				} else {
+				}
+				$pesan_ganti_delivery_date .= '<br>'.$ganti_delivery_date[0]['MESSAGE'];
+				// echo "<pre>";
+				// echo $ganti_delivery_date[0]['MESSAGE'];
+				// print_r($ganti_delivery_date);
+				// die;
+			}
 		}
 
 		$this->load->model('po_header_comment');
@@ -2050,10 +2070,15 @@ class Tender_winner extends CI_Controller {
 
 		// email ke approval 4 mei 2018
 		if($IS_SUBMIT==1 || $IS_SUBMIT=="1"){
-			$this->progress_kirim_email_po_approve($po_id);
+			//$this->progress_kirim_email_po_approve($po_id);
 		}
 
-		$this->session->set_flashdata('success', 'Create LP3 Berhasil. '.$lp3no.$pesan_ganti_delivery_date);
+		if($check_delivery_date == 'E'){
+			$this->session->set_flashdata('danger', 'Create LP3 GAGAL dengan ERROR '.$pesan_ganti_delivery_date.' dan di save sebagai DRAFT dengan Nomor LP3. '.$lp3no);
+		} else {
+			$this->session->set_flashdata('success', 'Create LP3 Berhasil. '.$lp3no.$pesan_ganti_delivery_date);
+		}
+
 		redirect('Tender_winner');
 	}
 

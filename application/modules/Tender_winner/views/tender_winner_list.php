@@ -13,6 +13,12 @@
                         <strong>Success!</strong> <?php echo $this->session->flashdata('success');?>.
                     </div>                                    
                 <?php endif?>
+                <?php if ($this->session->flashdata('danger') != false): ?>                                    
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>ERROR!</strong> <?php echo $this->session->flashdata('danger');?>.
+                    </div>                                    
+                <?php endif?>
                 <form method="post" action="<?php echo base_url() ?>Tender_winner/detail/" novalidate>
                     <div class="panel panel-default">
                         <div class="panel-heading">

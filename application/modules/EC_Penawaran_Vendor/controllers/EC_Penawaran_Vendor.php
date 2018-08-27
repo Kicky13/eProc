@@ -75,12 +75,24 @@ class EC_Penawaran_Vendor extends CI_Controller
     }
 
     //08-02-2017
+
+    public function test()
+    {
+        $this->load->model('ec_penawaran_vnd_test');
+        $venno = $this->session->userdata['VENDOR_NO'];
+        $matno = '503-200434';
+//        echo $venno;
+        print json_encode($this->ec_penawaran_vnd_test->get_stok_commit($venno, $matno));
+    }
+
     function getALL($dataProduk)
     {
         $i = 1;
         $data_tabel = array();
 		$venno = $this->session->userdata['VENDOR_NO'];
-        foreach ($dataProduk as $value) {
+        $this->load->model('ec_penawaran_vnd_test');
+        $commit = '';
+		foreach ($dataProduk as $value) {
             /*if ($value['KODE_UPDATE'] == '510') {
                 $LASTUPDATE = strtotime(date($value['LASTUPDATE']));
                 $dateAfter = date('d-m-Y', strtotime('+' . $value['DAYS_UPDATE'] . ' day', $LASTUPDATE));
@@ -110,7 +122,8 @@ class EC_Penawaran_Vendor extends CI_Controller
             $data['CURRENCY'] = $value['CURRENCY'] != null ? $value['CURRENCY'] : "";
             //$data[8] = $value['DELIVERY_TIME'] != null ? $value['DELIVERY_TIME'] : "";
             $data['STOK'] = $value['STOK'] != null ? $value['STOK'] : "";
-            $data['STOK_COMMIT'] = $value['STOK_COMMIT'] != null ? $value['STOK_COMMIT'] : "";
+            $commit = $this->ec_penawaran_vnd_test->get_stok_commit($venno, $value['MATNO']);
+            $data['STOK_COMMIT'] = $commit != null ? $commit : "";
             $data[13] = $value['KODE_PENAWARAN'] != null ? $value['KODE_PENAWARAN'] : "";
             $data['DESKRIPSI'] = $value['DESKRIPSI'] != null ? $value['DESKRIPSI'] : "";
             $data['LONGTEXT'] = $value['TDLINE'] != null ? $value['TDLINE'] : "";
