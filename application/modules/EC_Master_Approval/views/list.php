@@ -245,7 +245,7 @@
                         <select class="form-control CC2" name="viewusername" id="viewusername" style="width: 250px;">
                             <option value="0" selected="">Pilih Username</option>
                             <?php foreach ($EMP as $value){ ?>
-                            <option value="<?php echo $value['ID']; ?>"><?php echo $value['FULLNAME']; ?></option>
+                            <option value="<?php echo $value['ID'].':'.$value['FULLNAME']; ?>"><?php echo $value['FULLNAME']; ?></option>
                             <?php } ?>
                         </select>
                     </div>                    

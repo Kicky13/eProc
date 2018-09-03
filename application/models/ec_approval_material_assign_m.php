@@ -13,7 +13,7 @@ class ec_approval_material_assign_m extends CI_Model
 
     function getMaterial_approval()
     {
-        return $this->getDataMaterial($this->getLevelConfig(), $this->getAssignerData());
+        return $this->getDataMaterial($this->groupingCNF($this->getLevelConfig()), $this->getAssignerData());
     }
 
     function getLevelConfig()
@@ -22,7 +22,20 @@ class ec_approval_material_assign_m extends CI_Model
         $this->db->from($this->tableConf);
         $this->db->where('USER_ID', $userid);
         $result = $this->db->get();
-        return (array)$result->row_array();
+        return (array)$result->result_array();
+    }
+
+    function groupingCNF($cnf)
+    {
+        $teks = '';
+        for($i = 0; $i < count($cnf); $i++){
+            if ($i > 0){
+                $teks .= ', '.$cnf[$i]['CONF_LEVEL'];
+            } else {
+                $teks .= $cnf[$i]['CONF_LEVEL'];
+            }
+        }
+        return $teks;
     }
 
     function getDataMaterial($cnf, $assigner)
@@ -34,7 +47,7 @@ class ec_approval_material_assign_m extends CI_Model
         $this->db->join($this->material, $this->table.'.MATNO = '.$this->material.'.MATNR');
         $this->db->join($this->category, $this->table.'.ID_CAT_PROPOSE = '.$this->category.'.ID_CAT');
         $this->db->where($this->table.'.USER_ID', $assigner['USER_ID']);
-        $this->db->where($this->table.'.PROGRESS_APP', $cnf['CONF_LEVEL']);
+        $this->db->where($this->table.'.PROGRESS_APP IN ('.$cnf.')');
         $this->db->order_by($this->table.'.ID', 'DESC');
         $result = $this->db->get();
         return (array)$result->result_array();
@@ -66,7 +79,7 @@ class ec_approval_material_assign_m extends CI_Model
 
     function approve($kode)
     {
-        if ($this->verifyApp($this->currentLvl())){
+        if ($this->verifyApp($this->getDetailApproval($kode))){
             return $this->statusChange($kode, true);
         } else {
             return $this->statusChange($kode, false);
@@ -106,7 +119,7 @@ class ec_approval_material_assign_m extends CI_Model
 
     function verifyApp($data)
     {
-        if ($this->findNext($data['CONF_LEVEL']) > 0){
+        if ($this->findNext($data['PROGRESS_APP']) > 0){
             return true;
         } else {
             return false;

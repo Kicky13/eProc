@@ -46,7 +46,7 @@ class EC_Report_pengadaan extends CI_Controller
     {
         header('Content-Type: application/json');
         $result = $this->ec_report_publish_m->getReport_approval();
-        echo json_encode(array('data' => $result));
+        echo json_encode(array('data' => $this->compiled($result)));
     }
 
     public function getDetail_approval()
@@ -54,6 +54,22 @@ class EC_Report_pengadaan extends CI_Controller
         header('Content-Type: application/json');
         $result = $this->ec_report_publish_m->getDetail_approval($this->input->post('matno'), $this->input->post('vendorno'));
         echo json_encode($result);
+    }
+
+    public function compiled($data)
+    {
+        for ($i = 0; $i < count($data); $i++){
+            $temp = $this->ec_report_publish_m->getStatus($data[$i]['MATNO'], $data[$i]['VENDORNO']);
+            if ($temp['LOG_ACTIVITY'] == 1) {
+                $status = 'Waiting for Approve on Approval '.$temp['LEVEL'];
+            } elseif ($temp['LOG_ACTIVITY'] == 2){
+                $status = 'Approved by Approval '.$temp['LEVEL'];
+            } elseif ($temp['LOG_ACTIVITY'] == 3){
+                $status = 'Rejected by Approval '.$temp['LEVEL'];
+            }
+            $data[$i]['STATUS'] = $status;
+        }
+        return $data;
     }
 
     public function test()

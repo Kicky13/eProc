@@ -21,15 +21,19 @@
                                     <table id="table_inv" class="table table-striped nowrap" width="100%">
                                         <thead>
                                         <tr>
-                                            <th class="text-center ts0"><a href="javascript:void(0)">Material No</th>
-                                            <th class="text-center ts1"><a href="javascript:void(0)">Description</a></th>
-                                            <th class="text-center ts2"><a href="javascript:void(0)">Vendor</a></th>
-                                            <th class="text-center ts3"><a href="javascript:void(0)">UoM</a></th>
-                                            <th class="text-center ts7"><a href="javascript:void(0)">Update Freq</a></th>
+                                            <th class="text-center ts0"><a href="javascript:void(0)"> </th>
+                                            <th class="text-center ts1"><a href="javascript:void(0)">Material No</th>
+                                            <th class="text-center ts2"><a href="javascript:void(0)">Description</a></th>
+                                            <th class="text-center ts3"><a href="javascript:void(0)">Vendor</a></th>
+                                            <th class="text-center ts4"><a href="javascript:void(0)">UoM</a></th>
+                                            <th class="text-center ts5"><a href="javascript:void(0)">Update Freq</a></th>
+                                            <th class="text-center ts6"><a href="javascript:void(0)">Recent Status</a></th>
                                             <th class="text-center ts8"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear">
                                             <th></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -41,11 +45,13 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Vendor</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">UoM</a></td>
-                                            <td class="text-center ts7"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts0"><a href="javascript:void(0)"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Vendor</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">UoM</a></td>
+                                            <td class="text-center ts5"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts6"><a href="javascript:void(0)">Recent Status</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
@@ -54,11 +60,13 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Vendor</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">UoM</a></td>
-                                            <td class="text-center ts7"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts0"><a href="javascript:void(0)"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Vendor</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">UoM</a></td>
+                                            <td class="text-center ts5"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts6"><a href="javascript:void(0)">Recent Status</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
@@ -67,11 +75,13 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Vendor</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">UoM</a></td>
-                                            <td class="text-center ts7"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts0"><a href="javascript:void(0)"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Vendor</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">UoM</a></td>
+                                            <td class="text-center ts5"><a href="javascript:void(0)">Update Freq</a></td>
+                                            <td class="text-center ts6"><a href="javascript:void(0)">Recent Status</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>

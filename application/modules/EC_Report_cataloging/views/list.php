@@ -21,28 +21,26 @@
                                     <table id="table_inv" class="table table-striped nowrap" width="100%">
                                         <thead>
                                         <tr>
-                                            <th class="text-center ts0"><a href="javascript:void(0)">Material No</th>
-                                            <th class="text-center ts1"><a href="javascript:void(0)">Category Code</a></th>
-                                            <th class="text-center ts2"><a href="javascript:void(0)">Description</a></th>
-                                            <th class="text-center ts3"><a href="javascript:void(0)">Category</a></th>
+                                            <th class="text-center ts1"><a href="javascript:void(0)">Material No</th>
+                                            <th class="text-center ts2"><a href="javascript:void(0)">Category Code</a></th>
+                                            <th class="text-center ts3"><a href="javascript:void(0)">Description</a></th>
+                                            <th class="text-center ts4"><a href="javascript:void(0)">Category</a></th>
                                             <th class="text-center ts8"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear">
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
+                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th></th>
-                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                            <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
-                                            <th>
-
-                                            </th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Category Code</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Category Code</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">Category</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
@@ -51,10 +49,10 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Category Code</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Category Code</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">Category</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
@@ -63,10 +61,10 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Category Code</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Category Code</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts4"><a href="javascript:void(0)">Category</a></td>
                                             <td class="text-center ts8">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>

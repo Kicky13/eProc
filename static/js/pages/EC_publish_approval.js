@@ -43,6 +43,13 @@ function loadTable_() {
         },
         "columns": [{
             mRender: function (data, type, full) {
+                a = "<div hidden class='col-md-12 text-center'>";
+                a += "";
+                a += "</div>";
+                return a;
+            }
+        }, {
+            mRender: function (data, type, full) {
                 a = "<div class='col-md-12 text-center'>";
                 a += (full.MATNO);
                 a += "</div>";

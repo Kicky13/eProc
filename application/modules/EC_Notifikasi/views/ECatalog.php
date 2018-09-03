@@ -200,7 +200,7 @@
                 </tr>
                 <tr>
                     <td style="padding-left:30px; padding-right:30px; padding-bottom:32px; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:15pt; color:#777777; text-align:center;">
-                        <a class="main_button " target="_self" href="<?php echo isset($url) ? $url : site_url('Login_vendor') ?>" style="-moz-border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px; border-radius:3px; line-height:normal; margin-top:20px; background:#E74C3C; border:1px solid #E74C3C; color:#fff !important; padding:11px 14px; font-size:13px; display:inline-block; text-decoration: none;">
+                        <a class="main_button " target="_self" href="<?php echo isset($url) ? $url : site_url('Login') ?>" style="-moz-border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px; border-radius:3px; line-height:normal; margin-top:20px; background:#E74C3C; border:1px solid #E74C3C; color:#fff !important; padding:11px 14px; font-size:13px; display:inline-block; text-decoration: none;">
                             Login
                         </a>
                     </td>

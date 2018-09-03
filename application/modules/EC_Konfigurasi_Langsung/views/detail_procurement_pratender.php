@@ -94,7 +94,7 @@
                                                         <th class="col-md-1 text-center">Detail</th>
                                                     </tr>
                                                     <tr>
-                                                        <th><input disabled type="checkbox" onchange="chkAll(this,'items')" />&nbsp;All</th>
+                                                        <th><input type="checkbox" onchange="chkAllitmPublish(this,'itemPubs')" />&nbsp;All</th>
                                                         <th><input type="text" class="col-xs-12 srch"></th>
                                                         <th><input type="text" class="col-xs-12 srch"></th>
                                                         <th><input type="text" class="col-xs-12 srch"></th>                                                        

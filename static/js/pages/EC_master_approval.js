@@ -324,6 +324,7 @@ function simpan() {
 }
 
 function update() {
+    console.log($('#viewusername').val() + ' ' + $('#viewvalueFrom').val())
     // console.log($(element).is(":checked"));
     //console.log($(element).parent().parent().find(".endDate").data('provide'))
     // var harga1 = $('#' + harga).val();

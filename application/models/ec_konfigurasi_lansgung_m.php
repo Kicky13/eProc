@@ -287,10 +287,8 @@ ORDER BY MATKL,VENDOR_NO");
         $next = $this->getNextApp();
         $now = date("Y-m-d H:i:s");
         foreach ($itms as $value) {
-            $this->db->where('MATNO', $value);
-            $this->db->where('USERID', $userid);
-            $this->db->delete('EC_PL_VENDOR_ASSIGN');
             foreach ($vnds as $values) {
+                $cek = $this->checkAvaibility($value, $values);
                 $SQL = "INSERT INTO EC_PL_VENDOR_ASSIGN
 				VALUES
 					(
@@ -310,9 +308,20 @@ ORDER BY MATKL,VENDOR_NO");
 							'YYYY-MM-DD HH24:MI:SS'
 						),NULL,'" . $kode_update . "','" . $lamahari . "','" . $currency . "','" . $userid . "','" . 1 . "','" . 1 . "'
 					)";
-                $this->db->query($SQL);
-                $this->insertLog($value, $values, $kode_update, $userid, 0, 0);
-                $this->insertLog($value, $values, $kode_update, $next['USER_ID'], 1, 1);
+                if (isset($cek['KODE_PROPOSE'])){
+                    if ($cek['STATUS_APP'] == 2){
+                        $this->db->where('MATNO', $value);
+                        $this->db->where('VENDORNO', $values);
+                        $this->db->delete('EC_PL_VENDOR_ASSIGN');
+                        $this->db->query($SQL);
+                        $this->insertLog($value, $values, $kode_update, $userid, 0, 0);
+                        $this->insertLog($value, $values, $kode_update, $next['USER_ID'], 1, 1);
+                    }
+                } else {
+                    $this->db->query($SQL);
+                    $this->insertLog($value, $values, $kode_update, $userid, 0, 0);
+                    $this->insertLog($value, $values, $kode_update, $next['USER_ID'], 1, 1);
+                }
             }
         }
     }
@@ -335,6 +344,15 @@ ORDER BY MATKL,VENDOR_NO");
         $this->db->delete('EC_REPORT_VENDOR_ASSIGN');
         $now = date("Y-m-d H:i:s");
         $this->db->insert('EC_REPORT_VENDOR_ASSIGN', array('MATNO' => $matno, 'VENDORNO' => $vendorno, 'KODE_UPDATE' => $kode_update, 'USERID' => $userid, 'LOG_DATE' => $now, 'LOG_ACTIVITY' => $activity));
+    }
+
+    function checkAvaibility($matno, $vendorno)
+    {
+        $this->db->from($this->tableVndAss);
+        $this->db->where('MATNO', $matno);
+        $this->db->where('VENDORNO', $vendorno);
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 
     public function edit($itms, $vnds, $kode_update = '511', $lamahari = '10', $currency = 'IDR')

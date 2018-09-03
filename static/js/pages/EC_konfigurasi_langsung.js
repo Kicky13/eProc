@@ -1,4 +1,5 @@
 var items = [],
+    itemPubs = [],
     matnr = '-',
     vnd = [],
     mat = []
@@ -23,16 +24,43 @@ $(document).ready(function () {
                         }
                         else if ($(this).data("pil") == 0) {
                             $(".btnupbls").prop('disabled', true);
-                            $("#propose").prop('disabled', true);
                             $(".btnpbls").prop('disabled', false);
                         }
                     }else{
                         $(".btnupbls").prop('disabled', true);
-                        $("#propose").prop('disabled', true);
                         $(".btnpbls").prop('disabled', true);
                     }
                 });
             });
+
+    $('.date').datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    $('.itemPubs').change(function () {
+        //$(".btnpbls").prop('disabled', false);
+        //$(".btnupbls").prop('disabled', false);
+        //$("#propose").prop('disabled', false);
+        $(".items").each(function () {
+            //console.log($(this).data("pil"))
+            if ($(this).is(":checked")){
+                if ($(this).data("pil") == 1){
+                    $(".btnpbls").prop('disabled', true);
+                }
+                else if ($(this).data("pil") == 0) {
+                    $(".btnupbls").prop('disabled', true);
+                    $("#propose").prop('disabled', true);
+                    $(".btnpbls").prop('disabled', false);
+                }
+            }else{
+                $(".btnupbls").prop('disabled', true);
+                $("#propose").prop('disabled', true);
+                $(".btnpbls").prop('disabled', true);
+            }
+        });
+    });
 
     $('.date').datepicker({
         format: 'dd-mm-yyyy',
@@ -86,19 +114,19 @@ $(document).ready(function () {
     });
 
     $('.generate_vendor').click(function () {
-        items = []
+        itemPubs = []
         cekPublish = []
         ok = 0;
-        $(".items").each(function () {
+        $(".itemPubs").each(function () {
             if ($(this).is(":checked")){
                 //console.log('data pil = '+$(this).data("pil"))
                 cekPublish.push(String($(this).data("pil")));
-                if (items.indexOf($(this).data("matgrp")) == -1){
-                    items.push(String($(this).data("matgrp")));
+                if (itemPubs.indexOf($(this).data("matgrp")) == -1){
+                    itemPubs.push(String($(this).data("matgrp")));
                 }
             }
         });
-        data = JSON.stringify(items)
+        data = JSON.stringify(itemPubs)
         //console.log(data)
         //console.log(cekPublish)
         for (var i = cekPublish.length - 1; i >= 0; i--) {
@@ -110,7 +138,7 @@ $(document).ready(function () {
         }
  
         if(ok==0){
-            if (items.length > 0){
+            if (itemPubs.length > 0){
                 loadTableVnd(data)
             }else{
                 alert('No item selected');
@@ -142,7 +170,7 @@ $(document).ready(function () {
     })
 
     $('#propose').click(function () {
-        items = []
+        itemPubs = []
         startDate = $('#startdate').val()
         endDate = $('#enddate').val()
         kode_update = $('#activitySelector').val()
@@ -162,12 +190,12 @@ $(document).ready(function () {
             lamahari = '0';
         }
         
-        $(".items").each(function () {
+        $(".itemPubs").each(function () {
             if ($(this).is(":checked"))
-                if (items.indexOf($(this).data("matno")) == -1)
-                    items.push(String($(this).data("matno")));
+                if (itemPubs.indexOf($(this).data("matno")) == -1)
+                    itemPubs.push(String($(this).data("matno")));
         });
-        dataitems = JSON.stringify(items)
+        dataitems = JSON.stringify(itemPubs)
         // console.log(dataitems)
         // vnd = []
         // $(".vnd").each(function () {
@@ -1185,7 +1213,7 @@ function loadTableItemPublish(KODE_USER) {
             $('#table_item_publish tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
             });
-            $('.items').change(function () {
+            $('.itemPubs').change(function () {
                 //$(".btnpbls").prop('disabled', false);
                 //$(".btnupbls").prop('disabled', false);
                 //$("#propose").prop('disabled', false);
@@ -1205,7 +1233,7 @@ function loadTableItemPublish(KODE_USER) {
                     $("#propose").prop('disabled', true);
                 }
 
-                $(".items").each(function () {
+                $(".itemPubs").each(function () {
                      //console.log($(this).data("pil"))
                     if ($(this).is(":checked")){
                         if ($(this).data("pil") == 1){
@@ -1231,7 +1259,7 @@ function loadTableItemPublish(KODE_USER) {
             $('#table_item_publish tbody tr').each(function () {
                 $(this).find('td').attr('nowrap', 'nowrap');
             });
-            $('.items').change(function () {
+            $('.itemPubs').change(function () {
                 //$(".btnpbls").prop('disabled', false);
                 //$(".btnupbls").prop('disabled', false);
                 //$("#propose").prop('disabled', false);
@@ -1252,7 +1280,7 @@ function loadTableItemPublish(KODE_USER) {
                     $("#propose").prop('disabled', true);
                 }
 
-                $(".items").each(function () {
+                $(".itemPubs").each(function () {
                     console.log($(this).data("pil"))
                     if ($(this).is(":checked")){
                         if ($(this).data("pil") == 1){
@@ -1280,10 +1308,10 @@ function loadTableItemPublish(KODE_USER) {
                 a = ''
                 a += "<div class='col-md-12'>"
                 if (full.PUBLISHED_LANGSUNG == '1') {
-                    a += "<input type='checkbox' data-matno=" + full.MATNR + " data-pil=" + 1 + " data-matgrp=" + full.MATKL + " class='items'>&nbsp;&nbsp;&nbsp;"
+                    a += "<input type='checkbox' data-matno=" + full.MATNR + " data-pil=" + 1 + " data-matgrp=" + full.MATKL + " class='itemPubs'>&nbsp;&nbsp;&nbsp;"
                     a += '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>'//full.MATNR;
                 } else {
-                    a += "<input type='checkbox' data-matno=" + full.MATNR + " data-pil=" + 0 + " data-matgrp=" + full.MATKL + " class='items'>&nbsp;&nbsp;&nbsp;"
+                    a += "<input type='checkbox' data-matno=" + full.MATNR + " data-pil=" + 0 + " data-matgrp=" + full.MATKL + " class='itemPubs'>&nbsp;&nbsp;&nbsp;"
                 }
                 a += "</div>";
                 return a
@@ -1619,7 +1647,18 @@ function chkAllitmNotpublish(elm, mode) {
     }
 }
 
-function klik(elm) {
+function chkAllitmPublish(elm, mode) {
+    if ($(elm).is(":checked")){
+        $('.' + mode).prop("checked", true);
+        $("#propose").prop('disabled', false);
+    }
+    else{
+        $('.' + mode).prop("checked", false);
+        $("#propose").prop('disabled', true);
+    }
+}
+
+function klik(elm, mode) {
     if ($(elm).find('input').is(":checked"))
         $('.' + mode).find('input').prop("checked", true);
     else

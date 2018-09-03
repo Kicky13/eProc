@@ -36,4 +36,15 @@ class ec_report_publish_m extends CI_Model
         $result = $this->db->get();
         return (array)$result->result_array();
     }
+
+    function getStatus($matno, $vendorno)
+    {
+        $this->db->from($this->table);
+        $this->db->join($this->konfig, $this->table.'.USERID = '.$this->konfig.'.USER_ID');
+        $this->db->where('MATNO', $matno);
+        $this->db->where('VENDORNO', $vendorno);
+        $this->db->order_by('LEVEL', 'desc');
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
 }
