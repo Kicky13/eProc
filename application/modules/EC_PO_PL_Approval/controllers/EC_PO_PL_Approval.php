@@ -192,12 +192,12 @@ class EC_PO_PL_Approval extends MX_Controller
                             $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
                         } else {
                             $notif = 'Email Sent';
-                            $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                            $this->sendVendorRelease($vnd['EMAIL_ADDRESS'], $data, $akses);
                         }
                         break;
                     default:
                         $notif = 'Email Sent';
-                        $this->sendVendor($vnd['EMAIL_ADDRESS'], $data, $akses);
+                        $this->sendVendorRelease($vnd['EMAIL_ADDRESS'], $data, $akses);
                         break;
                 }
                 break;
@@ -227,8 +227,23 @@ class EC_PO_PL_Approval extends MX_Controller
                 'title' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Approve Oleh '.$user,
                 'title_header' => 'Nomor PO ' . $tableData[0]['PO_NO'] . ' Berhasil di Approve',
             );
-            $message = $this->load->view('EC_Notifikasi/ECatalog', $data, true);
-            $subject = 'PO No. '.$tableData[0]['PO_NO'].' Berhasil dibuat.[E-Catalog Semen Indonesia]';
+            $message = $this->load->view('EC_Notifikasi/ECatalog_vendor', $data, true);
+            $subject = 'PO No. '.$tableData[0]['PO_NO'].' Berhasil di Approve.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
+        }
+    }
+
+    public function sendVendorRelease($vendor, $tableData, $user)
+    {
+        if (isset($tableData)){
+            $table = $this->buildTableVendor($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL PO PEMBELIAN LANGSUNG</h2>'.$table.'<br/>',
+                'title' => 'PO Telah Release',
+                'title_header' => 'PO Telah Release',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog_vendor', $data, true);
+            $subject = 'PO Telah Release.[E-Catalog Semen Indonesia]';
             Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vendor, $message, $subject);
         }
     }

@@ -261,7 +261,7 @@ class ec_strategic_material_m extends CI_Model
         $this->db->where('CAT_ID');
         $this->db->delete($this->tableReport);
 
-        $this->db->insert($this->tableReport, array('USER_ID' => $user['USER_ID'], 'MATNO' => $data['MATNR'], 'CAT_ID' => $data['ID_CAT'], 'LOG_ACTIVITY' => $activity, 'LOG_DATE' => $now));
+        $this->db->insert($this->tableReport, array('USER_ID' => $user['USER_ID'], 'MATNO' => $data['MATNR'], 'CAT_ID' => $data['ID_CAT'], 'LOG_ACTIVITY' => $activity, 'LOG_DATE' => $now, 'APPROVE_LEVEL' => $activity));
         return true;
     }
 

@@ -368,7 +368,7 @@
 								</tr>
 								<tr>
 									<th>
-									<input type="checkbox" onchange="chkAll(this,'vndEdit')" />
+									<input type="checkbox" onchange="chkAll(this,'matEdit')" />
 									&nbsp;All</th>
 									<th>
 									<input type="text" class="col-xs-12 srch">
@@ -455,7 +455,7 @@
                             </tr>
                             <tr>
                                 <th>
-                                    <input type="checkbox" onchange="chkAll(this,'vndEdit')" />
+                                    <input type="checkbox" onchange="chkAll(this,'matEdit')" />
                                     &nbsp;All</th>
                                 <th>
                                     <input type="text" class="col-xs-12 srch">

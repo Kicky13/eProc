@@ -25,12 +25,14 @@ class ec_report_cataloging_m extends CI_Model
 
     function getDetail_material($matno, $cat)
     {
+        $select = $this->table.'.LOG_ID, '.$this->table.'.LOG_ACTIVITY, '.$this->table.'.LOG_DATE, '.$this->table.'.APPROVE_LEVEL, '.$this->employee.'.FULLNAME, '.$this->table.'.MATNO, '.$this->table.'.CAT_ID';
+        $this->db->select($select);
         $this->db->from($this->table);
-        $this->db->join($this->konfig, $this->konfig.'.USER_ID = '.$this->table.'.USER_ID', 'left');
         $this->db->join($this->employee, $this->employee.'.ID = '.$this->table.'.USER_ID', 'left');
-        $this->db->where('MATNO', $matno);
-        $this->db->where('CAT_ID', $cat);
-        $this->db->order_by('CONF_LEVEL');
+        $this->db->where($this->table.'.MATNO', $matno);
+        $this->db->where($this->table.'.CAT_ID', $cat);
+        $this->db->group_by($select);
+        $this->db->order_by($this->table.'.APPROVE_LEVEL');
         $result = $this->db->get();
         return (array)$result->result_array();
     }

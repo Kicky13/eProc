@@ -283,14 +283,15 @@ class EC_Konfigurasi_Langsung extends MX_Controller
         $vnd = ($this->input->post('vnds'));
         $itms = json_decode($this->input->post('items'));
         $result = $this->ec_konfigurasi_lansgung_m->editAssign($itms, $vnd);
-        echo json_encode(array('data' => $result));
+        $this->notifVendor($this->ec_konfigurasi_lansgung_m->getTableData($itms), $this->ec_konfigurasi_lansgung_m->getEmailVnd($vnd));
+        echo json_encode(array('data' => $this->ec_konfigurasi_lansgung_m->getTableData($itms)));
     }
 
     public function tess($value = '')
     {
         header('Content-Type: application/json');
         $this->load->model('ec_konfigurasi_lansgung_m');
-        $result = $this->ec_konfigurasi_lansgung_m->getVnd(array('401-118', '101-100'));
+        $result = $this->ec_konfigurasi_lansgung_m->getTableData();
         var_dump($result);
     }
 
@@ -367,6 +368,51 @@ class EC_Konfigurasi_Langsung extends MX_Controller
                     <td> ' . $tableData['UPDATE'] . '</td>
                   </tr>';
             array_push($tbody, $_tr);
+        }
+        array_push($tableGR, $thead);
+        array_push($tableGR, implode(' ', $tbody));
+        array_push($tableGR, '</table>');
+        return implode(' ', $tableGR);
+    }
+
+    public function notifVendor($tableData, $vnd)
+    {
+        $send = 'kicky120@gmail.com';
+        if (isset($tableData)) {
+            $table = $this->buildTableVendor($tableData);
+            $data = array(
+                'content' => '<h2 style="text-align:center;">DETAIL INFO VENDOR ASSIGN</h2>' . $table . '<br/>',
+                'title' => 'Material untuk Penawaran untuk Pembelian Langsung',
+                'title_header' => 'Berikut Material untuk Dilakukan Penawaran',
+            );
+            $message = $this->load->view('EC_Notifikasi/ECatalog_vendor', $data, true);
+            $subject = 'Material baru telah diassign.[E-Catalog Semen Indonesia]';
+            Modules::run('EC_Notifikasi/Email/ecatalogNotifikasi', $vnd['EMAIL_ADDRESS'], $message, $subject);
+        }
+    }
+
+    private function buildTableVendor($tableData)
+    {
+        $tableGR = array(
+            '<table border=1 style="font-size:10px;width:1000px;margin:auto;">'
+        );
+        $thead = '<thead>
+            <tr>
+                <th style="font-weight:600;"> No. Material</th>
+                <th style="font-weight:600;"> Nama Material</th>
+                <th style="font-weight:600;"> Satuan</th>                
+              </tr>        
+              </thead>';
+        $tbody = array();
+        if (isset($tableData)) {
+            foreach ($tableData as $item){
+                $_tr = '<tr>
+                    <td> ' . $item['MATNR'] . '</td>                      
+                    <td> ' . $item['MAKTX'] . '</td>
+                    <td> ' . $item['MEINS'] . '</td>
+                  </tr>';
+                array_push($tbody, $_tr);
+            }
         }
         array_push($tableGR, $thead);
         array_push($tableGR, implode(' ', $tbody));

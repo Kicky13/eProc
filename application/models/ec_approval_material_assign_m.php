@@ -103,14 +103,15 @@ class ec_approval_material_assign_m extends CI_Model
 
     function statusChange($kode, $status)
     {
-        $data = $this->currentLvl();
+        $data = $this->getDetailApproval($kode);
         if ($status){
+            $this->insertLog($this->getDetailApproval($kode), $this->getNext($this->currentLvl()), $data['PROGRESS_APP'] + 1);
+            $this->updateLog($this->getDetailApproval($kode), $this->currentLvl(), $data['PROGRESS_APP']);
             $this->db->where('ID', $kode);
-            $this->db->update($this->table, array('PROGRESS_APP' => $data['CONF_LEVEL'] + 1, 'STATUS_APP' => 1));
-            $this->insertLog($this->getDetailApproval($kode), $this->getNext($this->currentLvl()));
-            $this->updateLog($this->getDetailApproval($kode), $this->currentLvl());
+            $this->db->update($this->table, array('PROGRESS_APP' => $data['PROGRESS_APP'] + 1, 'STATUS_APP' => 1));
         } else {
             $this->assignMaterial($kode);
+            $this->updateLog($this->getDetailApproval($kode), $this->currentLvl(), $data['PROGRESS_APP']);
             $this->db->where('ID', $kode);
             $this->db->delete($this->table);
         }
@@ -219,23 +220,20 @@ class ec_approval_material_assign_m extends CI_Model
         $this->db->update($this->material, array('ID_CAT' => $result['ID_CAT_PROPOSE']));
     }
 
-    function insertLog($app, $userdata)
+    function insertLog($app, $userdata, $level)
     {
         $now = date('Y-m-d H:i:s');
-        $this->db->where('USER_ID', $userdata['USER_ID']);
-        $this->db->where('MATNO', $app['MATNO']);
-        $this->db->where('CAT_ID', $app['ID_CAT_PROPOSE']);
-        $this->db->delete($this->tableReport);
-
-        $this->db->insert($this->tableReport, array('USER_ID' => $userdata['USER_ID'], 'MATNO' => $app['MATNO'], 'CAT_ID' => $app['ID_CAT_PROPOSE'], 'LOG_ACTIVITY' => 1, 'LOG_DATE' => $now));
+        $this->db->insert($this->tableReport, array('USER_ID' => $userdata['USER_ID'], 'MATNO' => $app['MATNO'], 'CAT_ID' => $app['ID_CAT_PROPOSE'], 'LOG_ACTIVITY' => 1, 'LOG_DATE' => $now, 'APPROVE_LEVEL' => $level));
         return true;
     }
 
-    function updateLog($app, $userdata)
+    function updateLog($app, $userdata, $level)
     {
+        $date = date('Y-m-d H:i:s');
         $this->db->where('USER_ID', $userdata['USER_ID']);
         $this->db->where('MATNO', $app['MATNO']);
         $this->db->where('CAT_ID', $app['ID_CAT_PROPOSE']);
-        $this->db->update($this->tableReport, array('LOG_ACTIVITY' => 2));
+        $this->db->where('APPROVE_LEVEL', $level);
+        $this->db->update($this->tableReport, array('LOG_ACTIVITY' => 2, 'LOG_DATE' => $date));
     }
 }

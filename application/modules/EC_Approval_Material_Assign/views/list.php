@@ -19,18 +19,20 @@
                             <div class="panel-group skrol" id="accordion" role="tablist" aria-multiselectable="true">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="pull-right">
-                                        <button type="button" id="approveItem" class="btn btn-success pull-right">Approve</button>&nbsp;&nbsp;
-                                        <button type="button" id="rejectItem" class="btn btn-danger pull-right">Reject</button>&nbsp;&nbsp;
+                                        <button type="button" id="approveItem" class="btn btn-success">Approve</button> 
+                                        <button type="button" id="rejectItem" class="btn btn-danger">Reject</button>
                                     </div>
                                     <table id="table_inv" class="table table-striped nowrap" width="100%">
                                         <thead>
                                         <tr>
-                                            <th class="text-center ts0"><a href="javascript:void(0)">Material No</th>
-                                            <th class="text-center ts1"><a href="javascript:void(0)">Description</a></th>
-                                            <th class="text-center ts2"><a href="javascript:void(0)">Category</a></th>
-                                            <th class="text-center ts8"><a href="javascript:void(0)">Aksi</a></th>
+                                            <th class="text-center ts0"></th>
+                                            <th class="text-center ts1"><a href="javascript:void(0)">Material No</a></th>
+                                            <th class="text-center ts2"><a href="javascript:void(0)">Description</a></th>
+                                            <th class="text-center ts3"><a href="javascript:void(0)">Category</a></th>
+                                            <th class="text-center ts4"><a href="javascript:void(0)">Aksi</a></th>
                                         </tr>
                                         <tr class="sear">
+                                            <th></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
                                             <th><input type="text" class="col-xs-10 col-xs-offset-1 srch" style="margin: 0px"></th>
@@ -41,10 +43,11 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Category</a></td>
-                                            <td class="text-center ts8">
+                                            <td class="text-center ts0"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</a></td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts4">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
@@ -52,10 +55,11 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Category</a></td>
-                                            <td class="text-center ts8">
+                                            <td class="text-center ts0"><a href="javascript:void(0)"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</a></td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts4">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
@@ -63,10 +67,11 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center ts0"><a href="javascript:void(0)">Material No</td>
-                                            <td class="text-center ts1"><a href="javascript:void(0)">Description</a></td>
-                                            <td class="text-center ts2"><a href="javascript:void(0)">Category</a></td>
-                                            <td class="text-center ts8">
+                                            <td class="text-center ts0"><a href="javascript:void(0)"> </td>
+                                            <td class="text-center ts1"><a href="javascript:void(0)">Material No</a></td>
+                                            <td class="text-center ts2"><a href="javascript:void(0)">Description</a></td>
+                                            <td class="text-center ts3"><a href="javascript:void(0)">Category</a></td>
+                                            <td class="text-center ts4">
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
                                                 <a href="javascript:void(0)"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>

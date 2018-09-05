@@ -343,7 +343,7 @@ ORDER BY MATKL,VENDOR_NO");
         $this->db->where('USERID', $userid);
         $this->db->delete('EC_REPORT_VENDOR_ASSIGN');
         $now = date("Y-m-d H:i:s");
-        $this->db->insert('EC_REPORT_VENDOR_ASSIGN', array('MATNO' => $matno, 'VENDORNO' => $vendorno, 'KODE_UPDATE' => $kode_update, 'USERID' => $userid, 'LOG_DATE' => $now, 'LOG_ACTIVITY' => $activity));
+        $this->db->insert('EC_REPORT_VENDOR_ASSIGN', array('MATNO' => $matno, 'VENDORNO' => $vendorno, 'KODE_UPDATE' => $kode_update, 'USERID' => $userid, 'LOG_DATE' => $now, 'LOG_ACTIVITY' => $activity, 'APPROVE_LEVEL' => $level));
     }
 
     function checkAvaibility($matno, $vendorno)
@@ -518,6 +518,34 @@ ORDER BY MATKL,VENDOR_NO");
     {
         $this->db->from($this->employee);
         $this->db->where('ID', $userdata['USER_ID']);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getEmailVnd($vnd)
+    {
+        $this->db->from($this->tableVnd);
+        $this->db->where('VENDOR_NO', $vnd);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getTableData($items)
+    {
+        $data = array();
+        $i = 0;
+        foreach ($items as $item){
+            $temp = $this->getDetailItem($item);
+            $data[$i] = $temp;
+            $i++;
+        }
+        return $data;
+    }
+
+    function getDetailItem($item)
+    {
+        $this->db->from($this->table);
+        $this->db->where('MATNR', $item);
         $result = $this->db->get();
         return (array)$result->row_array();
     }
@@ -749,7 +777,7 @@ ORDER BY MATKL,VENDOR_NO");
     public function get_M_update()
     {
         $this->db->from($this->tableUpdateHarga);
-        $this->db->order_by('KODE_UPDATE ASC');
+        $this->db->order_by('URUTAN ASC');
         $result = $this->db->get();
         return (array)$result->result_array();
     }

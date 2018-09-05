@@ -95,12 +95,12 @@ class ec_publish_approval_m extends CI_Model
         if ($status){
             $this->db->where('KODE_PROPOSE', $kode);
             $this->db->update($this->table, array('LEVEL_APP' => $data['LEVEL_APP'] + 1, 'STATUS_APP' => 1));
-            $this->insertLog($this->getPropose($kode), $data['LEVEL']);
-            $this->updateLog($this->getPropose($kode), 2);
+            $this->insertLog($this->getPropose($kode), $data['LEVEL_APP']);
+            $this->updateLog($this->getPropose($kode), 2, $data['LEVEL_APP']);
         } else {
             $this->db->where('KODE_PROPOSE', $kode);
             $this->db->update($this->table, array('LEVEL_APP' => 0, 'STATUS_APP' => 0));
-            $this->updateLog($this->getPropose($kode), 2);
+            $this->updateLog($this->getPropose($kode), 2, $data['LEVEL_APP']);
         }
         return true;
     }
@@ -134,13 +134,15 @@ class ec_publish_approval_m extends CI_Model
         return (array)$result->row_array();
     }
 
-    function updateLog($data, $activity)
+    function updateLog($data, $activity, $level)
     {
+        $now = date("Y-m-d H:i:s");
         $userid = $this->session->userdata['ID'];
         $this->db->where('USERID', $userid);
         $this->db->where('MATNO', $data['MATNO']);
         $this->db->where('VENDORNO', $data['VENDORNO']);
-        $this->db->update($this->report, array('LOG_ACTIVITY' => $activity));
+        $this->db->where('APPROVE_LEVEL', $level);
+        $this->db->update($this->report, array('LOG_DATE' => $now, 'LOG_ACTIVITY' => $activity));
         return true;
     }
 
@@ -148,12 +150,7 @@ class ec_publish_approval_m extends CI_Model
     {
         $now = date("Y-m-d H:i:s");
         $userdata = $this->getNext($lvl);
-        $this->db->where('MATNO', $data['MATNO']);
-        $this->db->where('VENDORNO', $data['VENDORNO']);
-        $this->db->where('USERID', $userdata['USER_ID']);
-        $this->db->delete($this->report);
-
-        $this->db->insert($this->report, array('MATNO' => $data['MATNO'], 'VENDORNO' => $data['VENDORNO'], 'KODE_UPDATE' => $data['KODE_UPDATE'], 'USERID' => $userdata['USER_ID'], 'LOG_DATE' => $now, 'LOG_ACTIVITY' => 1));
+        $this->db->insert($this->report, array('MATNO' => $data['MATNO'], 'VENDORNO' => $data['VENDORNO'], 'KODE_UPDATE' => $data['KODE_UPDATE'], 'USERID' => $userdata['USER_ID'], 'LOG_DATE' => $now, 'LOG_ACTIVITY' => 1, 'APPROVE_LEVEL' => $lvl + 1));
         return true;
     }
 

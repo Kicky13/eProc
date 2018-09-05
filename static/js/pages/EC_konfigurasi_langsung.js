@@ -280,7 +280,7 @@ $(document).ready(function () {
         console.log(datamat)
         console.log("vendor" + $("#vendornoMod1").val())
         editAssign($("#vendornoMod1").val(), datamat)
-    })
+    });
 
     $('#modalItem').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)

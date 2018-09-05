@@ -27,12 +27,14 @@ class ec_report_publish_m extends CI_Model
 
     function getDetail_approval($matno, $vnd)
     {
+        $select = $this->table.'.ID, '.$this->table.'.LOG_DATE, '.$this->table.'.LOG_ACTIVITY, '.$this->table.'.APPROVE_LEVEL, '.$this->employee.'.FULLNAME';
+        $this->db->select($select);
         $this->db->from($this->table);
-        $this->db->join($this->konfig, $this->konfig.'.USER_ID = '.$this->table.'.USERID', 'left');
         $this->db->join($this->employee, $this->employee.'.ID = '.$this->table.'.USERID', 'left');
         $this->db->where('MATNO', $matno);
         $this->db->where('VENDORNO', $vnd);
-        $this->db->order_by('LEVEL');
+        $this->db->group_by($select);
+        $this->db->order_by('APPROVE_LEVEL');
         $result = $this->db->get();
         return (array)$result->result_array();
     }

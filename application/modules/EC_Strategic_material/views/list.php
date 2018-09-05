@@ -128,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+<!--                <div class="form-group">
                     <label for="lastChg" class="col-sm-2 control-label">TAG</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="TAG" id="TAG">
@@ -139,7 +139,7 @@
                         </p>
                     </div>
 
-                </div>
+                </div>-->
 
                 <div class="form-group">
                     <label for="picure" class="col-sm-2 control-label">Picure</label>
