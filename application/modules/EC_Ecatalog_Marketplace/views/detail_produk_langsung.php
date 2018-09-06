@@ -121,7 +121,7 @@
     for ($i=0; $i < sizeof($deals); $i++) { 
   ?>  
     <tr>
-      <td width="25%"><?php echo $deals[$i]['VENDOR_NAME']?></td>
+      <td width="25%"><?php echo '<span style="font-weight:600">'.$deals[$i]['VENDOR_NAME'].'</span><br/>Phone: ';?><?php echo $deals[$i]['CONTACT_PHONE_NO'] != null ? $deals[$i]['CONTACT_PHONE_NO'] : "-"?></td>
       <td width="55%">
 <!--          <strong><?php echo ($deals[$i]['DESKRIPSI_ITEM']==''?'Tidak ada deskripsi' : $deals[$i]['DESKRIPSI_ITEM']) ?></strong>-->        Plant: <?php echo $deals[$i]['PLANT'] ?> &mdash; <?php echo $deals[$i]['NAMA_PLANT'] ?>
         <br>Stok Vendor: <?php echo $deals[$i]['STOK'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
@@ -130,20 +130,11 @@
         <br>Delivery Time: <?php echo $deals[$i]['DELIVERY_TIME'] ?> Days
       </td>
       <td width="15%"><?php echo $deals[$i]['CURRENCY'] ?> &nbsp; <?php echo number_format($deals[$i]['HARGA'], 0, ",", ".") ?></td>
-<!--      <td>-->
-<!--          <a href="javascript:void(0)" data-toggle="modal" data-target="#modalBeli" -->
-<!--             data-vendor="--><?php //echo $deals[$i]['VENDOR_NAME']?><!--" -->
-<!--             data-deskripsi="--><?php //echo ($data_produk[0]['MAKTX']==''?'Tidak ada deskripsi' : $data_produk[0]['MAKTX']) ?><!--" -->
-<!--             data-plant="--><?php //echo $deals[$i]['PLANT'] ?><!-- &mdash; --><?php //echo $deals[$i]['NAMA_PLANT'] ?><!--"-->
-<!--             data-stok="--><?php //echo $deals[$i]['STOK'] ?><!--&nbsp;--><?php //echo $deals[$i]['MEINS'] ?><!--"            -->
-<!--             data-delivery="--><?php //echo $deals[$i]['DELIVERY_TIME'] ?><!--"-->
-<!--             data-detailpen="--><?php //echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?><!--" -->
-<!--             data-harga="--><?php //echo $deals[$i]['HARGA'] ?><!--" -->
-<!--             data-curr="--><?php //echo $deals[$i]['CURRENCY'] ?><!--" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-usd" ></i>&nbsp;&nbsp;Buy</a>-->
-<!--      </td>-->
       <td>
-          <a onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-plus" ></i>
-          Add to Cart</a>
+          <a title="Add to Cart" onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-shopping-cart" ></i>
+          </a>
+          <button type="button" data-toggle="modal" data-target="#modalNego" title="Nego Harga" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger nego"><i class="glyphicon glyphicon-comment" ></i>
+          </button>
       </td>
     </tr>
   <?php
@@ -264,6 +255,69 @@
 
 
 <link rel="stylesheet" href="<?php echo base_url() . "static/css/pages/EC_miniTable.css" ?>"/>
+<div class="modal fade" id="modalNego">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong style="font-size: 20px;">Negosiasi </strong>
+                <br/>
+                <strong>Vendor</strong> : Maju Terus<span id="vendorNego"></span>
+                <br/>
+                <strong>Material</strong> : 503-200312 - Amplop Coklat Folio<span id="materialNego"></span>
+                <br/>
+                <strong>Plant</strong> : 2701 - Warehouse Gresik<span id="plantNego"></span>
+            </div><input type="hidden" id="vendornoMod1" />
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="table_mat_vnd" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th class="text-center"> Chat</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="text-left">
+                                    <p style="font: 14px;"><strong>Chat Vendor 1</strong></p>&nbsp;
+                                    <p>2018-07-07 12:44:52</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">
+                                    <p style="font: 14px;"><strong>Chat User 1</strong></p>&nbsp;
+                                    <p>2018-07-07 12:44:52</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">
+                                    <p style="font: 14px;"><strong>Chat Vendor 2</strong></p>&nbsp;
+                                    <p>2018-07-07 12:44:52</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">
+                                    <p style="font: 14px;"><strong>Chat User 2</strong></p>&nbsp;
+                                    <p>2018-07-07 12:44:52</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <input type="text" class="col-xs-10">&nbsp;
+                        <button type="button" title="Send" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-success"><i class="glyphicon glyphicon-send" ></i></button>
+                        <button type="button" title="Buka Locking Harga" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-warning"><i class="glyphicon glyphicon-lock" ></i></button>
+                        <button type="button" title="Negosiasi Selesai" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger"><i class="glyphicon glyphicon-remove" ></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalbudgetDetail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

@@ -1438,7 +1438,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             // $dataa[] = $data;
         }
 
-        $data['deals'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);
+        $data['deals'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);        
 //        var_dump($data['deals_raw']);die();
 //        $data['deals']=$this->unique_multidim_array($data['deals_raw'], 'VENDORNO');
         $data['deals2']=array();
