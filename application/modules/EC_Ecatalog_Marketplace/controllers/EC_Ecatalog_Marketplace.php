@@ -1402,6 +1402,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $this->layout->add_js('pages/EC_nav_tree.js');
         //bentrok javascript
         $this->layout->add_js('pages/EC_pembelian_langsung.js');
+        $this->layout->add_js('pages/EC_PL_negosiasi.js');
         $this->layout->add_css('pages/EC_nav_tree.css');
 //        $CC = $this->COSTCENTER_GETLIST();        
         $user_costcenter = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);
@@ -2354,6 +2355,23 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $uploaded = $this->file_operation->uploadTPL(UPLOAD_PATH . 'EC_korin', $_FILES);
         // var_dump($uploaded['korin']['file_name']);
         echo json_encode($uploaded['korin']);
+    }
+
+    public function openChat()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $plant = $this->input->post('plant');
+        $matno = $this->input->post('matno');
+        $vendorno = $this->input->post('vendorno');
+        $data = $this->ec_pl_negosiasi_m->requestChat($vendorno, $matno, $plant);
+        echo json_encode(array('data' => $data));
+
+    }
+
+    public function refreshChat()
+    {
+
     }
 }
 //

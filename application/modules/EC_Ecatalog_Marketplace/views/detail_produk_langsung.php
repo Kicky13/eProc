@@ -1,8 +1,29 @@
+<style>
+    /* Important part */
+    #modalNego .modal-dialog {
+        overflow-y: initial !important
+    }
+
+    #modalNego .modal-body {
+        height: 400px;
+        overflow-y: auto;
+    }
+
+    #modalNego .text-right {
+        padding-left: 250px;
+        word-wrap: break-word;
+    }
+
+    #modalNego .text-left {
+        padding-right: 250px;
+        word-wrap: break-word;
+    }
+</style>
 <section class="content_section">
     <div class="content_spacer">
         <div class="content">
             <div class="row">
-                <div class="col-lg-4">                    
+                <div class="col-lg-4">
                     <h5 id="maktx"><?php echo $data_produk[0]['MAKTX'] ?></h5>
                 </div>
                 <div class="col-lg-8 pull-right">
@@ -11,10 +32,13 @@
                         array('method' => 'POST', 'class' => 'form-horizontal pull-right')); ?>
                     <input type="hidden" id="arr" name="arr[]"/>
                     <input type="hidden" id="base_url" value="<?php echo base_url(); ?>"/>
-                    <a href="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/listCatalogLsgs" type="button" class="btn btn-default"><span
+                    <a href="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/listCatalogLsgs" type="button"
+                       class="btn btn-default"><span
                                 class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Kembali</a>
-                    <a href="javascript:void(0)" style="display: none;" data-toggle="modal" data-target="#modalbudgetDetail" type="button" class="btn btn-default"><span
-                                class="" aria-hidden="true"><strong>Cost Center</strong></span><!--<span class="budget">Loading...</span>--></a>
+                    <a href="javascript:void(0)" style="display: none;" data-toggle="modal"
+                       data-target="#modalbudgetDetail" type="button" class="btn btn-default"><span
+                                class="" aria-hidden="true"><strong>Cost Center</strong></span>
+                        <!--<span class="budget">Loading...</span>--></a>
                     <button type="submit" style="display: none" class="btn btn-default">Histori</button>
                     <!-- <a href="<?php //echo base_url(); ?>EC_Ecatalog_Marketplace/checkout_lgsg" type="button" class="btn btn-default"
                        onclick="openChart()"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Cart &nbsp;&nbsp;&nbsp;<span
@@ -23,7 +47,8 @@
                     <!-- <a href="<?php //echo base_url(); ?>EC_Ecatalog_Marketplace/perbandingan_pl" type="button" id="compare" class="btn btn-default">
                         Compare &nbsp;<span class="badge jmlCompare"></span>
                     </a> -->
-                    <a href="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/checkout" style="box-shadow: 1px 1px 1px #ccc" type="button"
+                    <a href="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/checkout"
+                       style="box-shadow: 1px 1px 1px #ccc" type="button"
                        class="btn btn-default" onclick="">
                         <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Cart &nbsp;
                         <span class="badge jml"><?php echo $cart; ?></span>
@@ -53,11 +78,14 @@
 
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 5px">
-                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Detail
+                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                                                                      data-toggle="tab">Detail
                                     Produk</a></li>
-                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Syarat dan
+                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
+                                                       data-toggle="tab">Syarat dan
                                     Kondisi</a></li>
-                            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Feedback</a>
+                            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab"
+                                                       data-toggle="tab">Feedback</a>
                             </li>
                             <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
                         </ul>
@@ -69,7 +97,8 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="accord-detailproduk">
                                             <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion1" href="#detailproduk"
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion1"
+                                                   href="#detailproduk"
                                                    aria-expanded="true" aria-controls="detailproduk">
                                                     Product Description
                                                 </a>
@@ -106,7 +135,8 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="accord-deals-vendor">
                                             <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#deals-vendor"
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion2"
+                                                   href="#deals-vendor"
                                                    aria-expanded="true" aria-controls="deals-vendor">
                                                     Deals Vendor
                                                 </a>
@@ -116,32 +146,56 @@
                                              aria-labelledby="accord-deals-vendor">
                                             <div class="panel-body">
                                                 <table class="table table-hover" width="100%">
-  <tbody>
-  <?php
-    for ($i=0; $i < sizeof($deals); $i++) { 
-  ?>  
-    <tr>
-      <td width="25%"><?php echo '<span style="font-weight:600">'.$deals[$i]['VENDOR_NAME'].'</span><br/>Phone: ';?><?php echo $deals[$i]['CONTACT_PHONE_NO'] != null ? $deals[$i]['CONTACT_PHONE_NO'] : "-"?></td>
-      <td width="55%">
-<!--          <strong><?php echo ($deals[$i]['DESKRIPSI_ITEM']==''?'Tidak ada deskripsi' : $deals[$i]['DESKRIPSI_ITEM']) ?></strong>-->        Plant: <?php echo $deals[$i]['PLANT'] ?> &mdash; <?php echo $deals[$i]['NAMA_PLANT'] ?>
-        <br>Stok Vendor: <?php echo $deals[$i]['STOK'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
-        <br>Stok Konfirmasi: <?php echo $deals[$i]['STOK_KONFIRMASI'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
-        <br>Stok Avalaible: <?php echo $deals[$i]['STOK'] - $deals[$i]['STOK_KONFIRMASI'] ?>&nbsp;<?php echo $deals[$i]['MEINS'] ?>
-        <br>Delivery Time: <?php echo $deals[$i]['DELIVERY_TIME'] ?> Days
-      </td>
-      <td width="15%"><?php echo $deals[$i]['CURRENCY'] ?> &nbsp; <?php echo number_format($deals[$i]['HARGA'], 0, ",", ".") ?></td>
-      <td>
-          <a title="Add to Cart" onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-primary beli"><i class="glyphicon glyphicon-shopping-cart" ></i>
-          </a>
-          <button type="button" data-toggle="modal" data-target="#modalNego" title="Nego Harga" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger nego"><i class="glyphicon glyphicon-comment" ></i>
-          </button>
-      </td>
-    </tr>
-  <?php
-    }
-  ?>
-  </tbody>
-</table>
+                                                    <tbody>
+                                                    <?php
+                                                    for ($i = 0; $i < sizeof($deals); $i++) {
+                                                        ?>
+                                                        <tr>
+                                                            <td width="25%"><?php echo '<span style="font-weight:600">' . $deals[$i]['VENDOR_NAME'] . '</span><br/>Phone: '; ?><?php echo $deals[$i]['CONTACT_PHONE_NO'] != null ? $deals[$i]['CONTACT_PHONE_NO'] : "-" ?></td>
+                                                            <td width="55%">
+                                                                <!--          <strong><?php echo($deals[$i]['DESKRIPSI_ITEM'] == '' ? 'Tidak ada deskripsi' : $deals[$i]['DESKRIPSI_ITEM']) ?></strong>-->
+                                                                Plant: <?php echo $deals[$i]['PLANT'] ?>
+                                                                &mdash; <?php echo $deals[$i]['NAMA_PLANT'] ?>
+                                                                <br>Stok Vendor: <?php echo $deals[$i]['STOK'] ?>
+                                                                &nbsp;<?php echo $deals[$i]['MEINS'] ?>
+                                                                <br>Stok
+                                                                Konfirmasi: <?php echo $deals[$i]['STOK_KONFIRMASI'] ?>
+                                                                &nbsp;<?php echo $deals[$i]['MEINS'] ?>
+                                                                <br>Stok
+                                                                Avalaible: <?php echo $deals[$i]['STOK'] - $deals[$i]['STOK_KONFIRMASI'] ?>
+                                                                &nbsp;<?php echo $deals[$i]['MEINS'] ?>
+                                                                <br>Delivery
+                                                                Time: <?php echo $deals[$i]['DELIVERY_TIME'] ?> Days
+                                                            </td>
+                                                            <td width="15%"><?php echo $deals[$i]['CURRENCY'] ?>
+                                                                &nbsp; <?php echo number_format($deals[$i]['HARGA'], 0, ",", ".") ?></td>
+                                                            <td>
+                                                                <a title="Add to Cart"
+                                                                   onclick="addCart_pl('<?php echo $deals[$i]['MATNO']; ?>', '<?php echo $data_produk[0]['ID_CAT']; ?>', '<?php echo $deals[$i]['VENDORNO']; ?>', '<?php echo $deals[$i]['KODE_DETAIL_PENAWARAN'] ?>')"
+                                                                   style="font-size:12px;box-shadow: 1px 1px 1px #ccc;margin-bottom:10px;"
+                                                                   class="btn btn-primary beli"><i
+                                                                            class="glyphicon glyphicon-shopping-cart"></i>
+                                                                </a>
+                                                                <button type="button" data-toggle="modal"
+                                                                        data-target="#modalNego"
+                                                                        data-vendorno="<?php echo $deals[$i]['VENDORNO']; ?>"
+                                                                        data-vendorname="<?php echo $deals[$i]['VENDOR_NAME']; ?>"
+                                                                        data-plant="<?php echo $deals[$i]['PLANT']; ?>"
+                                                                        data-plantdesc="<?php echo $deals[$i]['NAMA_PLANT']; ?>"
+                                                                        data-matno="<?php echo $data_produk[0]['MATNR']; ?>"
+                                                                        data-maktx="<?php echo $data_produk[0]['MAKTX']; ?>"
+                                                                        title="Nego Harga"
+                                                                        style="font-size:12px;box-shadow: 1px 1px 1px #ccc"
+                                                                        class="btn btn-danger nego"><i
+                                                                            class="glyphicon glyphicon-comment"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -153,7 +207,8 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="accor-pengiriman">
                                             <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#pengiriman"
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion2"
+                                                   href="#pengiriman"
                                                    aria-expanded="true" aria-controls="pengiriman">
                                                     Info Pengiriman
                                                 </a>
@@ -185,7 +240,8 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="accord-feedback">
                                             <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion3" href="#feedback"
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion3"
+                                                   href="#feedback"
                                                    aria-expanded="true" aria-controls="feedback">
                                                     Ulasan Barang
                                                 </a>
@@ -236,7 +292,8 @@
 
                                 <!-- <input type="hidden" name="contract_no" value="<?php //echo $data_produk[0]['contract_no']?>"> -->
                                 <textarea class="form-control" rows="4" id="ulasan" name="ulasan"></textarea>
-                                <button type="submit" id="btn-submit" class="btn btn-success pull-right" style="margin-top: 10px;"
+                                <button type="submit" id="btn-submit" class="btn btn-success pull-right"
+                                        style="margin-top: 10px;"
                                         disabled="">Submit
                                 </button>
                                 </form>
@@ -261,57 +318,88 @@
             <div class="modal-header">
                 <strong style="font-size: 20px;">Negosiasi </strong>
                 <br/>
-                <strong>Vendor</strong> : Maju Terus<span id="vendorNego"></span>
+                <strong>Vendor</strong> : <span id="vendorNego"></span>
                 <br/>
-                <strong>Material</strong> : 503-200312 - Amplop Coklat Folio<span id="materialNego"></span>
+                <strong>Material</strong> : <span id="materialNego"></span>
                 <br/>
-                <strong>Plant</strong> : 2701 - Warehouse Gresik<span id="plantNego"></span>
-            </div><input type="hidden" id="vendornoMod1" />
+                <strong>Plant</strong> : <span id="plantNego"></span>
+            </div>
+            <input type="hidden" id="vendornoHide"/>
+            <input type="hidden" id="matnoHide"/>
+            <input type="hidden" id="plantHide"/>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <table id="table_mat_vnd" class="table table-striped">
+                        <table id="table_chat" class="table table-striped">
                             <thead>
                             <tr>
                                 <th class="text-center"> Chat</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td class="text-left">
-                                    <p style="font: 14px;"><strong>Chat Vendor 1</strong></p>&nbsp;
-                                    <p>2018-07-07 12:44:52</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right">
-                                    <p style="font: 14px;"><strong>Chat User 1</strong></p>&nbsp;
-                                    <p>2018-07-07 12:44:52</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-left">
-                                    <p style="font: 14px;"><strong>Chat Vendor 2</strong></p>&nbsp;
-                                    <p>2018-07-07 12:44:52</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right">
-                                    <p style="font: 14px;"><strong>Chat User 2</strong></p>&nbsp;
-                                    <p>2018-07-07 12:44:52</p>
-                                </td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <div class="text-right">-->
+<!--                                        <p style="font: 14px;"><strong>Lorem ipsum dolor sit amet</strong></p>-->
+<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- User</p>-->
+<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <div class="text-left">-->
+<!--                                        <p style="font: 14px;"><strong>Lorem ipsum dolor sit amet, consectetur adipiscing-->
+<!--                                                elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut-->
+<!--                                                enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut-->
+<!--                                                aliquip ex ea commodo consequat.</strong></p>-->
+<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- Vendor</p>-->
+<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <div class="text-right">-->
+<!--                                        <p style="font: 14px;"><strong>Sed ut perspiciatis unde omnis iste natus error sit-->
+<!--                                                voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa-->
+<!--                                                quae ab illo inventore</strong></p>-->
+<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- User</p>-->
+<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <div class="text-left">-->
+<!--                                        <p style="font: 14px;"><strong>Chat Vendor 2</strong></p>-->
+<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- Vendor</p>-->
+<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <br>
+            </div>
+            <div class="modal-footer">
                 <div class="panel panel-default">
                     <div class="panel-body text-center">
-                        <input type="text" class="col-xs-10">&nbsp;
-                        <button type="button" title="Send" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-success"><i class="glyphicon glyphicon-send" ></i></button>
-                        <button type="button" title="Buka Locking Harga" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-warning"><i class="glyphicon glyphicon-lock" ></i></button>
-                        <button type="button" title="Negosiasi Selesai" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger"><i class="glyphicon glyphicon-remove" ></i></button>
+                        <textarea rows="2" class="col-xs-10" id="chatMsg" placeholder="Enter Your Text Here"></textarea>&nbsp;
+                        <button type="button" title="Send" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"
+                                class="btn btn-success" id="sendMsg"><i class="glyphicon glyphicon-send"></i></button>
+                        <button type="button" title="Buka Locking Harga"
+                                style="font-size:12px;box-shadow: 1px 1px 1px #ccc" class="btn btn-warning" id="openLock"><i
+                                    class="glyphicon glyphicon-lock"></i></button>
+                        <!--                        <button type="button" title="Negosiasi Selesai" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger"><i class="glyphicon glyphicon-remove" ></i></button>-->
+                    </div>
+                    <div class="panel-body text-center">
+                        <button type="button" title="Negosiasi Selesai"
+                                style="font-size:12px;box-shadow: 1px 1px 1px #ccc" class="btn btn-danger col-xs-12">
+                            Deal Negosiasi
+                        </button>
                     </div>
                 </div>
             </div>
@@ -328,43 +416,47 @@
                 <h4 class="modal-title text-center"><strong><u>INFORMASI DETAIL BUDGET</u></strong></h4>
             </div>
             <div class="modal-body">
-<!--                <table class="table table-hover table-striped">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>CostCenter</th>-->
-<!--                        <th>Description</th>-->
-<!--                        <th>GLAccount</th>-->
-<!--                        <th>GLDescription</th>-->
-<!--                        <th>Current</th>-->
-<!--                        <th>Commit</th>-->
-<!--                        <th>Actual</th>-->
-<!--                        <th>Available</th>-->
-<!--                        <th>Cart</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody id="tbody">-->
-<!--                    </tbody>-->
-<!--                </table>-->
+                <!--                <table class="table table-hover table-striped">-->
+                <!--                    <thead>-->
+                <!--                    <tr>-->
+                <!--                        <th>CostCenter</th>-->
+                <!--                        <th>Description</th>-->
+                <!--                        <th>GLAccount</th>-->
+                <!--                        <th>GLDescription</th>-->
+                <!--                        <th>Current</th>-->
+                <!--                        <th>Commit</th>-->
+                <!--                        <th>Actual</th>-->
+                <!--                        <th>Available</th>-->
+                <!--                        <th>Cart</th>-->
+                <!--                    </tr>-->
+                <!--                    </thead>-->
+                <!--                    <tbody id="tbody">-->
+                <!--                    </tbody>-->
+                <!--                </table>-->
                 <!-- <form class="form-inline"  method="post">
                     <input type="hidden" name="menu" value="detail_prod_langsung/<?php //echo $this->uri->segment(3) ?>/<?php //echo $this->uri->segment(4) ?>">
                     <div class="form-group">
                         <label for="exampleInputName2">COST CENTER:&nbsp;&nbsp;&nbsp;</label>
                             <?php //$ccp = ($ccc["COSTCENTER"] == null || $ccc["COSTCENTER"] == "") ? "" : $ccc["COSTCENTER"];
-                            //if ($ccp == "") ?>
+                //if ($ccp == "") ?>
                             <?php //foreach ($CC as $key => $value) { ?>
                                   <?php //if($value["COSTCENTER"] == $ccp) $CCCC= ($value["COSTCENTER"]."&mdash;".$value["NAME"]); ?>
                             <?php //} echo $CCCC;?>
                     </div>
                 </form><br/> -->
 
-                <form class="form-inline" action="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/simpanCC" method="post">
-                    <input type="hidden" name="menu" value="detail_prod_langsung/<?php echo $this->uri->segment(3) ?>/<?php echo $this->uri->segment(4) ?>">
+                <form class="form-inline" action="<?php echo base_url(); ?>EC_Ecatalog_Marketplace/simpanCC"
+                      method="post">
+                    <input type="hidden" name="menu"
+                           value="detail_prod_langsung/<?php echo $this->uri->segment(3) ?>/<?php echo $this->uri->segment(4) ?>">
                     <input type="hidden" id="budgetcc" value="<?php echo $ccc["COSTCENTER"]; ?>">
                     <div class="form-group">
-                        <label for="exampleInputName2">COST CENTER :&nbsp;&nbsp;</label><?php echo $ccc["COSTCENTER"]; ?>&nbsp;-&nbsp;<?php echo $ccc["COSTCENTER_NAME"]; ?>
+                        <label for="exampleInputName2">COST CENTER
+                            :&nbsp;&nbsp;</label><?php echo $ccc["COSTCENTER"]; ?>
+                        &nbsp;-&nbsp;<?php echo $ccc["COSTCENTER_NAME"]; ?>
                         <!-- <select name="cc" id="group_jasa_id" required="" class="form-control CC">
                             <?php //$ccp = ($ccc["COSTCENTER"] == null || $ccc["COSTCENTER"] == "") ? "" : $ccc["COSTCENTER"];
-                            //if ($ccp == "") ?>
+                        //if ($ccp == "") ?>
                                 <option value="" selected="">Pilih Cost Center</option>
                             <?php //foreach ($CC as $key => $value) { ?>
                                 <option value="<?php //echo $value["COSTCENTER"]; ?>:<?php //echo $value["NAME"]; ?>" <?php //echo ($value["COSTCENTER"] == $ccp) ? 'selected' : ''; ?>><?php //echo $value["COSTCENTER"]; ?> &mdash; <?php //echo $value["NAME"]; ?></option>
@@ -376,7 +468,8 @@
                 <hr/>
                 <div class="row">
                     <div class="col-xs-12">
-                        <table class="table table-hover table-striped" id="tableCCBG" style="font-size: 11px;" width="100%">
+                        <table class="table table-hover table-striped" id="tableCCBG" style="font-size: 11px;"
+                               width="100%">
                             <thead>
                             <tr>
                                 <th class="text-center">Year</th>
@@ -421,7 +514,7 @@
                     <tbody id="tbodyPO">
                     </tbody>
                 </table>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
@@ -438,88 +531,103 @@
                 <div class="row">
                     <div class="col-md-6">
                         <?php echo '<img id="picSRC" src="' . base_url(UPLOAD_PATH) . '/EC_material_strategis/' . (($data_produk[0]['PICTURE'] == "") ? "default_post_img.png" : $data_produk[0]['PICTURE']) . '" class="img-responsive">' ?>
-                    </div>                    
-                    <div class="col-sm-6 col-md-6 col-lg-6" style="margin-bottom:10px;">                                                
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" style="margin-bottom:10px;">
                         <div class="col-md-12" style="border: 1px solid #ccc;padding-top:10px;padding-bottom:10px;">
                             <label class="col-md-12 control-label"><h3>Resume Vendor</h3></label>
                             <table class="col-md-12">
                                 <tr>
-                                    <td><label for="vendor-name" class="col-sm-3 control-label text-left">Vendor</label></td>
-                                    <td><label id="vendor-name" class="col-sm-8 control-label pull-right"></label></td>                                        
+                                    <td><label for="vendor-name" class="col-sm-3 control-label text-left">Vendor</label>
+                                    </td>
+                                    <td><label id="vendor-name" class="col-sm-8 control-label pull-right"></label></td>
                                 </tr>
 
                                 <tr>
-                                    <td style="vertical-align:top;"><label for="penawaran-vendor" class="col-sm-3 control-label text-left">Deskripsi</label></td>
-                                    <td><label id="penawaran-vendor" class="col-sm-8 control-label pull-right"></label></td>
+                                    <td style="vertical-align:top;"><label for="penawaran-vendor"
+                                                                           class="col-sm-3 control-label text-left">Deskripsi</label>
+                                    </td>
+                                    <td><label id="penawaran-vendor" class="col-sm-8 control-label pull-right"></label>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td style="vertical-align: top;"><label for="plant-vendor" class="col-sm-3 control-label text-left">Plant</label></td>
+                                    <td style="vertical-align: top;"><label for="plant-vendor"
+                                                                            class="col-sm-3 control-label text-left">Plant</label>
+                                    </td>
                                     <td><label id="plant-vendor" class="col-sm-8 control-label pull-right"></label></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="stok-vendor" class="col-sm-3 control-label text-left">Stok</label></td>
+                                    <td><label for="stok-vendor" class="col-sm-3 control-label text-left">Stok</label>
+                                    </td>
                                     <td><label id="stok-vendor" class="col-sm-8 control-label pull-right"></label></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="delivery-vendor" class="col-sm-3 control-label text-left">Delivery</label></td>
-                                    <td><label id="delivery-vendor" class="col-sm-8 control-label pull-right"></label></td>
+                                    <td><label for="delivery-vendor"
+                                               class="col-sm-3 control-label text-left">Delivery</label></td>
+                                    <td><label id="delivery-vendor" class="col-sm-8 control-label pull-right"></label>
+                                    </td>
                                 </tr>
-                            </table>                                                                                                                                                                                                                                                                                                                                                                                   
-                        </div>                        
+                            </table>
+                        </div>
                     </div>
                     <div class="col-sm-6 col-md-6 col-lg-6">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <h6><span id="maktx2"></span></h6>
-                        </div> 
+                        </div>
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             Harga <span id="hargaVendor"></span>&nbsp;per&nbsp;<?php echo $data_produk[0]['MEINS'] ?>
                         </div>
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="input-group col-md-6">
-                                <i class="input-group-addon tangan" data-avl="" onclick="minqtycart()"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>
+                                <i class="input-group-addon tangan" data-avl="" onclick="minqtycart()"><span
+                                            class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>
                                 <input type="number" class="form-control text-center qtyy" value="1">
-                                <i class="input-group-addon tangan" data-avl="" onclick="plsqtycart()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>
+                                <i class="input-group-addon tangan" data-avl="" onclick="plsqtycart()"><span
+                                            class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>
                                 <span class="input-group-addon"><?php echo $data_produk[0]['MEINS'] ?></span>
                             </div>
-                        </div>  
+                        </div>
                         <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top: 10px;">
                             <div class="col-md-12" style="border: 1px solid #ccc;">
-                                    <?php echo form_open_multipart('EC_Ecatalog_Marketplace/confirm/',
-                                        array('method' => 'POST', 'class' => 'form-horizontal')); ?>
-                                    <input type="hidden" id="KODE_DETAIL_PENAWARAN" value=""/>
-                                    <input type="hidden" id="MEINS" value="<?php echo $data_produk[0]['MEINS'] ?>"/>
-                                    <input type="hidden" id="MATNO" value="<?php echo $matno ?>"/>
-                                    <input type="hidden" id="hid_current_budget"/>
-                                    <input type="hidden" id="hid_current_budget"/>
-                                    <input type="hidden" id="hid_estimated_budget"/>
-                                    <input type="hidden" id="harga1" value="<?php echo $dataHarga[0]['PRICE'] ?>"/>
-                                    <input type="hidden" id="curre" value=""/>
-                                    <!--
+                                <?php echo form_open_multipart('EC_Ecatalog_Marketplace/confirm/',
+                                    array('method' => 'POST', 'class' => 'form-horizontal')); ?>
+                                <input type="hidden" id="KODE_DETAIL_PENAWARAN" value=""/>
+                                <input type="hidden" id="MEINS" value="<?php echo $data_produk[0]['MEINS'] ?>"/>
+                                <input type="hidden" id="MATNO" value="<?php echo $matno ?>"/>
+                                <input type="hidden" id="hid_current_budget"/>
+                                <input type="hidden" id="hid_current_budget"/>
+                                <input type="hidden" id="hid_estimated_budget"/>
+                                <input type="hidden" id="harga1" value="<?php echo $dataHarga[0]['PRICE'] ?>"/>
+                                <input type="hidden" id="curre" value=""/>
+                                <!--
                                     <input type="hidden" id="avl" value="<?php //echo $data_produk[0]['t_qty']?>"/> -->
-                                    <input type="hidden" id="sisa" value=""/>
-                                    <div class="form-group" style="">
-                                        <label for="totall" class="col-sm-3 control-label text-left">Total</label>
-                                        <label id="totall"
-                                               class="col-sm-8 control-label pull-right"><!-- <span><?php //echo $dataHarga[0]['CURRENCY'] . " " ?></span> --><?php //echo number_format($dataHarga[0]['PRICE'],0, ",", ".") ?></label>
-                                        <label for="budgett" class="col-sm-3 control-label text-left">Available</label>
-    <!--                                    <label id="budgett" class="col-sm-8 control-label pull-right">0</label>-->
-                                        <input type="hidden" id="budgettt" value="<?php echo (int)$AVAILBUDGET*100 ?>" />    
-                                        <label id="colBudget" class="col-sm-8 control-label pull-right"><?php echo number_format(((int)$AVAILBUDGET*100), 0, ",", ".") ?></label>
-                                        <label for="totalsisa" class="col-sm-3 control-label text-left">Sisa</label>
-                                        <label id="totalsisa" class="col-sm-8 control-label pull-right">0</label>
-                                        <label id="excd" class="col-sm-12 control-label text-center" style="color: #990000"></label>
+                                <input type="hidden" id="sisa" value=""/>
+                                <div class="form-group" style="">
+                                    <label for="totall" class="col-sm-3 control-label text-left">Total</label>
+                                    <label id="totall"
+                                           class="col-sm-8 control-label pull-right">
+                                        <!-- <span><?php //echo $dataHarga[0]['CURRENCY'] . " " ?></span> --><?php //echo number_format($dataHarga[0]['PRICE'],0, ",", ".") ?></label>
+                                    <label for="budgett" class="col-sm-3 control-label text-left">Available</label>
+                                    <!--                                    <label id="budgett" class="col-sm-8 control-label pull-right">0</label>-->
+                                    <input type="hidden" id="budgettt" value="<?php echo (int)$AVAILBUDGET * 100 ?>"/>
+                                    <label id="colBudget"
+                                           class="col-sm-8 control-label pull-right"><?php echo number_format(((int)$AVAILBUDGET * 100), 0, ",", ".") ?></label>
+                                    <label for="totalsisa" class="col-sm-3 control-label text-left">Sisa</label>
+                                    <label id="totalsisa" class="col-sm-8 control-label pull-right">0</label>
+                                    <label id="excd" class="col-sm-12 control-label text-center"
+                                           style="color: #990000"></label>
 
-                                    </div>
-                                    </form>
-                                    </center>
                                 </div>
+                                </form>
+                                </center>
+                            </div>
                         </div>
                     </div>
-                </div>               
+                </div>
                 <hr/>
                 <div class="row">
                     <div class="col-xs-12">
-                        <table class="table table-hover table-striped" id="tableCC" style="font-size: 11px;" width="100%">
+                        <table class="table table-hover table-striped" id="tableCC" style="font-size: 11px;"
+                               width="100%">
                             <thead>
                             <tr>
                                 <th class="text-center">Year</th>
@@ -554,157 +662,168 @@
                     </div>                    
                 </div> -->
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                            Plant Tujuan
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                            <?php echo $deals[0]['PLANT'] ?> &mdash; <?php echo $deals[0]['NAMA_PLANT'] ?>
-                        </div>                   
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Plant Tujuan
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
+                        <?php echo $deals[0]['PLANT'] ?> &mdash; <?php echo $deals[0]['NAMA_PLANT'] ?>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                            Alamat
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                            <?php echo $plant[0]['ALAMAT'] ?>
-                        </div>                   
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Alamat
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
+                        <?php echo $plant[0]['ALAMAT'] ?>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                            Kode Pos
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                            <?php echo $plant[0]['KODEPOS'] ?>
-                        </div>                   
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Kode Pos
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
+                        <?php echo $plant[0]['KODEPOS'] ?>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                            Kota
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                            <?php echo $plant[0]['KOTA'] ?>
-                        </div>                   
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Kota
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
+                        <?php echo $plant[0]['KOTA'] ?>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
                         Assign Budget ke
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
                             <span id="kdcmtn">
-                        </div>                   
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
                         Func. Loc.
-                        </div>
-                        <div class="col-sm-8 col-md-8 col-lg-8">
-                            <div class="row">
-                                <div class="col-sm-5 col-md-5 col-lg-5">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="funcloc-search" id="funcloc-search" placeholder="Cari Func Loc...">
-                                         <div class="input-group-btn">
-                                          <button class="btn btn-default" type="button" id="cari-funcloc"><i class="glyphicon glyphicon-search"></i></button>
-                                       </div>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                        <div class="row">
+                            <div class="col-sm-5 col-md-5 col-lg-5">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="funcloc-search" id="funcloc-search"
+                                           placeholder="Cari Func Loc...">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" type="button" id="cari-funcloc"><i
+                                                    class="glyphicon glyphicon-search"></i></button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         <form class="form-inline" method="post" style="margin-top: 10px;">
                             <div class="input-group">
-                                <select name="" id="funcloc" required="" class="selectpicker" data-live-search="true" title="Pilih Func Loc...">
+                                <select name="" id="funcloc" required="" class="selectpicker" data-live-search="true"
+                                        title="Pilih Func Loc...">
                                     <!-- <option value="">SG-2302-CR-231-CA01</option> -->
-                                        <!-- <option value="" selected="">Pilih Cost Center</option> -->
+                                    <!-- <option value="" selected="">Pilih Cost Center</option> -->
 
                                     <!-- <?php //foreach ($funcloc as $key => $value) { ?>
                                         <option value="<?php //echo $value["STRNO"]; ?>:<?php //echo $value["PLTXT"]; ?>"><?php //echo $value["STRNO"]; ?> &mdash; <?php //echo $value["PLTXT"]; ?></option>
                                     <?php //} ?> -->
                                 </select>
                                 <span class="input-group-btn">
-                                  <button class="btn btn-default" type="button" id="clearFuncloc"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                                  <button class="btn btn-default" type="button" id="clearFuncloc"><span
+                                              class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                                 </span>
                             </div>
                             <!-- <button type="button" id="simpanCCBeforeBuy" class="btn btn-primary">Simpan</button> -->
                         </form>
-                        </div>                   
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
                         Cost Center
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                        <!-- <form class="form-inline" method="post"> --> 
-                            <!-- <input type="hidden" name="menu" value="listCatalogLsgs"> -->
-                            <!-- <div class="input-group"> -->
-                            <!--<select name="" id="CCopt" required="" class="selectpicker" data-live-search="true" title="Pilih Cost Center..." disabled="true">-->                                    
-                                <select name="" id="CCopt" required="" class="selectpicker" data-live-search="true" title="Pilih Cost Center..." disabled="true">                                    
-                                        <!-- <option value="" selected="">Pilih Cost Center</option> -->
-                                    <?php foreach ($CC as $key => $value) { ?>
-                                        <option value="<?php echo $value["COSTCENTER"]; ?>" <?php echo ($value["COSTCENTER"] == $CCS) ? 'selected' : ''; ?>><?php echo $value["COSTCENTER"]; ?> &mdash; <?php echo $value["NAME"]; ?></option>
-                                    <?php } ?>
-                                </select>
-                                
-                            <!-- </div> -->
-                            <!-- <button type="button" id="simpanCCBeforeBuy" class="btn btn-primary">Simpan</button> -->
-                        <!-- </form> -->
-                        </div>                   
-                </div>
-                <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                        Company
-                        </div>
-                        <div class="col-sm-5 col-md-5 col-lg-5">
-                            <!-- <form class="form-inline" method="post"> -->
-                                <!-- <div class="input-group"> -->
-                                    <select class="selectpicker" data-live-search="true" title="Pilih Company..." id="selComp" disabled="true">
-                                        <!-- <option value='' selected disabled>Select Company</option> -->
-                                        <?php
-                                            // var_dump($company);
-                                            foreach ($company as $value) { ?>
-                                                <option value='<?php echo $value['COMPANYID']?>' <?php echo ($value["COMPANYID"] == $companyID[0]['COMPANYID']) ? 'selected' : ''; ?>><?php echo $value['COMPANYNAME']?></option>
-                                        <?php
-                                            }
-                                        ?>
-                                    </select>                                    
-                                <!-- </div> -->
-                            <!-- </form>                  -->
-                        </div>                          
-                </div>
-                <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                        Alasan Pembelian
-                        </div>
-                        <div class="col-sm-8 col-md-8 col-lg-8">
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
                         <!-- <form class="form-inline" method="post"> -->
-                            <!-- <div class="input-group"> -->
-                                <select class="selectpicker" data-live-search="true" title="Pilih Alasan beli..." id="selAlasan">
-                                  <option value='A1'>Kebutuhan Barang atau Jasa sangat mendesak</option>
-                                  <option value='A2'>Barang atau Jasa tersebut memiliki daftar harga atau harga pasar</option>
-                                  <option value='A3'>Merupakan Barang atau Jasa yang langsung dipakai bukan sebagai stock</option>
-                                </select>                                
-                            <!-- </div> -->
+                        <!-- <input type="hidden" name="menu" value="listCatalogLsgs"> -->
+                        <!-- <div class="input-group"> -->
+                        <!--<select name="" id="CCopt" required="" class="selectpicker" data-live-search="true" title="Pilih Cost Center..." disabled="true">-->
+                        <select name="" id="CCopt" required="" class="selectpicker" data-live-search="true"
+                                title="Pilih Cost Center..." disabled="true">
+                            <!-- <option value="" selected="">Pilih Cost Center</option> -->
+                            <?php foreach ($CC as $key => $value) { ?>
+                                <option value="<?php echo $value["COSTCENTER"]; ?>" <?php echo ($value["COSTCENTER"] == $CCS) ? 'selected' : ''; ?>><?php echo $value["COSTCENTER"]; ?>
+                                    &mdash; <?php echo $value["NAME"]; ?></option>
+                            <?php } ?>
+                        </select>
+
+                        <!-- </div> -->
+                        <!-- <button type="button" id="simpanCCBeforeBuy" class="btn btn-primary">Simpan</button> -->
                         <!-- </form> -->
-                        </div>                   
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                <!-- <?php //echo form_open_multipart('EC_Ecatalog_Marketplace/tesUplaod/',array('method' => 'POST','id'=>'formUp','class' => 'form-horizontal')); ?> -->
-                <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Company
+                    </div>
+                    <div class="col-sm-5 col-md-5 col-lg-5">
+                        <!-- <form class="form-inline" method="post"> -->
+                        <!-- <div class="input-group"> -->
+                        <select class="selectpicker" data-live-search="true" title="Pilih Company..." id="selComp"
+                                disabled="true">
+                            <!-- <option value='' selected disabled>Select Company</option> -->
+                            <?php
+                            // var_dump($company);
+                            foreach ($company as $value) { ?>
+                                <option value='<?php echo $value['COMPANYID'] ?>' <?php echo ($value["COMPANYID"] == $companyID[0]['COMPANYID']) ? 'selected' : ''; ?>><?php echo $value['COMPANYNAME'] ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                        <!-- </div> -->
+                        <!-- </form>                  -->
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
+                        Alasan Pembelian
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                        <!-- <form class="form-inline" method="post"> -->
+                        <!-- <div class="input-group"> -->
+                        <select class="selectpicker" data-live-search="true" title="Pilih Alasan beli..."
+                                id="selAlasan">
+                            <option value='A1'>Kebutuhan Barang atau Jasa sangat mendesak</option>
+                            <option value='A2'>Barang atau Jasa tersebut memiliki daftar harga atau harga pasar</option>
+                            <option value='A3'>Merupakan Barang atau Jasa yang langsung dipakai bukan sebagai stock
+                            </option>
+                        </select>
+                        <!-- </div> -->
+                        <!-- </form> -->
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <!-- <?php //echo form_open_multipart('EC_Ecatalog_Marketplace/tesUplaod/',array('method' => 'POST','id'=>'formUp','class' => 'form-horizontal')); ?> -->
+                    <form id="uploadimage" action="" method="post" enctype="multipart/form-data">
                         <div class="col-sm-3 col-md-3 col-lg-3">
-                        Upload Korin
+                            Upload Korin
                         </div>
                         <div class="col-sm-5 col-md-5 col-lg-5">
-                         <input type="hidden" id="korin_name" name="korin_name">
-                         <input type="file" name="korin" id="korin"><span id="messagesUpload">tes</span>
-                         <p class="help-block"><small>NB : File harus berextensi " .jpg, .jpeg atau .pdf "</small> </p>
-                         <!-- <button type="submit" id="" class="btn btn-info">Upload</button> -->
-                        </div>                   
-                    </form> 
+                            <input type="hidden" id="korin_name" name="korin_name">
+                            <input type="file" name="korin" id="korin"><span id="messagesUpload">tes</span>
+                            <p class="help-block">
+                                <small>NB : File harus berextensi " .jpg, .jpeg atau .pdf "</small>
+                            </p>
+                            <!-- <button type="submit" id="" class="btn btn-info">Upload</button> -->
+                        </div>
+                    </form>
                 </div>
                 <div class="row" style="margin-top: 10px;">
-                        <div class="col-sm-3 col-md-3 col-lg-3">
+                    <div class="col-sm-3 col-md-3 col-lg-3">
                         Keterangan
-                        </div>
-                        <div class="col-sm-7 col-md-7 col-lg-7">
-                          <textarea class="form-control" rows="3" id="keterangan"></textarea>
-                        </div>                   
+                    </div>
+                    <div class="col-sm-7 col-md-7 col-lg-7">
+                        <textarea class="form-control" rows="3" id="keterangan"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

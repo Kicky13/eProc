@@ -12,6 +12,25 @@ var range_harga = ['-', '-'],
     mode = "list",
     compareCntrk = []; 
 $(document).ready(function(){
+
+    $('#modalNego').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var vendorno = (button.data('vendorno'));
+		var vendorname = (button.data('vendorname'));
+		var plantNo = (button.data('plant'));
+		var plant = (button.data('plant')) + ' - ' + (button.data('plantdesc'));
+		var matno = (button.data('matno'));
+		var maktx = (button.data('maktx'));
+        console.log(vendorno + ", " + matno + ", " + plantNo);
+        $('#vendornoHide').val(vendorno);
+        $('#matnoHide').val(matno);
+        $('#plantHide').val(plantNo);
+        $('#vendorNego').text(vendorname);
+        $('#materialNego').text(maktx + '(' + matno + ')');
+        $('#plantNego').text(plant);
+        loadChat(vendorno, matno, plantNo);
+    });
+
 	console.log('mulai');
 	$("#tag").val('');
 	loadTree();
@@ -1071,4 +1090,71 @@ function startTimer(duration, display) {
 	// we don't want to wait a full second before the timer starts
 	timer();
 	setInterval(timer, 1000);
+}
+
+function loadChat(vendorno, matno, plant) {
+    // no = 1;
+    $('#table_chat').DataTable().destroy();
+    $('#table_chat tbody').empty();
+    mytable = $('#table_chat').DataTable({
+        "bSort": false,
+        "paging": false,
+        "info": false,
+        "dom": 'rtilp',
+        "bAutoWidth": false,
+        "deferRender": true,
+        "language": {
+            "loadingRecords": "<center><b>Please wait - Loading Chat...</b></center>",
+            "zeroRecords": "<center><b>There is no current chat</b></center>"
+        },
+        "ajax": {
+            url: $("#base-url").val() + 'EC_Ecatalog_Marketplace/openChat',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                vendorno: vendorno,
+                matno: matno,
+                plant: plant
+            }
+        },
+        "columnDefs": [{
+            "searchable": false,
+            "orderable": true,
+            "targets": 0
+        }],
+        "columns": [{
+            mRender: function (data, type, full) {
+                divClass = ''
+                readClass = ''
+                sender = ''
+                a = ''
+                if (full.SENDER_CODE == 1){
+                    divClass = "<div class='text-right'>"
+                    sender = 'You'
+                } else {
+                    divClass = "<div class='text-left'>"
+                    sender = 'Vendor'
+                }
+                a += divClass
+                a += "<p style='font: 14px;'><strong>" + full.COMMENT + "</strong></p>"
+                a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
+                a += "<p style='font-size:12px;'>" + full.SENT_DATE + "</p>"
+                a += "</div>";
+                return a
+            }
+        }],
+    });
+
+    // mytable.columns().every(function () {
+    //     var that = this;
+    //     $('.srch', this.header()).on('keyup change', function () {
+    //         if (that.search() !== this.value) {
+    //             // $('#tableMT tbody tr').each(function() {
+    //             // $(this).find('td').attr('nowrap', 'nowrap');
+    //             // });
+    //             that.search(this.value).draw();
+    //         }
+    //     });
+    // });
+
 }
