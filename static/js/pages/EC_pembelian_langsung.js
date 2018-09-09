@@ -13,6 +13,18 @@ var range_harga = ['-', '-'],
     compareCntrk = []; 
 $(document).ready(function(){
 
+	$('#openLock').click(function () {
+		matno = $('#matnoHide').val();
+		vendorno = $('#vendornoHide').val();
+		plant = $('#plantHide').val();
+
+		console.log(matno + ' ' + vendorno + ' ' + plant);
+
+		if (confirm('Apa Anda Yakin membuka Locking Harga ?')){
+			openLockHarga(vendorno, matno, plant);
+		}
+    });
+
     $('#modalNego').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var vendorno = (button.data('vendorno'));
@@ -29,6 +41,21 @@ $(document).ready(function(){
         $('#materialNego').text(maktx + '(' + matno + ')');
         $('#plantNego').text(plant);
         loadChat(vendorno, matno, plantNo);
+    });
+
+    $('#sendMsg').click(function () {
+        var msg = $('#chatMsg').val();
+        console.log(msg);
+        if (msg !== ''){
+            sendChat();
+        }
+    });
+
+    $('#closeNego').click(function () {
+        console.log('Tutup Negosiasi');
+        if (confirm("Apa anda yakin untuk menutup Negosiasi ? Chat yang aktif saat ini akan di arsipkan dan chat dibersihkan. Klik OK untuk melanjutkan.")){
+            closeNego();
+        }
     });
 
 	console.log('mulai');
@@ -1136,7 +1163,7 @@ function loadChat(vendorno, matno, plant) {
                     sender = 'Vendor'
                 }
                 a += divClass
-                a += "<p style='font: 14px;'><strong>" + full.COMMENT + "</strong></p>"
+                a += "<p style='font: 14px;'><strong>" + full.MESSAGE_CONTENT + "</strong></p>"
                 a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
                 a += "<p style='font-size:12px;'>" + full.SENT_DATE + "</p>"
                 a += "</div>";
@@ -1157,4 +1184,67 @@ function loadChat(vendorno, matno, plant) {
     //     });
     // });
 
+}
+
+function sendChat() {
+    var matno = $('#matnoHide').val();
+    var vendorno = $('#vendornoHide').val();
+    var plant = $('#plantHide').val();
+    var msg = $('#chatMsg').val();
+
+    $.ajax({
+        url: $('#base-url').val() + 'EC_Ecatalog_Marketplace/sendChat',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            vendorno: vendorno,
+            matno: matno,
+            plant: plant,
+            message: msg
+        },
+    }).done(function (data) {
+        console.log(data);
+        loadChat(vendorno, matno, plant);
+        $('#chatMsg').val('');
+    }).always(function (data) {
+        console.log(data);
+    });
+}
+
+function closeNego() {
+    var matno = $('#matnoHide').val();
+    var vendorno = $('#vendornoHide').val();
+    var plant = $('#plantHide').val();
+
+    $.ajax({
+        url: $('#base-url').val() + 'EC_Ecatalog_Marketplace/closeNego',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            vendorno: vendorno,
+            matno: matno,
+            plant: plant
+        },
+    }).done(function (data) {
+        console.log(data);
+    }).always(function (data) {
+        console.log(data);
+        $('#modalNego').modal('hide');
+    })
+}
+
+function openLockHarga(vendorno, matno, plant) {
+	$.ajax({
+		url: $('#base-url').val() + 'EC_Negosiasi_Ecatalog/openLock',
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			vendorno: vendorno,
+			matno: matno,
+			plant: plant
+		},
+	}).done(function (data) {
+		console.log(data);
+		alert('Harga berhasil dibuka');
+    });
 }

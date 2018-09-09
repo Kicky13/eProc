@@ -333,7 +333,7 @@
                         <table id="table_chat" class="table table-striped">
                             <thead>
                             <tr>
-                                <th class="text-center"> Chat</th>
+                                <th class="text-center" style="font: 22px; font-family: 'Lato', Arial"><strong>Chat</strong></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -396,9 +396,9 @@
                         <!--                        <button type="button" title="Negosiasi Selesai" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger"><i class="glyphicon glyphicon-remove" ></i></button>-->
                     </div>
                     <div class="panel-body text-center">
-                        <button type="button" title="Negosiasi Selesai"
+                        <button type="button" title="Negosiasi Selesai" id="closeNego"
                                 style="font-size:12px;box-shadow: 1px 1px 1px #ccc" class="btn btn-danger col-xs-12">
-                            Deal Negosiasi
+                            Tutup Negosiasi
                         </button>
                     </div>
                 </div>

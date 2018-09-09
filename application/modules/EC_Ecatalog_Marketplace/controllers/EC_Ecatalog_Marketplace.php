@@ -1402,7 +1402,6 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $this->layout->add_js('pages/EC_nav_tree.js');
         //bentrok javascript
         $this->layout->add_js('pages/EC_pembelian_langsung.js');
-        $this->layout->add_js('pages/EC_PL_negosiasi.js');
         $this->layout->add_css('pages/EC_nav_tree.css');
 //        $CC = $this->COSTCENTER_GETLIST();        
         $user_costcenter = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);
@@ -2369,9 +2368,27 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 
     }
 
-    public function refreshChat()
+    public function sendChat()
     {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $plant = $this->input->post('plant');
+        $matno = $this->input->post('matno');
+        $vendorno = $this->input->post('vendorno');
+        $msg = $this->input->post('message');
+        $this->ec_pl_negosiasi_m->sendChat(1, $msg, $this->ec_pl_negosiasi_m->findNego($vendorno, $matno, $plant));
+        echo json_encode('true');
+    }
 
+    public function closeNego()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $plant = $this->input->post('plant');
+        $matno = $this->input->post('matno');
+        $vendorno = $this->input->post('vendorno');
+        $this->ec_pl_negosiasi_m->closeNego($this->ec_pl_negosiasi_m->findNego($vendorno, $matno, $plant));
+        echo json_encode('true');
     }
 }
 //
