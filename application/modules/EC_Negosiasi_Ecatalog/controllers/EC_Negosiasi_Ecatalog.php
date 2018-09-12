@@ -92,7 +92,7 @@ class EC_Negosiasi_Ecatalog extends MX_Controller
         $matno = $this->input->post('matno');
         $plant = $this->input->post('plant');
         $vendorno = $this->input->post('vendorno');
-        $this->ec_pl_negosiasi_m->openLock($vendorno, $matno, $plant);
+        $this->ec_pl_negosiasi_m->openLock($this->ec_pl_negosiasi_m->getPenawaranByParamOrder($vendorno, $matno, $plant));
         echo json_encode('True');
     }
 

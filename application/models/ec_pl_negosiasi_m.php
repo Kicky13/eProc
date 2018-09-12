@@ -157,11 +157,20 @@ class ec_pl_negosiasi_m extends CI_Model
         return true;
     }
 
-    function openLock($vendorno, $matno, $plant)
+    function openLock($dp)
     {
+        $this->db->where('KODE_DETAIL_PENAWARAN', $dp['KODE_DETAIL_PENAWARAN']);
+        $this->db->update($this->penawaran, array('CHANGE_REQUEST' => 1));
+    }
+
+    function getPenawaranByParamOrder($vendorno, $matno, $plant)
+    {
+        $this->db->from($this->penawaran);
         $this->db->where('PLANT', $plant);
         $this->db->where('VENDORNO', $vendorno);
         $this->db->where('MATNO', $matno);
-        $this->db->update($this->penawaran, array('CHANGE_REQUEST' => 1));
+        $this->db->order_by('KODE_DETAIL_PENAWARAN', 'desc');
+        $result = $this->db->get();
+        return (array)$result->row_array();
     }
 }
