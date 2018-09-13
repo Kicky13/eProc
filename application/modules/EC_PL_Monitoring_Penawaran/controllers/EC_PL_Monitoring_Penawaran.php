@@ -75,15 +75,15 @@ class EC_PL_Monitoring_Penawaran extends CI_Controller
         $dataCurr = $this->ec_penawaran_vnd_test->get_MasterCurrency();
         $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->input->post('vendor'), $this->input->post('limitMin'), $this->input->post('limitMax'));
         $dataCount = $this->ec_penawaran_vnd_test->get_Count_produk($this->input->post('vendor'));
-        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount));
+        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk, $this->input->post('vendor')), 'page' => count($dataCount));
         echo json_encode($json_data);
     }
 
-    function getALL($dataProduk)
+    function getALL($dataProduk, $vendorno)
     {
         $i = 1;
         $data_tabel = array();
-        $venno = $this->session->userdata['VENDOR_NO'];
+        $venno = $vendorno;
         $this->load->model('ec_penawaran_vnd_test');
         $commit = '';
         foreach ($dataProduk as $value) {
