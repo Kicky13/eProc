@@ -1151,10 +1151,10 @@ function loadChat(vendorno, matno, plant) {
         }],
         "columns": [{
             mRender: function (data, type, full) {
-                divClass = ''
-                readClass = ''
-                sender = ''
-                a = ''
+                divClass = '';
+                readObj = '';
+                sender = '';
+                a = '';
                 if (full.SENDER_CODE == 1){
                     divClass = "<div class='text-right'>"
                     sender = 'You'
@@ -1162,10 +1162,19 @@ function loadChat(vendorno, matno, plant) {
                     divClass = "<div class='text-left'>"
                     sender = 'Vendor'
                 }
+                if (full.MESSAGE_STATUS == 1){
+                	readObj = '(Delivered)';
+				} else {
+                	readObj = '(Read)'
+				}
                 a += divClass
                 a += "<p style='font: 14px;'><strong>" + full.MESSAGE_CONTENT + "</strong></p>"
-                a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
                 a += "<p style='font-size:12px;'>" + full.SENT_DATE + "</p>"
+				if (full.SENDER_CODE == 1){
+                    a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + " " + readObj + "</p>"
+				} else {
+                    a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
+				}
                 a += "</div>";
                 return a
             }

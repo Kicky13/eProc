@@ -499,7 +499,7 @@ function loadChat(negoId) {
         "columns": [{
             mRender: function (data, type, full) {
                 divClass = ''
-                readClass = ''
+                readObj = ''
                 sender = ''
                 a = ''
                 if (full.SENDER_CODE == 2){
@@ -509,10 +509,19 @@ function loadChat(negoId) {
                     divClass = "<div class='text-left'>"
                     sender = 'Buyer'
                 }
+                if (full.MESSAGE_STATUS == 1){
+                    readObj = '(Delivered)';
+                } else {
+                    readObj = '(Read)'
+                }
                 a += divClass
                 a += "<p style='font: 14px;'><strong>" + full.MESSAGE_CONTENT + "</strong></p>"
-                a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
                 a += "<p style='font-size:12px;'>" + full.SENT_DATE + "</p>"
+                if (full.SENDER_CODE == 2){
+                    a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + " " + readObj + "</p>"
+                } else {
+                    a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + "</p>"
+                }
                 a += "</div>";
                 return a
             }

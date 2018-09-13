@@ -62,7 +62,7 @@ class EC_Negosiasi_Ecatalog extends MX_Controller
     {
         header('Content-Type: application/json');
         $this->load->model('ec_pl_negosiasi_m');
-        $data = $this->ec_pl_negosiasi_m->compileLastChat( $this->ec_pl_negosiasi_m->getActiveNego());
+        $data = $this->ec_pl_negosiasi_m->compileLastChat($this->ec_pl_negosiasi_m->getActiveNego());
         echo json_encode(array('data' => $data));
     }
 
@@ -71,6 +71,7 @@ class EC_Negosiasi_Ecatalog extends MX_Controller
         header('Content-Type: application/json');
         $this->load->model('ec_pl_negosiasi_m');
         $negoid = $this->input->post('negoId');
+        $this->ec_pl_negosiasi_m->readChat(1, $negoid);
         $data = $this->ec_pl_negosiasi_m->getChat($negoid);
         echo json_encode(array('data' => $data));
     }

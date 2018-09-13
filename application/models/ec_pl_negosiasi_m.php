@@ -23,6 +23,7 @@ class ec_pl_negosiasi_m extends CI_Model
     {
         $nego = $this->findNego($vendorno, $matno, $plant);
         if (count($nego) > 0){
+            $this->readChat(2, $nego['ID']);
             $data = $this->getChat($nego['ID']);
         } else {
             $this->createNego($vendorno, $matno, $plant);
@@ -135,9 +136,11 @@ class ec_pl_negosiasi_m extends CI_Model
         $this->db->query($sql);
     }
 
-    function readChat($reader, $id)
+    function readChat($sender, $id)
     {
-
+        $this->db->where('NEGO_ID', $id);
+        $this->db->where('SENDER_CODE', $sender);
+        $this->db->update($this->chat, array('MESSAGE_STATUS' => 0));
     }
 
     function getChat($id)
