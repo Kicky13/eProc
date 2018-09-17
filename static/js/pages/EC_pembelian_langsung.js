@@ -1169,7 +1169,7 @@ function loadChat(vendorno, matno, plant) {
 				}
                 a += divClass
                 a += "<p style='font: 14px;'><strong>" + full.MESSAGE_CONTENT + "</strong></p>"
-                a += "<p style='font-size:12px;'>" + full.SENT_DATE + "</p>"
+                a += "<p style='font-size:12px;'>" + full.TANGGAL + "</p>"
 				if (full.SENDER_CODE == 1){
                     a += "<p style='font-size:12px;font-style: italic;margin:0;'> - " + sender + " " + readObj + "</p>"
 				} else {

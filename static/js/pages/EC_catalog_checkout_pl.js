@@ -55,7 +55,12 @@ function chk23() {
 
             qty = '<div class="row"><div class="input-group col-md-11">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="minqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>'
-            qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+            if (data.data[i].STOK - data.data[i].STOK_KONFIRMASI < 0){
+                qty += '<input disabled type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+            } else {
+                qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+            }
+            qty += '<input type="hidden" value="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" class="form-control text-center konfirmasiStok">'
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\', \'' + data.data[i].STOK +'\', \'' + data.data[i].QTY + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             qty += '<span class="input-group-addon">' + data.data[i].MEINS + '</span>'
             qty += '</div></div><br>'
@@ -508,7 +513,18 @@ $(document).ready(function () {
         if ($(this).hasClass("disabled")) {
             event.stopPropagation();
         } else {
-            console.log('Klik Show');
+            minusStok = 0;
+            stokKonfirm = document.getElementsByClassName("konfirmasiStok");
+            qtyInput = document.getElementsByClassName("qtyy");
+            for (var i = 0; i < stokKonfirm.length; i++){
+                console.log(stokKonfirm[i].value + " " + qtyInput[i].value);
+                if (stokKonfirm[i].value - qtyInput[i].value){
+                    minusStok++;
+                }
+            }
+            if (minusStok > 0){
+                alert("Maaf, Stok yang dibeli tidak boleh kurang dari 1 atau melebihi stok avaible saat ini");
+            }
             itemPlant = [];
             itemDesc = [];
             $(".chkPlant").each(function () {

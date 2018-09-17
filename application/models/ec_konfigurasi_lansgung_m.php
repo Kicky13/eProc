@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ec_konfigurasi_lansgung_m extends CI_Model
 {
-    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN', $log = 'EC_ADM_VENDOR_ASSIGN_LOG', $tableConf = 'EC_PL_KONFIGURASI_ASSIGN', $employee = 'ADM_EMPLOYEE', $plantLog = 'EC_LOG_PLANT_CHANGE';
+    protected $table = 'EC_M_STRATEGIC_MATERIAL', $tablePlant = "EC_M_PLANT", $tableCategory = 'EC_M_CATEGORY', $tableAssign = 'EC_PL_ASSIGN', $tablVndPrd = 'VND_PRODUCT', $tableVnd = 'VND_HEADER', $tableUpdateHarga = 'EC_M_UPDATE_HARGA', $MasterCurrency = 'ADM_CURR', $tableVndAss = 'EC_PL_VENDOR_ASSIGN', $log = 'EC_ADM_VENDOR_ASSIGN_LOG', $tableConf = 'EC_PL_KONFIGURASI_ASSIGN', $employee = 'ADM_EMPLOYEE', $plantLog = 'EC_LOG_PLANT_CHANGE', $penawaran = 'EC_PL_PENAWARAN';
 
     //protected $all_field = 'MONITORING_INVOICE.BUKRS, MONITORING_INVOICE.LIFNR, BELNR, GJAHR, BIL_NO, NAME1, BKTXT, SGTXT, XBLNR, UMSKZ, BUDAT, BLDAT, CPUDT, MONAT, ZLSPR, WAERS, HWAER, ZLSCH, ZTERM, DMBTR, WRBTR, BLART, STATUS, BYPROV, DATEPROV, DATECOL, WWERT, TGL_KIRUKP, USER_UKP, STAT_VER, TGL_VER, TGL_KIRVER, TGL_KEMB_VER, USER_VER, STAT_BEND, TGL_BEND, TGL_KIRBEND, TGL_KEMB_BEN, USER_BEN, STAT_AKU, TGL_AKU, TGL_KEMB_AKU, U_NAME, AUGDT, STAT_REJ, NO_REJECT, STATUS_UKP, NYETATUS, EBELN, EBELP, MBELNR, MGJAHR, PROJK, PRCTR, HBKID, DBAYAR, TBAYAR, UBAYAR, DGROUP, TGROUP, UGROUP, LUKP, LVER, LBEN, LAKU, AWTYPE, AWKYE, LBEN2, MWSKZ, HWBAS, FWBAS, HWSTE, FWSTE, WT_QBSHH, WT_QBSHB ';
     public function __construct()
@@ -568,6 +568,7 @@ ORDER BY MATKL,VENDOR_NO");
         foreach ($itms as $values) {
             $item = $this->getInserted($vnds, $values);
             $this->insertVendorLog($values, $vnds, 1);
+            $this->updatePenawaran($vnds, $values, 1);
             $SQL = "INSERT INTO EC_PL_ASSIGN
 				VALUES
 					(
@@ -608,12 +609,20 @@ ORDER BY MATKL,VENDOR_NO");
                 }
             }
             if ($x == 0){
+                $this->updatePenawaran($vendorno, $data[$i]['MATNO'], 0);
                 $this->db->where('VENDORNO', $vendorno);
                 $this->db->where('MATNO', $data[$i]['MATNO']);
                 $this->db->delete('EC_PL_ASSIGN');
                 $this->insertVendorLog($data[$i]['MATNO'], $vendorno, 2);
             }
         }
+    }
+
+    function updatePenawaran($vendorno, $matno, $action)
+    {
+        $this->db->where('VENDORNO', $vendorno);
+        $this->db->where('MATNO', $matno);
+        $this->db->update($this->penawaran, array('STATUS_ASSIGN' => $action));
     }
 
     public function uncheckPropose($matno, $check)

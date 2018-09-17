@@ -44,6 +44,7 @@ class ec_pl_negosiasi_m extends CI_Model
         $this->db->join($this->plant, $this->plant.'.PLANT = '.$this->table.'.PLANT');
         $this->db->where($this->table.'.VENDORNO', $vnd);
         $this->db->where($this->table.'.STATUS_NEGO', 1);
+        $this->db->order_by('OPENDATE', 'desc');
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -59,6 +60,7 @@ class ec_pl_negosiasi_m extends CI_Model
         $this->db->join($this->plant, $this->plant.'.PLANT = '.$this->table.'.PLANT');
         $this->db->where($this->table.'.VENDORNO', $vnd);
         $this->db->where($this->table.'.STATUS_NEGO', 0);
+        $this->db->order_by('CLOSEDATE', 'desc');
         $result = $this->db->get();
         return (array)$result->result_array();
     }
@@ -145,6 +147,7 @@ class ec_pl_negosiasi_m extends CI_Model
 
     function getChat($id)
     {
+        $this->db->select($this->chat.".*, TO_CHAR(SENT_DATE, 'HH24:MM:SS DD/MM/YYYY') AS TANGGAL",false);
         $this->db->from($this->chat);
         $this->db->where('NEGO_ID', $id);
         $this->db->order_by('ID');
