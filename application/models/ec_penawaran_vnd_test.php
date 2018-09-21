@@ -47,19 +47,6 @@ class ec_penawaran_vnd_test extends CI_Model
         $a = array();
         $matno = '';
         $result = $this->db->query($SQL)->result_array();
-//        for ($i = $mins; $i < count($result); $i++){
-//            if ($i != 0){
-//                if ($result[$i]['MATNO'] == $matno){
-//                    $matno = $result[$i]['MATNO'];
-//                } else {
-//                    $a[$i] = $result[$i];
-//                    $matno = $result[$i]['MATNO'];
-//                }
-//            } else {
-//                $a[$i] = $result[$i];
-//                $matno = $result[$i]['MATNO'];
-//            }
-//        }
         $j = $mins;
         while (count($a) < $max && $j < count($result)){
             if ($j != 0){
@@ -71,6 +58,7 @@ class ec_penawaran_vnd_test extends CI_Model
                 }
             } else {
                 $a[$j] = $result[$j];
+                array_push($a, $result[$j]);
                 $matno = $result[$j]['MATNO'];
             }
             $j++;
@@ -356,7 +344,6 @@ class ec_penawaran_vnd_test extends CI_Model
                 VALUES ('" . $plant . "', '" . $matno . "', 0, " . $deliv . ", TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " . $harga . ", '" . $venno . "', '" . $curr . "')";
         }        
         return $this->db->query($SQL);
-
     }
 	
 	// ajax datatable

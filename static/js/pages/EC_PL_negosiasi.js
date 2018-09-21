@@ -6,6 +6,14 @@ $(document).ready(function () {
     loadTable_Active();
     loadTable_Archive();
 
+    setInterval(function () {
+        negoid = $('#negoidHide').val();
+        if (negoid !== ''){
+            loadChat(negoid);
+        }
+        loadTable_Active();
+    }, 45000);
+
     $('#modalNego').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var username = (button.data('username'));
@@ -42,22 +50,25 @@ $(document).ready(function () {
     $('#sendMsg').click(function () {
         var negoid = $('#negoidHide').val();
         var msg = $('#chatMsg').val();
-
-        $.ajax({
-            url: $('#base-url').val() + 'EC_Negosiasi_Ecatalog/sendMessage',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                negoId: negoid,
-                message: msg
-            },
-        }).done(function (data) {
-            console.log(data);
-            $('#chatMsg').val('');
-            loadChat(negoid);
-        }).always(function (data) {
-            console.log(data);
-        })
+        if (msg !== ''){
+            $.ajax({
+                url: $('#base-url').val() + 'EC_Negosiasi_Ecatalog/sendMessage',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    negoId: negoid,
+                    message: msg
+                },
+            }).done(function (data) {
+                console.log(data);
+                $('#chatMsg').val('');
+                loadChat(negoid);
+            }).always(function (data) {
+                console.log(data);
+            })
+        } else {
+            console.log('Chat Kosong bego')
+        }
     });
 });
 
@@ -141,8 +152,17 @@ function loadTable_Active() {
             }
         },{
             mRender: function (data, type, full) {
+                unread = '';
+                classChat = 'primary';
+                if (full.UNREAD > 0){
+                    unread = full.UNREAD;
+                    classChat = 'success';
+                } else {
+                    unread = '';
+                    classChat = 'primary';
+                }
                 a = "<div class='col-md-12 text-center'>";
-                a += "<button type='button' data-toggle='modal' data-target='#modalNego' data-plant='"+ full.PLANT +"' data-plantName='"+ full.PLANT_NAME +"' data-matno='"+ full.MATNO +"' data-maktx='"+ full.MAKTX +"' data-userid='"+ full.USER_ID +"' data-username='"+ full.FULLNAME +"' data-negoid='"+ full.ID +"' title='Nego Harga' style='font-size:12px;box-shadow: 1px 1px 1px #ccc'  class='btn btn-primary nego'><i class='glyphicon glyphicon-comment' ></i> Negosiasi</button>";
+                a += "<button type='button' data-toggle='modal' data-target='#modalNego' data-plant='"+ full.PLANT +"' data-plantName='"+ full.PLANT_NAME +"' data-matno='"+ full.MATNO +"' data-maktx='"+ full.MAKTX +"' data-userid='"+ full.USER_ID +"' data-username='"+ full.FULLNAME +"' data-negoid='"+ full.ID +"' title='Nego Harga' style='font-size:12px;box-shadow: 1px 1px 1px #ccc'  class='btn btn-" + classChat + " nego'><i class='glyphicon glyphicon-comment' ></i> " + unread + "</button>";
                 a += "</div>";
                 return a;
             }

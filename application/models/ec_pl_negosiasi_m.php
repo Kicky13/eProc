@@ -49,6 +49,22 @@ class ec_pl_negosiasi_m extends CI_Model
         return (array)$result->result_array();
     }
 
+    function getActiveNegoUser()
+    {
+        $userid = $this->session->userdata['ID'];
+        $select = $this->table.'.*, '.$this->material.'.MAKTX, '.$this->plant.'.PLANT_NAME, '.$this->vendor.'.VENDOR_NAME';
+        $this->db->select($select);
+        $this->db->from($this->table);
+        $this->db->join($this->vendor, $this->vendor.'.VENDOR_NO = '.$this->table.'.VENDORNO');
+        $this->db->join($this->material, $this->material.'.MATNR = '.$this->table.'.MATNO');
+        $this->db->join($this->plant, $this->plant.'.PLANT = '.$this->table.'.PLANT');
+        $this->db->where($this->table.'.USER_ID', $userid);
+        $this->db->where($this->table.'.STATUS_NEGO', 1);
+        $this->db->order_by('OPENDATE', 'desc');
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
     function getArchiveNego()
     {
         $vnd = $this->session->userdata['VENDOR_NO'];
@@ -65,17 +81,35 @@ class ec_pl_negosiasi_m extends CI_Model
         return (array)$result->result_array();
     }
 
+    function getArchiveNegoUser()
+    {
+        $userid = $this->session->userdata['ID'];
+        $select = $this->table.'.*, '.$this->material.'.MAKTX, '.$this->plant.'.PLANT_NAME, '.$this->vendor.'.VENDOR_NAME';
+        $this->db->select($select);
+        $this->db->from($this->table);
+        $this->db->join($this->vendor, $this->vendor.'.VENDOR_NO = '.$this->table.'.VENDORNO');
+        $this->db->join($this->material, $this->material.'.MATNR = '.$this->table.'.MATNO');
+        $this->db->join($this->plant, $this->plant.'.PLANT = '.$this->table.'.PLANT');
+        $this->db->where($this->table.'.USER_ID', $userid);
+        $this->db->where($this->table.'.STATUS_NEGO', 0);
+        $this->db->order_by('CLOSEDATE', 'desc');
+        $result = $this->db->get();
+        return (array)$result->result_array();
+    }
+
     function compileLastChat($data)
     {
         for ($i = 0; $i < count($data); $i++){
             $msg = '';
             $last = $this->findLastChatByNegoID($data[$i]['ID']);
+            $unread = $this->getUnreadChat($data[$i]['ID']);
             if ($last > 0){
                 $msg .= $last['MESSAGE_CONTENT'];
             } else {
                 $msg .= '-';
             }
             $data[$i]['MESSAGE_CONTENT'] = $msg;
+            $data[$i]['UNREAD'] = $unread;
         }
         return $data;
     }
@@ -178,5 +212,20 @@ class ec_pl_negosiasi_m extends CI_Model
         $this->db->order_by('KODE_DETAIL_PENAWARAN', 'desc');
         $result = $this->db->get();
         return (array)$result->row_array();
+    }
+
+    function getUnreadChat($negoId)
+    {
+        if (isset($this->session->userdata['VENDOR_NO'])){
+            $sender = 1;
+        } else {
+            $sender = 2;
+        }
+        $this->db->from($this->chat);
+        $this->db->where("NEGO_ID", $negoId);
+        $this->db->where("SENDER_CODE", $sender);
+        $this->db->where("MESSAGE_STATUS", 1);
+        $result = $this->db->get();
+        return count($result->result_array());
     }
 }

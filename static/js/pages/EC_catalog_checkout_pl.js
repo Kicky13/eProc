@@ -57,11 +57,12 @@ function chk23() {
             qty += '<i class="input-group-addon tangan" data-avl="" onclick="minqtycart(this,\'' + data.data[i].ID_CHART + '\')"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></i>'
             if (data.data[i].STOK - data.data[i].STOK_KONFIRMASI < 0){
                 qty += '<input disabled type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+                qty += '<i disabled class="input-group-addon tangan" data-avl=""><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             } else {
                 qty += '<input type="number" value="' + data.data[i].QTY + '" data-id="' + data.data[i].ID_CHART + '" data-avl="" data-old="" data-stok="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" max="' + data.data[i].STOK + '" class="form-control text-center qtyy">'
+                qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\', \'' + data.data[i].STOK +'\', \'' + data.data[i].QTY + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             }
             qty += '<input type="hidden" value="' + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + '" class="form-control text-center konfirmasiStok">'
-            qty += '<i class="input-group-addon tangan" data-avl="" onclick="plsqtycart(this,\'' + data.data[i].ID_CHART + '\', \'' + data.data[i].STOK +'\', \'' + data.data[i].QTY + '\')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></i>'
             qty += '<span class="input-group-addon">' + data.data[i].MEINS + '</span>'
             qty += '</div></div><br>'
             del = ''

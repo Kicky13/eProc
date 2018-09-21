@@ -1263,6 +1263,72 @@ class ec_ecatalog_m extends CI_Model
 //        var_dump($comp); 
 //        var_dump($this->session->userdata['COMPANYID']);die();
         $SQL = "SELECT 
+                ROWNUM, DT.KODE_DETAIL_PENAWARAN,DT.PRICE HARGA,DT.PLANT,DT.DELIVERY_TIME,DT.NAMA_PLANT,TB3.STOK,                
+                DT.DELIVERY_TIME,
+                SM.MATNR,SM.PICTURE,SM.MAKTX,SM.MEINS,SM.ID_CAT, CAT.\"DESC\",TB1.*
+				FROM (SELECT ASS.MATNO, CURRENCY,ASS.KODE_PENAWARAN FROM EC_PL_ASSIGN ASS
+				GROUP BY ASS.MATNO, ASS.KODE_PENAWARAN,CURRENCY) TB1
+				INNER JOIN EC_M_STRATEGIC_MATERIAL SM ON TB1.MATNO=SM.MATNR
+				INNER JOIN EC_M_CATEGORY CAT ON SM.ID_CAT=CAT.ID_CAT
+				INNER JOIN (SELECT T1.*,PL.\"DESC\" NAMA_PLANT FROM EC_T_DETAIL_PENAWARAN T1
+                    INNER JOIN
+                    (SELECT  \"MIN\"(T1.PRICE) OVER (PARTITION BY T1.PLANT,T1.MATNO) HARGA,T1.* FROM EC_T_DETAIL_PENAWARAN T1 
+                    INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE_HISTORY) INDATE FROM EC_T_DETAIL_PENAWARAN
+                                            GROUP BY MATNO,PLANT,VENDORNO ORDER BY PLANT,MATNO,VENDORNO) T2 
+                                            ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT AND T1.INDATE_HISTORY = T2.INDATE 
+                     WHERE T1.PRICE>0
+                     ) T2 ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT AND T1.INDATE = T2.INDATE AND T1.PRICE=T2.HARGA
+                    INNER JOIN EC_M_PLANT PL ON PL.PLANT=T1.PLANT 
+                    WHERE T1.PLANT IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY='" . $comp . "')) DT
+                ON SM.MATNR = DT.MATNO  
+                INNER JOIN (SELECT TB2.* FROM
+                    (
+                        SELECT
+                            PEN.VENDORNO,
+                            PEN.MATNO,
+                            MAX (PEN.INDATE) AS DATE1
+                        FROM
+                            EC_PL_PENAWARAN PEN 
+                            WHERE STATUS_ASSIGN='1'
+                        GROUP BY
+                            PEN.VENDORNO,
+                            PEN.MATNO
+                    ) TB1
+                INNER JOIN EC_PL_PENAWARAN TB2 ON TB1.VENDORNO = TB2.VENDORNO
+                AND TB1.MATNO = TB2.MATNO
+                AND TB1.DATE1 = TB2.INDATE ) TB3 ON TB3.VENDORNO=DT.VENDORNO AND TB3.MATNO=DT.MATNO
+				WHERE SM.PUBLISHED_LANGSUNG = '1' AND DT.PLANT IN (SELECT RL.PLANT FROM EC_M_ROLE_PLANT RL WHERE RL.COMPANY='".$this->session->userdata['COMPANYID']."')";// AND T1.STOK > 0
+//        if($limitMin==0){
+//            $SQL .= " AND ROWNUM < 13 ";
+//        }else{
+//            $SQL .= " AND ROWNUM <= '".$limitMax."'";
+//        }        
+        if ($kategori != '-' && $kategori != '-'){
+            if (strpos($kategori, '-') !== false){
+                $SQL .= " AND CAT.KODE_USER = '" . $kategori . "'";
+            }else{
+                $SQL .= " AND CAT.KODE_USER LIKE '" . $kategori . "%'";
+            }   
+        }        
+        if ($search != '-' && $search != '-'){
+            $SQL .= " AND (lower(SM.TAG) LIKE lower('%" . $search . "%') OR lower(DT.PLANT) LIKE lower('%" . $search . "%') OR lower(DT.NAMA_PLANT) LIKE lower('%" . $search . "%') OR lower(SM.MAKTX) LIKE lower('%" . $search . "%') OR lower(SM.MATNR) LIKE lower('%" . $search . "%') ) ";
+        }
+        if ($harga_min != '-' && $harga_max != '-'){
+            $SQL .= " AND DT.PRICE >= " . $harga_min . " AND DT.PRICE <= " . $harga_max;
+        }
+        $SQL .= " ORDER BY CAT.\"DESC\", SM.MATNR ASC";
+//         var_dump($SQL);die();
+        $result = $this->db->query($SQL);
+        return (array)$result->result_array();
+    }
+
+    public function get_data_pembelian_lgsg_backup($search = '-', $kategori = '-', $harga_min = '-', $harga_max = '-',
+                                            $limitMin = '0', $limitMax = '12', $comp = '2000')
+    {
+//        var_dump($search);
+//        var_dump($comp); 
+//        var_dump($this->session->userdata['COMPANYID']);die();
+        $SQL = "SELECT 
                 ROWNUM, DT.KODE_DETAIL_PENAWARAN,DT.PRICE HARGA,DT.PLANT,DT.DELIVERY_TIME,DT.NAMA_PLANT,TB3.STOK, TO_CHAR (
                     TB1.START_DATE,
                     'DD/MM/YYYY'
@@ -1277,9 +1343,9 @@ class ec_ecatalog_m extends CI_Model
 				INNER JOIN (SELECT T1.*,PL.\"DESC\" NAMA_PLANT FROM EC_T_DETAIL_PENAWARAN T1
                     INNER JOIN
                     (SELECT  \"MIN\"(T1.PRICE) OVER (PARTITION BY T1.PLANT,T1.MATNO) HARGA,T1.* FROM EC_T_DETAIL_PENAWARAN T1 
-                    INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE) INDATE FROM EC_T_DETAIL_PENAWARAN
+                    INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE_HISTORY) INDATE FROM EC_T_DETAIL_PENAWARAN
                                             GROUP BY MATNO,PLANT,VENDORNO ORDER BY PLANT,MATNO,VENDORNO) T2 
-                                            ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT AND T1.INDATE = T2.INDATE 
+                                            ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT AND T1.INDATE_HISTORY = T2.INDATE 
                      WHERE T1.PRICE>0
                      ) T2 ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT AND T1.INDATE = T2.INDATE AND T1.PRICE=T2.HARGA
                     INNER JOIN EC_M_PLANT PL ON PL.PLANT=T1.PLANT 
@@ -1320,31 +1386,14 @@ class ec_ecatalog_m extends CI_Model
             $SQL .= " AND DT.PRICE >= " . $harga_min . " AND DT.PRICE <= " . $harga_max;
         }
         $SQL .= " ORDER BY CAT.\"DESC\", SM.MATNR ASC";
-        // var_dump($SQL);
+//         var_dump($SQL);die();
         $result = $this->db->query($SQL);
-//        while (count($data) < $limitMax && $j < count($result)){
-//            if ($j != 0){
-//                if ($result[$j]['MATNO'] == $matno && $plant == $result[$j]['PLANT']){
-//                    $matno = $result[$j]['MATNO'];
-//                    $plant = $result[$j]['PLANT'];
-//                } else {
-//                    $data[$j] = $result[$j];
-//                    $matno = $result[$j]['MATNO'];
-//                    $plant = $result[$j]['PLANT'];
-//                }
-//            } else {
-//                $data[$j] = $result[$j];
-//                $matno = $result[$j]['MATNO'];
-//                $plant = $result[$j]['PLANT'];
-//            }
-//            $j++;
-//        }
         return (array)$result->result_array();
     }
-
+    
     public function getDealsVendor($matno, $plant, $comp = '2000')
     {
-        $SQL = "SELECT VEN.VENDOR_NAME,TW.*
+        $SQL = "SELECT VEN.VENDOR_NAME,VEN.CONTACT_PHONE_NO,TW.*
         FROM (SELECT DT.VENDORNO,DT.KODE_DETAIL_PENAWARAN,DT.PRICE HARGA,DT.PLANT,DT.DELIVERY_TIME,DT.NAMA_PLANT
         ,TB3.STOK,TB3.DESKRIPSI_ITEM, 
                         SM.MATNR,SM.PICTURE,SM.MAKTX,SM.MEINS,SM.ID_CAT, CAT.\"DESC\",TB1.*
@@ -1357,12 +1406,12 @@ class ec_ecatalog_m extends CI_Model
                             INNER JOIN
                             (SELECT  T1.PRICE HARGA,T1.* FROM EC_T_DETAIL_PENAWARAN
          T1 
-                            INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE) INDATE FROM EC_T_DETAIL_PENAWARAN
+                            INNER JOIN (SELECT MATNO,PLANT,VENDORNO,\"MAX\" (INDATE_HISTORY) INDATE FROM EC_T_DETAIL_PENAWARAN
                                                     WHERE MATNO='" . $matno . "' AND PLANT='" . $plant . "'
                                                     GROUP BY MATNO,PLANT,VENDORNO ORDER BY PLANT,MATNO,VENDORNO
         ) T2 
                                                     ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND
-         T1.PLANT = T2.PLANT AND T1.INDATE = T2.INDATE 
+         T1.PLANT = T2.PLANT AND T1.INDATE_HISTORY = T2.INDATE 
                              WHERE T1.PRICE>0
                              ) T2 ON T1.MATNO = T2.MATNO AND T1.VENDORNO = T2.VENDORNO AND T1.PLANT = T2.PLANT
          AND T1.INDATE = T2.INDATE AND T1.PRICE=T2.HARGA
@@ -1842,5 +1891,28 @@ class ec_ecatalog_m extends CI_Model
         "', '" . $stok . "', '" . $delivery . "', '" . $harga . "', '" . $satuan . "', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'))";
         $this->db->query($SQL);                        
         $this->db->trans_complete();                        
-    }  
+    }
+
+    function getNegoData($matno, $plant, $vendorno)
+    {
+        $userid = $this->session->userdata['ID'];
+        $this->db->from("EC_PL_NEGOSIASI");
+        $this->db->where("MATNO", $matno);
+        $this->db->where("PLANT", $plant);
+        $this->db->where("VENDORNO", $vendorno);
+        $this->db->where("USER_ID", $userid);
+        $this->db->where("STATUS_NEGO", 1);
+        $result = $this->db->get();
+        return (array)$result->row_array();
+    }
+
+    function getUnreadChat($negoId, $sender)
+    {
+        $this->db->from("EC_PL_CHAT");
+        $this->db->where("NEGO_ID", $negoId);
+        $this->db->where("SENDER_CODE", $sender);
+        $this->db->where("MESSAGE_STATUS", 1);
+        $result = $this->db->get();
+        return count($result->result_array());
+    }
 }

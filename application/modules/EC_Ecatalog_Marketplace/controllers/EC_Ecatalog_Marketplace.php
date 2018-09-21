@@ -105,7 +105,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
     }
 
     public function listCatalogLsgs($kode = '-')
-    {        
+    {
         $data['title'] = "E-Catalog | Pembelian Langsung";
         $data['pc_code'] = $this->getPC_CODE();
         if ($kode != '') {
@@ -1168,13 +1168,13 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $data['company'] = $this->ec_company_plant->getCompany();
         $data['companyID'] = $this->ec_company_plant->getCompanySpek($this->session->userdata('EM_COMPANY'));
         $this->load->model('ec_ecatalog_m');
-        $data['CC'] = $this->COSTCENTER_GETLIST();        
-        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);           
-        $result = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0,1), $data['CCC']["COSTCENTER"], false);         
+        $data['CC'] = $this->COSTCENTER_GETLIST();
+        $data['CCC'] = $this->ec_ecatalog_m->getCC($this->session->userdata['ID']);
+        $result = $this->sap_handler->GET_REPORTBUDGET(substr($this->session->userdata['EM_COMPANY'], 0, 1), $data['CCC']["COSTCENTER"], false);
         for ($i = 0; $i < sizeof($result); $i++) {
-            if($result[$i]['FIPEX']==$data['CCC']['GL_ACCOUNT']){
+            if ($result[$i]['FIPEX'] == $data['CCC']['GL_ACCOUNT']) {
                 $data["AVAILBUDGET"] = $result[$i]["AVAILBUDGET"];
-            }                        
+            }
         }
         $this->layout->render('checkout', $data);
     }
@@ -1360,7 +1360,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
     }
 
     function detail_prod_langsung($matno, $plant, $penawaran)
-    {       
+    {
         if ($plant >= 7000 && $plant < 8000) {
             $plantBaru = '7000';
         } else if ($plant >= 6000 && $plant < 7000) {
@@ -1379,21 +1379,21 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $result2 = $this->EC_strategic_material_m->getLongteks($result[0]['MATNR']);
         $data['longteks'] = $result2[0]['LNGTX'];
         $this->load->model('ec_ecatalog_m');
-        $feedback = $this->ec_ecatalog_m->getfeedback('PL2018', $matno);        
-        $data['title'] = "Detail Product | E-Catalog";        
+        $feedback = $this->ec_ecatalog_m->getfeedback('PL2018', $matno);
+        $data['title'] = "Detail Product | E-Catalog";
         $data['data_produk'] = $result;
         $data['matno'] = $matno;
         $data['penawaran'] = $penawaran;
-        $data['feedback'] = $feedback;        
-        $data['plant'] = $plant;
-        $this->load->model('ec_company_plant');        
+        $data['feedback'] = $feedback;
+        $data['plantHide'] = $plant;
+        $this->load->model('ec_company_plant');
         $this->layout->set_table_js();
         $this->layout->set_table_cs();
         $this->layout->add_js('pages/star-rating.min.js');
         $this->layout->add_css('pages/star-rating.min.css');
         $this->layout->add_js('plugins/select2/select2.js');
         $this->layout->add_css('plugins/select2/select2.css');
-        $this->layout->add_css('plugins/select2/select2-bootstrap.css');        
+        $this->layout->add_css('plugins/select2/select2-bootstrap.css');
         $this->layout->add_css('plugins/bootstrap-select/bootstrap-select.css');
         $this->layout->add_js('plugins/bootstrap-select/bootstrap-select.js');
         $this->layout->add_css('pages/EC_checkout.css');
@@ -1437,41 +1437,95 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             $data["AVAILBUDGET"] = $result[$i]["AVAILBUDGET"];
             // $dataa[] = $data;
         }
-
-        $data['deals'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);        
+        $data['deals'] = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);
 //        var_dump($data['deals_raw']);die();
 //        $data['deals']=$this->unique_multidim_array($data['deals_raw'], 'VENDORNO');
-        $data['deals2']=array();
+        $data['deals2'] = array();
 //        var_dump(count($data['deals']));die();
 //        var_dump($data['deals']);die();
         for ($j = 0; $j < count($data['deals']); $j++) {
-            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'],$data['deals'][$j]['MATNO'],$data['deals'][$j]['VENDORNO']);                        
-            if(!isset($stok_konfirmasi['STOK_KONFIRMASI'])){
+            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'], $data['deals'][$j]['MATNO'], $data['deals'][$j]['VENDORNO']);
+            $nego = $this->ec_ecatalog_m->getNegoData($matno, $plant, $data['deals'][$j]['VENDORNO']);
+            if (count($nego) > 0){
+                $chat = $this->ec_ecatalog_m->getUnreadChat($nego['ID'], 2);
+                if ($chat > 0){
+                    $data['deals'][$j]['NEGO'] = 1;
+                    $data['deals'][$j]['UNREAD'] = $chat;
+                } else {
+                    $data['deals'][$j]['NEGO'] = 1;
+                    $data['deals'][$j]['UNREAD'] = 0;
+                }
+            } else {
+                $data['deals'][$j]['NEGO'] = 0;
+                $data['deals'][$j]['UNREAD'] = 0;
+            }
+            if (!isset($stok_konfirmasi['STOK_KONFIRMASI'])) {
                 $data['deals'][$j]['STOK_KONFIRMASI'] = $stok_konfirmasi[0]['STOK_KONFIRMASI'];
             } else {
                 $data['deals'][$j]['STOK_KONFIRMASI'] = 0;
             }
         }
-        $data['plant'] = $this->ec_ecatalog_m->get_m_plant($plant);        
+        $data['plant'] = $this->ec_ecatalog_m->get_m_plant($plant);
         $data['cart'] = count($this->ec_ecatalog_m->get_data_checkout_pl($this->session->userdata['ID']));
         $this->layout->render('detail_produk_langsung', $data);
         //echo json_encode($result);
     }
 
-    function unique_multidim_array($array, $key) { 
-        $temp_array = array(); 
-        $i = 0; 
-        $key_array = array(); 
+    function getDataPenawaran()
+    {
+        $this->load->model('ec_ecatalog_m');
+        $plant = $this->input->post('plant');
+        $matno = $this->input->post('matno');
+        $result = $this->getProdukPenawaran($matno);
+        $data = $this->ec_ecatalog_m->getDealsVendor($matno, $plant, $this->session->userdata['COMPANYID']);
+        for ($j = 0; $j < count($data); $j++) {
+            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'], $data[$j]['MATNO'], $data[$j]['VENDORNO']);
+            $nego = $this->ec_ecatalog_m->getNegoData($matno, $plant, $data[$j]['VENDORNO']);
+            if (count($nego) > 0){
+                $chat = $this->ec_ecatalog_m->getUnreadChat($nego['ID'], 2);
+                if ($chat > 0){
+                    $data[$j]['NEGO'] = 1;
+                    $data[$j]['UNREAD'] = $chat;
+                } else {
+                    $data[$j]['NEGO'] = 1;
+                    $data[$j]['UNREAD'] = 0;
+                }
+            } else {
+                $data[$j]['NEGO'] = 0;
+                $data[$j]['UNREAD'] = 0;
+            }
+            if (!isset($stok_konfirmasi['STOK_KONFIRMASI'])) {
+                $data[$j]['STOK_KONFIRMASI'] = $stok_konfirmasi[0]['STOK_KONFIRMASI'];
+            } else {
+                $data[$j]['STOK_KONFIRMASI'] = 0;
+            }
+        }
+        echo json_encode(array('data' => $data, 'produk' => $result));
+    }
 
-        foreach($array as $val) { 
+    function getProdukPenawaran($matno)
+    {
+        $this->load->model('EC_strategic_material_m');
+        $result = $this->EC_strategic_material_m->getDetail($matno);
+        return $result;
+    }
+
+    function unique_multidim_array($array, $key)
+    {
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+
+        foreach ($array as $val) {
             if (!in_array($val[$key], $key_array)) {
                 $key_array[$i] = $val[$key];
                 array_push($temp_array, $val);
-            } 
-            $i++; 
-        } 
-        return $temp_array; 
+            }
+            $i++;
+        }
+        return $temp_array;
     }
+
     function detail_HargaProd_langsung($matno)
     {
         $this->load->model('ec_ecatalog_m');
@@ -1532,7 +1586,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
     public function get_data_checkout_pl()
     {
         $this->load->model('ec_ecatalog_m');
-        $dataa = $this->ec_ecatalog_m->get_data_checkout_pl($this->session->userdata['ID']);        
+        $dataa = $this->ec_ecatalog_m->get_data_checkout_pl($this->session->userdata['ID']);
 //        $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'],'503-200434','0000110003');
 //        var_dump($stok_konfirmasi);die();
         $i = 1;
@@ -1545,13 +1599,13 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             $data['MAKTX'] = $dataa[$j]['MAKTX'] = !null ? $dataa[$j]['MAKTX'] : "-";
             $data['HARGA_PENAWARAN'] = $dataa[$j]['PRICE'] = !null ? $dataa[$j]['PRICE'] : "-";
             $dataa[$j]['STOK'] = $deals[0]['STOK'];
-            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'],$dataa[$j]['MATNO'],$dataa[$j]['VENDORNO']);
-            if($stok_konfirmasi[0]['STOK_KONFIRMASI'] == null){
-                $stok_konfirmasi[0]['STOK_KONFIRMASI']=0;
+            $stok_konfirmasi = $this->ec_ecatalog_m->get_stok_konfirmasi($this->session->userdata['ID'], $dataa[$j]['MATNO'], $dataa[$j]['VENDORNO']);
+            if ($stok_konfirmasi[0]['STOK_KONFIRMASI'] == null) {
+                $stok_konfirmasi[0]['STOK_KONFIRMASI'] = 0;
             }
-            $dataa[$j]['STOK_KONFIRMASI']=$stok_konfirmasi[0]['STOK_KONFIRMASI'];
+            $dataa[$j]['STOK_KONFIRMASI'] = $stok_konfirmasi[0]['STOK_KONFIRMASI'];
             //$data[4] = "";
-            if ($dataa[$j]['KODE_PARENT'] == 0){
+            if ($dataa[$j]['KODE_PARENT'] == 0) {
                 $dataa[$j]['NAMA_PARENT'] = $dataa[$j]['DESC'];
             } else {
                 $parent = $this->ec_ecatalog_m->get_parent_category($dataa[$j]['KODE_PARENT']);
@@ -2029,7 +2083,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
             echo json_encode(array('sukses' => true));
         } else {
             echo json_encode(array('sukses' => false));
-        }        
+        }
     }
 
     public function get_data_pricelist()
@@ -2238,7 +2292,7 @@ class EC_Ecatalog_Marketplace extends CI_Controller
 //        if (isset($dataa)){
 //            $json_data = array('page' => $page, 'data' => $this->compileDataPage_PL($dataa, $limitMin, $limitMax));
 //        } else {
-            $json_data = array('page' => count($this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax)), 'data' => $this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax), 'data1' => $this->compileDataPage_PL($dataa), 'totalItem' => count($this->compileDataPage_PL($dataa)));
+        $json_data = array('page' => count($this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax)), 'data' => $this->testPaging($this->compileDataPage_PL($dataa), $limitMin, $limitMax), 'data1' => $this->compileDataPage_PL($dataa), 'totalItem' => count($this->compileDataPage_PL($dataa)));
 //        }
 
         //$this->getALL_lgsg($dataa));
@@ -2300,9 +2354,9 @@ class EC_Ecatalog_Marketplace extends CI_Controller
         $matno = '';
         $plant = '';
         $item = array();
-        for ($i = 0; $i < count($data); $i++){
-            if ($matno == $data[$i]['MATNO']){
-                if ($plant !== $data[$i]['PLANT']){
+        for ($i = 0; $i < count($data); $i++) {
+            if ($matno == $data[$i]['MATNO']) {
+                if ($plant !== $data[$i]['PLANT']) {
                     array_push($item, $data[$i]);
                 }
             } else {
@@ -2317,10 +2371,10 @@ class EC_Ecatalog_Marketplace extends CI_Controller
     public function testPaging($data = array(), $min, $max)
     {
         $item = array();
-        if ($max > count($data)){
+        if ($max > count($data)) {
             $max = count($data);
         }
-        for ($i = $min; $i < $max; $i++){
+        for ($i = $min; $i < $max; $i++) {
             array_push($item, $data[$i]);
         }
         return $item;

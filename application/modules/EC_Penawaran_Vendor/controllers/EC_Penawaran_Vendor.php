@@ -62,7 +62,7 @@ class EC_Penawaran_Vendor extends CI_Controller
         $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO'], $this->input->post('limitMin'), $this->input->post('limitMax'));
         $dataCount = $this->ec_penawaran_vnd_test->get_Count_produk($this->session->userdata['VENDOR_NO']);        
 //        var_dump($dataProduk);die(); 
-        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount));
+        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount), 'data2' => $dataCount);
         echo json_encode($json_data); 
     }
 

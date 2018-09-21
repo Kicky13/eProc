@@ -13,6 +13,10 @@ var range_harga = ['-', '-'],
     compareCntrk = []; 
 $(document).ready(function(){
 
+	setInterval(function () {
+		loadPenawaran();
+    }, 45000);
+
 	$('#openLock').click(function () {
 		matno = $('#matnoHide').val();
 		vendorno = $('#vendornoHide').val();
@@ -33,7 +37,7 @@ $(document).ready(function(){
 		var plant = (button.data('plant')) + ' - ' + (button.data('plantdesc'));
 		var matno = (button.data('matno'));
 		var maktx = (button.data('maktx'));
-        console.log(vendorno + ", " + matno + ", " + plantNo);
+		console.log(vendorno + ", " + matno + ", " + plantNo);
         $('#vendornoHide').val(vendorno);
         $('#matnoHide').val(matno);
         $('#plantHide').val(plantNo);
@@ -41,6 +45,9 @@ $(document).ready(function(){
         $('#materialNego').text(maktx + '(' + matno + ')');
         $('#plantNego').text(plant);
         loadChat(vendorno, matno, plantNo);
+        setInterval(function () {
+			loadChat(vendorno, matno, plantNo);
+        }, 45000)
     });
 
     $('#sendMsg').click(function () {
@@ -1201,23 +1208,27 @@ function sendChat() {
     var plant = $('#plantHide').val();
     var msg = $('#chatMsg').val();
 
-    $.ajax({
-        url: $('#base-url').val() + 'EC_Ecatalog_Marketplace/sendChat',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            vendorno: vendorno,
-            matno: matno,
-            plant: plant,
-            message: msg
-        },
-    }).done(function (data) {
-        console.log(data);
-        loadChat(vendorno, matno, plant);
-        $('#chatMsg').val('');
-    }).always(function (data) {
-        console.log(data);
-    });
+    if (msg !== ''){
+        $.ajax({
+            url: $('#base-url').val() + 'EC_Ecatalog_Marketplace/sendChat',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                vendorno: vendorno,
+                matno: matno,
+                plant: plant,
+                message: msg
+            },
+        }).done(function (data) {
+            console.log(data);
+            loadChat(vendorno, matno, plant);
+            $('#chatMsg').val('');
+        }).always(function (data) {
+            console.log(data);
+        });
+	} else {
+    	console.log('Chat Kosong Oon');
+	}
 }
 
 function closeNego() {
@@ -1238,6 +1249,9 @@ function closeNego() {
         console.log(data);
     }).always(function (data) {
         console.log(data);
+        $('#matnoHide').val('');
+        $('#vendornoHide').val('');
+        $('plantHide').val('');
         $('#modalNego').modal('hide');
     })
 }
@@ -1255,5 +1269,70 @@ function openLockHarga(vendorno, matno, plant) {
 	}).done(function (data) {
 		console.log(data);
 		alert('Harga berhasil dibuka');
+    });
+}
+
+function loadPenawaran() {
+    $('#table_penawaran tbody').empty();
+    matno = $('#matnoHidden').val();
+    plant = $('#plantHidden').val();
+    textData = '';
+    phone = '-';
+    colorClass = 'danger';
+    unread = '';
+    $.ajax({
+		url: $('#base-url').val() + 'EC_Ecatalog_Marketplace/getDataPenawaran',
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			matno: matno,
+			plant: plant
+		},
+	}).done(function (data) {
+		console.log(data.data[0].VENDOR_NAME);
+		for (var i = 0; i < data.data.length; i++){
+            if (data.data[i].CONTACT_PHONE_NO != null){
+            	phone = data.data[i].CONTACT_PHONE_NO;
+			} else {
+            	phone = '-';
+			}
+			if (data.data[i].NEGO == 1){
+                colorClass = 'success';
+            } else {
+				colorClass = 'danger';
+			}
+			if (data.data[i].UNREAD > 0){
+				unread = data.data[i].UNREAD;
+			} else {
+				unread = '';
+			}
+            textData += "<tr>";
+            textData += "<td width='25%'><span style='font-weight:600'>" + data.data[i].VENDOR_NAME + "</span><br/>Phone: " + phone + "</td>";
+            textData += "<td width='55%'>";
+            textData += "Plant: " + data.data[i].PLANT + " - " + data.data[i].NAMA_PLANT;
+            textData += "<br>Stok Vendor: " + data.data[i].STOK + " " + data.data[i].MEINS;
+            textData += "<br>Stok Konfirmasi: " + data.data[i].STOK_KONFIRMASI + " " + data.data[i].MEINS;
+            textData += "<br>Stok Avaible: " + (data.data[i].STOK - data.data[i].STOK_KONFIRMASI) + " " + data.data[i].MEINS;
+            textData += "<br>Delivery Time: " + data.data[i].DELIVERY_TIME + " Days";
+            textData += "</td>";
+            textData += "<td width='15%'>";
+            textData += data.data[i].CURRENCY + " ";
+            textData += numberWithCommas(data.data[i].HARGA);
+			textData += "</td>";
+			textData += "<td>";
+			textData += "<a title='Add to Cart'";
+			textData += "onclick='addCart_pl(\"" + data.data[i].MATNO + "\", \"" + data.produk[0].ID_CAT + "\", \"" + data.data[i].VENDORNO + "\", \"" + data.data[i].KODE_DETAIL_PENAWARAN + "\")'";
+			textData += "style='font-size:12px;box-shadow: 1px 1px 1px #ccc;margin-bottom:10px;' class='btn btn-primary beli'>";
+			textData += "<i class='glyphicon glyphicon-shopping-cart'></i>";
+			textData += "</a>";
+			textData += "<button type='button' data-toggle='modal'";
+			textData += "data-target='#modalNego' data-vendorno='" + data.data[i].VENDORNO + "' data-vendorname='" + data.data[i].VENDOR_NAME + "' data-plant='" + data.data[i].PLANT + "' data-plantdesc='" + data.data[i].NAMA_PLANT + "' data-matno='" + data.produk[0].MATNR + "' data-maktx='" + data.produk[0].MAKTX + "' title='Nego Harga' style='font-size:12px;box-shadow: 1px 1px 1px #ccc'";
+            textData += "class='btn btn-" + colorClass + " nego'>";
+			textData += "<i class='glyphicon glyphicon-comment'></i> " + unread;
+			textData += "</button>";
+			textData += "</td></tr>";
+		}
+		console.log(textData);
+        $('#table_penawaran tbody').html(textData);
     });
 }

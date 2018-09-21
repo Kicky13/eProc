@@ -83,7 +83,7 @@ function loadDataList() {
 
             var f, t, currentDate, yr, month, day, dateAfter, nextupdate, diselm;
 
-            for (var i = limitMin; i < data.data.length; i++) {
+            for (var i = 0; i < data.data.length; i++) {
                 // if (i == data.data.length - 1) {
                 // teks = ('<div class="row items" style=" margin:3px;">')
                 // } else {

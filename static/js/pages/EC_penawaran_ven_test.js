@@ -84,7 +84,7 @@ function loadDataList() {
 			
 			var f, t, currentDate, yr, month, day, dateAfter, nextupdate, diselm;
 			
-            for (var i = limitMin; i < data.data.length; i++) {
+            for (var i = 0; i < data.data.length; i++) {
                 // if (i == data.data.length - 1) {
                     // teks = ('<div class="row items" style=" margin:3px;">')
                 // } else {
@@ -97,9 +97,9 @@ function loadDataList() {
                 if(data.data[i].ISI[0].KODE_UPDATE=='510'){
                     currentDate.setDate(currentDate.getDate() + parseInt(data.data[i].ISI[0].DAYS_UPDATE));
                 }else if(data.data[i].ISI[0].KODE_UPDATE=='511'){
-                    currentDate.setMonth((currentDate.getMonth() + 1), 1);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
                 }else if(data.data[i].ISI[0].KODE_UPDATE=='521'){
-                    currentDate.setDate(currentDate.getDate() + (1 + 7 - currentDate.getDay()) % 7);
+                    currentDate.setDate(currentDate.getDate() + 7);
                 }
 				
                 yr      = currentDate.getFullYear();
@@ -111,9 +111,11 @@ function loadDataList() {
                 }
 				
 				nextupdate = yr + '-' + month + '-' + day;
-				if (new Date().getTime() < new Date(nextupdate).getTime()) {
+				if (new Date().getTime() < new Date(nextupdate).getTime() && data.data[i].ISI[0].CHANGE_REQUEST < 1) {
 					diselm = " disabled='disabled'";
-				} else {
+				}else if(data.data[i].ISI[0].CHANGE_REQUEST > 0){
+                                        diselm = "";
+                                } else {
 					diselm = "";
 				}
 				
@@ -133,8 +135,12 @@ function loadDataList() {
 							"<td>" + data.data[i].ISI[0].PLANT + "</td>" +
 							"<td>" + data.data[i].ISI[0].DESC + "</td>" +
 							"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[0].PLANT + "' name='plant[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[0].DESC + "' name='desc[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].MAKTX + "' name='nama_material[D"+i+"0]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+"0]'></td>" +
-							"<td><center><input type='text' value='" + data.data[i].ISI[0].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+"0]'"+diselm+"></center></td>" +
-							"<td><center><input type='text' value='" + data.data[i].ISI[0].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+"0]'"+diselm+">&nbsp;day(s)</center></td>" +
+							"<td><center><input type='text' value='" + data.data[i].ISI[0].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+"0]'"+diselm+" required='required'></center></td>" +
+							"<td><center><input type='text' value='" + data.data[i].ISI[0].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+"0]'"+diselm+" required='required'>&nbsp;day(s)\n\
+                                                        <input type='hidden' value='" + data.data[i].ISI[0].CHANGE_REQUEST + "' style='width:30px;' placeholder='0' name='change_request[D"+i+"0]'"+diselm+">\n\
+                                                        <input type='hidden' value='" + data.data[i].ISI[0].LASTUPDATE + "' style='width:30px;' placeholder='0' name='last_request[D"+i+"0]'"+diselm+">\n\
+                                                        <input type='hidden' value='" + dateAfter + "' style='width:30px;' placeholder='0' name='next_request[D"+i+"0]'"+diselm+">\n\
+                                                        <input type='hidden' value='" + data.data[i].ISI[0].PRICE + "' style='width:30px;' placeholder='0' name='last_price[D"+i+"0]'"+diselm+"></center></td>" +
 							"<td><center>" + data.data[i].ISI[0].LASTUPDATE + "</center></td>" +
 							"<td><center>" + dateAfter + "</center></td>" +
 							"<td class='cbtr' style='cursor:pointer;'><center><input type='checkbox' style='cursor:pointer;' name='cb[]' value='D"+i+"0'"+diselm+"></center></td>" +
@@ -149,9 +155,9 @@ function loadDataList() {
 							if(data.data[i].ISI[j].KODE_UPDATE=='510'){
 								currentDate.setDate(currentDate.getDate() + parseInt(data.data[i].ISI[j].DAYS_UPDATE));
 							}else if(data.data[i].ISI[j].KODE_UPDATE=='511'){
-								currentDate.setMonth((currentDate.getMonth() + 1), 1);
+								currentDate.setMonth(currentDate.getMonth() + 1);
 							}else if(data.data[i].ISI[j].KODE_UPDATE=='521'){
-								currentDate.setDate(currentDate.getDate() + (1 + 7 - currentDate.getDay()) % 7);
+								currentDate.setDate(currentDate.getDate() + 7);
 							}
 							
 							yr      = currentDate.getFullYear();
@@ -163,9 +169,11 @@ function loadDataList() {
 							}
 							
 							nextupdate = yr + '-' + month + '-' + day;
-							if (new Date().getTime() < new Date(nextupdate).getTime()) {
+							if (new Date().getTime() < new Date(nextupdate).getTime() && data.data[i].ISI[j].CHANGE_REQUEST < 1) {
 								diselm = " disabled='disabled'";
-							} else {
+							}else if(data.data[i].ISI[j].CHANGE_REQUEST > 0){
+                                                                diselm = "";
+                                                        }  else {
 								diselm = "";
 							}
 							
@@ -173,8 +181,12 @@ function loadDataList() {
 										"<td>" + data.data[i].ISI[j].PLANT + "</td>" +
 										"<td>" + data.data[i].ISI[j].DESC + "</td>" +
 										"<td><center>" + data.data[i].CURRENCY + "</center><input type='hidden' style='display:none;' value='" + data.data[i].MATNO + "' name='matno[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[j].PLANT + "' name='plant[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].CURRENCY + "' name='currency[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].ISI[j].DESC + "' name='desc[D"+i+j+"]'><input type='hidden' style='display:none;' value='" + data.data[i].MAKTX + "' name='nama_material[D"+i+j+"]'></td>" +
-										"<td><center><input type='text' value='" + data.data[i].ISI[j].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+j+"]'"+diselm+"></center></td>" +
-										"<td><center><input type='text' value='" + data.data[i].ISI[j].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+j+"]'"+diselm+">&nbsp;day(s)</center></td>" +
+										"<td><center><input type='text' value='" + data.data[i].ISI[j].PRICE + "' style='width:70px;' placeholder='0' name='price[D"+i+j+"]'"+diselm+" required='required'></center></td>" +
+										"<td><center><input type='text' value='" + data.data[i].ISI[j].DELIVERY_TIME + "' style='width:30px;' placeholder='0' name='dlvtime[D"+i+j+"]'"+diselm+" required='required'>&nbsp;day(s)\n\
+                                                                                <input type='hidden' value='" + data.data[i].ISI[j].CHANGE_REQUEST + "' style='width:30px;' placeholder='0' name='change_request[D"+i+j+"]'"+diselm+">\n\
+                                                                                <input type='hidden' value='" + data.data[i].ISI[j].LASTUPDATE + "' style='width:30px;' placeholder='0' name='last_request[D"+i+j+"]'"+diselm+">\n\
+                                                                                <input type='hidden' value='" + dateAfter + "' style='width:30px;' placeholder='0' name='next_request[D"+i+j+"]'"+diselm+">\n\
+                                                                                <input type='hidden' value='" + data.data[i].ISI[j].PRICE + "' style='width:30px;' placeholder='0' name='last_price[D"+i+j+"]'"+diselm+"></center></td>" +
 										"<td><center>" + data.data[i].ISI[j].LASTUPDATE + "</center></td>" +
 										"<td><center>" + dateAfter + "</center></td>" +
 										"<td class='cbtr' style='cursor:pointer;'><center><input type='checkbox' style='cursor:pointer;' name='cb[]' value='D"+i+j+"'"+diselm+"></center></td>" +
@@ -369,9 +381,9 @@ function getDetail_old(elm, matno, vendorno, currency) {
                 if(data[i].KODE_UPDATE=='510'){
                     currentDate.setDate(currentDate.getDate() + parseInt(data[i].DAYS_UPDATE));
                 }else if(data[i].KODE_UPDATE=='511'){
-                    currentDate.setMonth((currentDate.getMonth() + 1), 1);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
                 }else if(data[i].KODE_UPDATE=='521'){
-                    currentDate.setDate(currentDate.getDate() + (1 + 7 - currentDate.getDay()) % 7);
+                    currentDate.setDate(currentDate.getDate() + 7);
                 }
 
                 //console.log('tes: '+currentDate);
@@ -777,9 +789,9 @@ function loadTable_App(tabelname, index, matno, currency) {
                 if(full.KODE_UPDATE=='510'){
                     currentDate.setDate(currentDate.getDate() + parseInt(full.DAYS_UPDATE));
                 }else if(full.KODE_UPDATE=='511'){
-                    currentDate.setMonth((currentDate.getMonth() + 1), 1);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
                 }else if(full.KODE_UPDATE=='521'){
-                    currentDate.setDate(currentDate.getDate() + (1 + 7 - currentDate.getDay()) % 7);
+                    currentDate.setDate(currentDate.getDate() + 7);
                 }
 
                 //console.log('tes: '+currentDate);
@@ -1060,7 +1072,7 @@ $(document).ready(function () {
             $('.itemsfix').removeClass('fixed2');
             // $('.fixed-compare').css('width', hgh)
         }
-    });  
+    });   
     
 //    var _sudahTampilPesan = $('#sudahTampilPesan').text();
 //    if(_sudahTampilPesan != '1'){

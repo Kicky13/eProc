@@ -11,7 +11,6 @@ class EC_Report_Chat extends CI_Controller
         parent::__construct();
         $this->load->library('Authorization');
         $this->load->helper('url');
-        $this->load->model('ec_report_chat_m');
         $this->load->library('Layout');
         $this->load->helper("security");
         $this->user = $this->session->userdata('FULLNAME');
@@ -19,9 +18,10 @@ class EC_Report_Chat extends CI_Controller
 
     public function index($brhasil = false)
     {
-        $data['title'] = "Report Chat Negosiasi";
+        $data['title'] = "Report Negosiasi";
         $data['brhasil'] = $brhasil;
-        $this->layout->set_table_js();
+//        $data['cheat'] = $cheat;
+        $this->layout->set_table_js2();
         $this->layout->set_table_cs();
         $this->layout->set_validate_css();
         $this->layout->set_validate_js();
@@ -37,22 +37,67 @@ class EC_Report_Chat extends CI_Controller
         $this->layout->add_js('pages/EC_jasny-bootstrap.min.js');
         $this->layout->add_js('bootbox.js');
         $this->layout->add_js('pages/EC_report_chat.js');
-
         $this->layout->render('list', $data);
     }
 
-    public function getDataNego()
+    public function getChat()
     {
         header('Content-Type: application/json');
-        $data = $this->ec_report_chat_m->addLastChat($this->ec_report_chat_m->dataNego());
+        $this->load->model('ec_pl_negosiasi_m');
+        $id = $this->input->post('negoID');
+        $data = $this->ec_pl_negosiasi_m->getChat($id);
         echo json_encode(array('data' => $data));
     }
 
-    public function getDataChat()
+    public function getArchiveNego()
     {
         header('Content-Type: application/json');
-        $negoid = $this->input->post('negoId');
-        $data = $this->ec_report_chat_m->dataChatByNegoID($negoid);
+        $this->load->model('ec_pl_negosiasi_m');
+        $data = $this->ec_pl_negosiasi_m->compileLastChat($this->ec_pl_negosiasi_m->getArchiveNegoUser());
         echo json_encode(array('data' => $data));
+    }
+
+    public function getActiveNego()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $data = $this->ec_pl_negosiasi_m->compileLastChat($this->ec_pl_negosiasi_m->getActiveNegoUser());
+        echo json_encode(array('data' => $data));
+    }
+
+    public function openChat()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $negoid = $this->input->post('negoId');
+        $this->ec_pl_negosiasi_m->readChat(2, $negoid);
+        $data = $this->ec_pl_negosiasi_m->getChat($negoid);
+        echo json_encode(array('data' => $data));
+    }
+
+    public function sendMessage()
+    {
+        header('Content-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $msg = $this->input->post('message');
+        $negoid = $this->input->post('negoId');
+        $this->ec_pl_negosiasi_m->sendChat(1, $msg, $this->ec_pl_negosiasi_m->getNegoByID($negoid));
+        echo json_encode('Sent');
+    }
+
+    public function openLock()
+    {
+        header('COntent-Type: application/json');
+        $this->load->model('ec_pl_negosiasi_m');
+        $matno = $this->input->post('matno');
+        $plant = $this->input->post('plant');
+        $vendorno = $this->input->post('vendorno');
+        $this->ec_pl_negosiasi_m->openLock($this->ec_pl_negosiasi_m->getPenawaranByParamOrder($vendorno, $matno, $plant));
+        echo json_encode('True');
+    }
+
+    public function test()
+    {
+        echo json_encode($this->session->userdata);
     }
 }

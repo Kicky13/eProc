@@ -110,6 +110,8 @@
                                                 <div class="row" style="background-color: #e3e9f2">
                                                     <div class="col-lg-3">Nomor Material</div>
                                                     <div class="col-lg-9">: <?php echo $data_produk[0]['MATNR'] ?></div>
+                                                    <input type="hidden" id="matnoHidden" value="<?php echo $matno; ?>">
+                                                    <input type="hidden" id="plantHidden" value="<?php echo $plantHide; ?>">
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-3">Short Text</div>
@@ -145,7 +147,7 @@
                                         <div id="deals-vendor" class="panel-collapse collapse in" role="tabpanel"
                                              aria-labelledby="accord-deals-vendor">
                                             <div class="panel-body">
-                                                <table class="table table-hover" width="100%">
+                                                <table class="table table-hover" id="table_penawaran" width="100%">
                                                     <tbody>
                                                     <?php
                                                     for ($i = 0; $i < sizeof($deals); $i++) {
@@ -186,14 +188,12 @@
                                                                         data-maktx="<?php echo $data_produk[0]['MAKTX']; ?>"
                                                                         title="Nego Harga"
                                                                         style="font-size:12px;box-shadow: 1px 1px 1px #ccc"
-                                                                        class="btn btn-danger nego"><i
-                                                                            class="glyphicon glyphicon-comment"></i>
+                                                                        class="btn btn-<?php echo ($deals[$i]['NEGO'] == 1) ? "success" : "danger" ?> nego">
+                                                                    <i class="glyphicon glyphicon-comment"></i><?php echo ($deals[$i]['UNREAD'] > 0) ? " " . $deals[$i]['UNREAD'] : "" ?>
                                                                 </button>
                                                             </td>
                                                         </tr>
-                                                        <?php
-                                                    }
-                                                    ?>
+                                                    <?php } ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -316,7 +316,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <strong style="font-size: 20px;">Negosiasi </strong>
                 <br/>
                 <strong>Vendor</strong> : <span id="vendorNego"></span>
@@ -334,51 +335,11 @@
                         <table id="table_chat" class="table table-striped">
                             <thead>
                             <tr>
-                                <th class="text-center" style="font: 22px; font-family: 'Lato', Arial"><strong>Chat</strong></th>
+                                <th class="text-center" style="font: 22px; font-family: 'Lato', Arial">
+                                    <strong>Chat</strong></th>
                             </tr>
                             </thead>
                             <tbody>
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <div class="text-right">-->
-<!--                                        <p style="font: 14px;"><strong>Lorem ipsum dolor sit amet</strong></p>-->
-<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- User</p>-->
-<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <div class="text-left">-->
-<!--                                        <p style="font: 14px;"><strong>Lorem ipsum dolor sit amet, consectetur adipiscing-->
-<!--                                                elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut-->
-<!--                                                enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut-->
-<!--                                                aliquip ex ea commodo consequat.</strong></p>-->
-<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- Vendor</p>-->
-<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <div class="text-right">-->
-<!--                                        <p style="font: 14px;"><strong>Sed ut perspiciatis unde omnis iste natus error sit-->
-<!--                                                voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa-->
-<!--                                                quae ab illo inventore</strong></p>-->
-<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- User</p>-->
-<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <div class="text-left">-->
-<!--                                        <p style="font: 14px;"><strong>Chat Vendor 2</strong></p>-->
-<!--                                        <p style="font-size:12px;font-style: italic;margin:0;">- Vendor</p>-->
-<!--                                        <p style="font-size:12px;">2018-07-07 12:44:52</p>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -390,11 +351,12 @@
                     <div class="panel-body text-center">
                         <textarea rows="2" class="col-xs-10" id="chatMsg" placeholder="Enter Your Text Here"></textarea>&nbsp;
                         <button type="button" title="Send" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"
-                                class="btn btn-success" id="sendMsg"><i class="glyphicon glyphicon-send"></i></button>
+                                class="btn btn-success" id="sendMsg"><i class="glyphicon glyphicon-send"></i>
+                        </button>
                         <button type="button" title="Buka Locking Harga"
-                                style="font-size:12px;box-shadow: 1px 1px 1px #ccc" class="btn btn-warning" id="openLock"><i
-                                    class="glyphicon glyphicon-lock"></i></button>
-                        <!--                        <button type="button" title="Negosiasi Selesai" style="font-size:12px;box-shadow: 1px 1px 1px #ccc"  class="btn btn-danger"><i class="glyphicon glyphicon-remove" ></i></button>-->
+                                style="font-size:12px;box-shadow: 1px 1px 1px #ccc" class="btn btn-warning"
+                                id="openLock"><i class="glyphicon glyphicon-lock"></i>
+                        </button>
                     </div>
                     <div class="panel-body text-center">
                         <button type="button" title="Negosiasi Selesai" id="closeNego"
