@@ -34,7 +34,7 @@ class ec_penawaran_vnd_test extends CI_Model
 //                        ON DT.MATNO=ASS.MATNO JOIN EC_M_LONGTEXT EML ON SM.MATNR=EML.MATNR
 //                WHERE ASS.VENDORNO='" . $vendorno . "' GROUP BY DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.KODE_ASSIGN, ASS.MATNO, ASS.VENDORNO, ASS.START_DATE,ASS.END_DATE,ASS.INDATE,ASS.KODE_PENAWARAN,ASS.KODE_UPDATE,ASS.DAYS_UPDATE,ASS.CURRENCY) inner_query WHERE rownum <= '" . $max . "') ORDER BY RNUM DESC NULLS LAST";
 //        } else{
-            $SQL = "SELECT * FROM (SELECT DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.*,
+            $SQL = "SELECT * FROM (SELECT  DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.*,
                     (SELECT TB1.STOK FROM EC_PL_PENAWARAN TB1 WHERE TB1.KODE_PENAWARAN=(SELECT MAX(TB2.KODE_PENAWARAN) FROM EC_PL_PENAWARAN TB2 WHERE TB2.VENDORNO='" . $vendorno . "' AND TB2.MATNO IN ASS.MATNO) ) AS STOK, (SELECT TB1.DESKRIPSI_ITEM FROM EC_PL_PENAWARAN TB1 WHERE TB1.KODE_PENAWARAN=(SELECT MAX(TB2.KODE_PENAWARAN) FROM EC_PL_PENAWARAN TB2 WHERE TB2.VENDORNO='" . $vendorno . "' AND TB2.MATNO IN ASS.MATNO) ) AS DESKRIPSI
                 FROM EC_PL_ASSIGN ASS
                 INNER JOIN EC_M_STRATEGIC_MATERIAL SM ON SM.MATNR=ASS.MATNO
@@ -42,11 +42,24 @@ class ec_penawaran_vnd_test extends CI_Model
                                         INNER JOIN (SELECT KODE_DETAIL_PENAWARAN FROM EC_T_DETAIL_PENAWARAN WHERE VENDORNO='" . $vendorno . "') DT 
                                         ON DT.KODE_DETAIL_PENAWARAN=CRT.KODE_PENAWARAN GROUP BY CRT.MATNO) DT
                         ON DT.MATNO=ASS.MATNO JOIN EC_M_LONGTEXT EML ON SM.MATNR=EML.MATNR
-                WHERE ASS.VENDORNO='" . $vendorno . "' GROUP BY DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.KODE_ASSIGN, ASS.MATNO, ASS.VENDORNO, ASS.START_DATE,ASS.END_DATE,ASS.INDATE,ASS.KODE_PENAWARAN,ASS.KODE_UPDATE,ASS.DAYS_UPDATE,ASS.CURRENCY) ORDER BY INDATE DESC";
+                WHERE ASS.VENDORNO='" . $vendorno . "' GROUP BY DT.STOK_COMMIT, SM.MAKTX, SM.MEINS, SM.PICTURE, SM.DRAWING, EML.TDLINE, ASS.KODE_ASSIGN, ASS.MATNO, ASS.VENDORNO, ASS.START_DATE,ASS.END_DATE,ASS.INDATE, ASS.KODE_PENAWARAN,ASS.KODE_UPDATE,ASS.DAYS_UPDATE,ASS.CURRENCY) ORDER BY INDATE DESC";
 //        }
         $a = array();
         $matno = '';
         $result = $this->db->query($SQL)->result_array();
+//        for ($i = $mins; $i < count($result); $i++){
+//            if ($i != 0){
+//                if ($result[$i]['MATNO'] == $matno){
+//                    $matno = $result[$i]['MATNO'];
+//                } else {
+//                    $a[$i] = $result[$i];
+//                    $matno = $result[$i]['MATNO'];
+//                }
+//            } else {
+//                $a[$i] = $result[$i];
+//                $matno = $result[$i]['MATNO'];
+//            }
+//        }
         $j = $mins;
         while (count($a) < $max && $j < count($result)){
             if ($j != 0){
@@ -58,7 +71,6 @@ class ec_penawaran_vnd_test extends CI_Model
                 }
             } else {
                 $a[$j] = $result[$j];
-                array_push($a, $result[$j]);
                 $matno = $result[$j]['MATNO'];
             }
             $j++;
@@ -75,13 +87,13 @@ class ec_penawaran_vnd_test extends CI_Model
 //        $this->db->where("EC_T_DETAIL_PENAWARAN.MATNO", $matno, TRUE);
 //        $this->db->where("STATUS_CHART IN", "(1, 0)");
 //        $this->db->where("EC_GR_DETAIL_PL.GR_NO IS NULL");
-        $query = "SELECT SUM(STOK_COMMIT) FROM EC_T_CHART
+        $query = "SELECT SUM(STOK_COMMIT) AS COMMIT FROM EC_T_CHART
                 JOIN EC_T_DETAIL_PENAWARAN ON EC_T_CHART.KODE_PENAWARAN = EC_T_DETAIL_PENAWARAN.KODE_DETAIL_PENAWARAN
                 LEFT JOIN EC_GR_DETAIL_PL ON EC_GR_DETAIL_PL.PO_NO = EC_T_CHART.PO_NO
                 WHERE EC_T_DETAIL_PENAWARAN.VENDORNO = '".$vendorno."'
                 AND EC_T_DETAIL_PENAWARAN.MATNO= '".$matno."'
                 AND STATUS_CHART IN (1, 0)
-                AND EC_GR_DETAIL_PL.GR_NO IS NULL";
+                AND EC_GR_DETAIL_PL.GR_NO IS NULL"; 
         $result = $this->db->query($query);
         return (array)$result->row_array();
     }
@@ -278,12 +290,12 @@ class ec_penawaran_vnd_test extends CI_Model
 
     public function getDetail($matno, $venno)
     {
-        $SQL = "SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE
+        $SQL = "SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE,TBL.CHANGE_REQUEST
             FROM EC_M_PLANT PT 
             LEFT JOIN (SELECT T1.*, T3.KODE_UPDATE, T3.DAYS_UPDATE, TO_CHAR(T1.INDATE, 'DD-MM-YYYY') AS LASTUPDATE
                             FROM EC_T_DETAIL_PENAWARAN T1
-                            INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
-                            ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE=T2.INDATE
+                            INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE_HISTORY) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
+                            ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE_HISTORY=T2.INDATE
                             LEFT JOIN (SELECT PA.* FROM EC_PL_ASSIGN PA WHERE PA.MATNO='" . $matno . "' AND PA.VENDORNO='" . $venno . "') T3 ON T3.MATNO=T1.MATNO AND T3.VENDORNO=T1.VENDORNO
                             
                 WHERE T1.MATNO =  '" . $matno . "'
@@ -334,76 +346,17 @@ class ec_penawaran_vnd_test extends CI_Model
         return (array)$result->result_array();
     }
 
-    function saveDetail($matno, $plant, $harga, $deliv, $venno, $curr)
-    {
-        if($harga==0){
+    function saveDetail($matno, $plant, $harga, $deliv, $venno, $curr, $change, $indate)
+    {        
+        $newdate = date("Y-m-d H:i:s", strtotime($indate));
+        if($change=='1'){
             $SQL = "INSERT INTO \"EC_T_DETAIL_PENAWARAN\"
-                VALUES ('" . $plant . "', '" . $matno . "', 0, '0', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " . $harga . ", '" . $venno . "', '" . $curr . "')";
+                VALUES ('" . $plant . "', '" . $matno . "', 0, " . $deliv . ", TO_DATE('" . $newdate . "', 'yyyy-mm-dd hh24:mi:ss'), " . $harga . ", '" . $venno . "', '" . $curr . "', '0', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'))";
         }else{
             $SQL = "INSERT INTO \"EC_T_DETAIL_PENAWARAN\"
-                VALUES ('" . $plant . "', '" . $matno . "', 0, " . $deliv . ", TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " . $harga . ", '" . $venno . "', '" . $curr . "')";
+                VALUES ('" . $plant . "', '" . $matno . "', 0, " . $deliv . ", TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'), " . $harga . ", '" . $venno . "', '" . $curr . "', '0', TO_DATE('" . date("Y-m-d H:i:s") . "', 'yyyy-mm-dd hh24:mi:ss'))";
         }        
         return $this->db->query($SQL);
+
     }
-	
-	// ajax datatable
-	// public function getDest($p, $e, $c, $o, $venno) {
-		// $SQL = "SELECT * FROM (select inner_query.*, rownum rnum FROM (SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE, TBL.MAKTX
-            // FROM EC_M_PLANT PT 
-            // LEFT JOIN (SELECT T1.*, T3.KODE_UPDATE, T3.DAYS_UPDATE, TO_CHAR(T1.INDATE, 'DD-MM-YYYY') AS LASTUPDATE, MAT.MAKTX
-                            // FROM EC_T_DETAIL_PENAWARAN T1
-                            // INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
-                            // ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE=T2.INDATE
-                            // LEFT JOIN (SELECT PA.* FROM EC_PL_ASSIGN PA WHERE PA.VENDORNO='" . $venno . "') T3 ON T3.MATNO=T1.MATNO AND T3.VENDORNO=T1.VENDORNO
-                            // LEFT JOIN EC_M_STRATEGIC_MATERIAL MAT ON MAT.MATNR=T1.MATNO
-                // WHERE T1.VENDORNO =  '" . $venno . "') TBL ON TBL.PLANT=PT.PLANT
-            // WHERE PT.STATUS='1'
-            // ORDER BY PT.PLANT ASC) inner_query WHERE rownum <= ". $e .") WHERE rnum >= " . $p;
-			
-		// $SQL2 = "SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE, TBL.MAKTX
-            // FROM EC_M_PLANT PT 
-            // LEFT JOIN (SELECT T1.*, T3.KODE_UPDATE, T3.DAYS_UPDATE, TO_CHAR(T1.INDATE, 'DD-MM-YYYY') AS LASTUPDATE, MAT.MAKTX
-                            // FROM EC_T_DETAIL_PENAWARAN T1
-                            // INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
-                            // ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE=T2.INDATE
-                            // LEFT JOIN (SELECT PA.* FROM EC_PL_ASSIGN PA WHERE PA.VENDORNO='" . $venno . "') T3 ON T3.MATNO=T1.MATNO AND T3.VENDORNO=T1.VENDORNO
-                            // LEFT JOIN EC_M_STRATEGIC_MATERIAL MAT ON MAT.MATNR=T1.MATNO
-                // WHERE T1.VENDORNO =  '" . $venno . "') TBL ON TBL.PLANT=PT.PLANT
-            // WHERE PT.STATUS='1'
-            // ORDER BY PT.PLANT ASC";
-			
-		// $SQL = "SELECT * FROM (select inner_query.*, rownum rnum FROM (SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE, MAT.MAKTX
-            // FROM EC_M_PLANT PT 
-            // LEFT JOIN (SELECT T1.*, T3.KODE_UPDATE, T3.DAYS_UPDATE, TO_CHAR(T1.INDATE, 'DD-MM-YYYY') AS LASTUPDATE
-                            // FROM EC_T_DETAIL_PENAWARAN T1
-                            // INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
-                            // ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE=T2.INDATE
-                            // LEFT JOIN (SELECT PA.* FROM EC_PL_ASSIGN PA WHERE PA.VENDORNO='" . $venno . "') T3 ON T3.MATNO=T1.MATNO AND T3.VENDORNO=T1.VENDORNO
-                // AND T1.VENDORNO =  '" . $venno . "') TBL ON TBL.PLANT=PT.PLANT
-            // LEFT JOIN EC_M_STRATEGIC_MATERIAL MAT ON MAT.MATNR=TBL.MATNO
-			// WHERE PT.STATUS='1'
-            // ORDER BY {$o[0]} {$o[1]}) inner_query WHERE rownum <= ". $e .") WHERE rnum >= " . $p;
-		
-		// $SQL2 = "SELECT PT.*, TBL.MATNO, TBL.KODE_DETAIL_PENAWARAN, TBL.DELIVERY_TIME, TBL.CURRENCY, TBL.PRICE, TBL.VENDORNO, TBL.KODE_UPDATE, TBL.DAYS_UPDATE, TBL.LASTUPDATE, MAT.MAKTX
-            // FROM EC_M_PLANT PT 
-            // LEFT JOIN (SELECT T1.*, T3.KODE_UPDATE, T3.DAYS_UPDATE, TO_CHAR(T1.INDATE, 'DD-MM-YYYY') AS LASTUPDATE
-                            // FROM EC_T_DETAIL_PENAWARAN T1
-                            // INNER JOIN (Select MATNO,VENDORNO,PLANT,MAX(INDATE) INDATE from EC_T_DETAIL_PENAWARAN GROUP BY MATNO,VENDORNO,PLANT) T2 
-                            // ON T1.MATNO=T2.MATNO and T1.VENDORNO=T2.VENDORNO AND T1.PLANT=T2.PLANT AND T1.INDATE=T2.INDATE
-                            // LEFT JOIN (SELECT PA.* FROM EC_PL_ASSIGN PA WHERE PA.VENDORNO='" . $venno . "') T3 ON T3.MATNO=T1.MATNO AND T3.VENDORNO=T1.VENDORNO
-                // AND T1.VENDORNO =  '" . $venno . "') TBL ON TBL.PLANT=PT.PLANT
-			// LEFT JOIN EC_M_STRATEGIC_MATERIAL MAT ON MAT.MATNR=TBL.MATNO
-            // WHERE PT.STATUS='1'";
-			
-			// $get_data = $this->db->query($SQL);
-			// $get_data2 = $this->db->query($SQL2);
-        // return array(
-			// $get_data2->num_rows(),
-			// $get_data2->num_rows(),
-			// $get_data->result_array()
-		// );
-	// }
 }
-//SELECT TB2.* FROM
-//(SELECT PEN.VENDORNO, PEN.MATNO, MAX(PEN.INDATE) AS DATE1 FROM EC_PL_PENAWARAN PEN GROUP BY PEN.VENDORNO, PEN.MATNO) TB1
-//INNER JOIN EC_PL_PENAWARAN TB2 ON TB1.VENDORNO=TB2.VENDORNO AND TB1.MATNO=TB2.MATNO AND TB1.DATE1=TB2.INDATE

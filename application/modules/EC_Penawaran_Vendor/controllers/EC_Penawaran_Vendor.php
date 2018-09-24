@@ -62,7 +62,7 @@ class EC_Penawaran_Vendor extends CI_Controller
         $dataProduk = $this->ec_penawaran_vnd_test->get_data_produk($this->session->userdata['VENDOR_NO'], $this->input->post('limitMin'), $this->input->post('limitMax'));
         $dataCount = $this->ec_penawaran_vnd_test->get_Count_produk($this->session->userdata['VENDOR_NO']);        
 //        var_dump($dataProduk);die(); 
-        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount), 'data2' => $dataCount);
+        $json_data = array('curr' => $dataCurr, 'data' => $this->getALL($dataProduk), 'page' => count($dataCount));
         echo json_encode($json_data); 
     }
 
@@ -123,7 +123,7 @@ class EC_Penawaran_Vendor extends CI_Controller
             //$data[8] = $value['DELIVERY_TIME'] != null ? $value['DELIVERY_TIME'] : "";
             $data['STOK'] = $value['STOK'] != null ? $value['STOK'] : "";
             $commit = $this->ec_penawaran_vnd_test->get_stok_commit($venno, $value['MATNO']);
-            $data['STOK_COMMIT'] = $commit != null ? $commit : "";
+            $data['STOK_COMMIT'] = $commit['COMMIT'] != null ? $commit['COMMIT'] : 0;
             $data[13] = $value['KODE_PENAWARAN'] != null ? $value['KODE_PENAWARAN'] : "";
             $data['DESKRIPSI'] = $value['DESKRIPSI'] != null ? $value['DESKRIPSI'] : "";
             $data['LONGTEXT'] = $value['TDLINE'] != null ? $value['TDLINE'] : "";
@@ -139,6 +139,7 @@ class EC_Penawaran_Vendor extends CI_Controller
 					"KODE_UPDATE"	=> $s["KODE_UPDATE"] != null ? $s["KODE_UPDATE"] : "-",
 					"DAYS_UPDATE"	=> $s["DAYS_UPDATE"] != null ? $s["DAYS_UPDATE"] : "-",
 					"LASTUPDATE"	=> $s["LASTUPDATE"] != null ? $s["LASTUPDATE"] : "-",
+                                        "CHANGE_REQUEST"=> $s["CHANGE_REQUEST"],
 				);
 			}
             //$data['LASTUPDATE'] = $value['LASTUPDATE'] != null ? $value['LASTUPDATE'] : "-";
@@ -283,63 +284,44 @@ class EC_Penawaran_Vendor extends CI_Controller
 //         }
         //redirect("EC_Penawaran");
     }
+		
 	
-	// ajax datatable
-	// function getDest() {
-		// $p = isset($_POST["start"]) && $_POST["start"] != "" && is_numeric($_POST["start"]) ? intval($_POST["start"]) : 0;
-		// $e = isset($_POST["length"]) && $_POST["length"] != "" && is_numeric($_POST["length"]) ? intval($_POST["length"]) : 10;
-		// $c = array("TBL.MATNO", "MAT.MAKTX", "PT.\"DESC\"", "TBL.CURRENCY", "TBL.PRICE", "TBL.DELIVERY_TIME", "TBL.LASTUPDATE");
-		// $o = isset($_POST["order"]) ? array($c[intval($_POST["order"][0]["column"])], strtoupper($_POST["order"][0]["dir"])) : array($c[0], "ASC");
-		
-		// $e += $p;
-		// $p++;
-		
-		// $this->load->model('ec_penawaran_vnd_test');
-		// $data = $this->ec_penawaran_vnd_test->getDest($p, $e, $c, $o, $this->session->userdata['VENDOR_NO']);
-		
-		// $result["draw"] = isset($_POST["draw"]) ? intval($_POST["draw"]) : 1;
-		// $result["recordsTotal"] = intval($data[0]);
-		// $result["recordsFiltered"] = intval($data[1]);
-		
-		// $result["data"] = array();
-		
-		// foreach($data[2] as $r) {
-			// $result["data"][] = array(
-				// htmlspecialchars($r["MATNO"]),
-				// htmlspecialchars($r["MAKTX"]),
-				// htmlspecialchars($r["DESC"]),
-				// htmlspecialchars($r["CURRENCY"] . " " . $this->session->userdata['VENDOR_NO']),
-				// htmlspecialchars($r["PRICE"]),
-				// htmlspecialchars($r["DELIVERY_TIME"]),
-				// htmlspecialchars($r["LASTUPDATE"]),
-				// htmlspecialchars($r["MATNO"])
-			// );
-		// }
-		
-		// echo json_encode($result);
-	// }
-	
-	public function simpanHarga() {
-		// echo "<pre>";
-		// print_r($_POST);
-		// echo "</pre>";
+	public function simpanHarga() {            
 		$venno = $this->session->userdata['VENDOR_NO'];
 		$this->load->model('ec_penawaran_vnd_test');
 		
 		$pesan = "";
-		
-		foreach($_POST["cb"] as $cb) {
-			if($_POST["price"][$cb] != "" && $_POST["dlvtime"][$cb] != "") {
-				$q = $this->ec_penawaran_vnd_test->saveDetail($_POST["matno"][$cb], $_POST["plant"][$cb], $_POST["price"][$cb], $_POST["dlvtime"][$cb], $venno, $_POST["currency"][$cb]);
-				if($q) {
-					$pesan .= "Berhasil menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
-				} else {
-					$pesan .= "Gagal menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
-				}
-			}
-			// if($_POST["price"][$cb] != "" && $_POST["dlvtime"][$cb] != "") {
-				// $pesan .= "{$_POST["matno"][$cb]}, {$_POST["plant"][$cb]}, {$_POST["price"][$cb]}, {$_POST["dlvtime"][$cb]}, {$venno}, {$_POST["currency"][$cb]}<br/><br/><br/><br/>";
-			// }
+		$q='';                               
+                $r='';
+		foreach($_POST["cb"] as $cb) {                                        
+                    $format_date_now=date("Y-m-d");
+                    $format_date_last=date("Y-m-d", strtotime($_POST["next_request"][$cb]));
+//                    var_dump($format_date_now);var_dump($format_date_last);
+                    if($_POST["price"][$cb] != "" && $_POST["dlvtime"][$cb] != "") {                                                    
+                        if($format_date_now >= $format_date_last){                               
+                            $q=$this->ec_penawaran_vnd_test->saveDetail($_POST["matno"][$cb], $_POST["plant"][$cb], $_POST["price"][$cb], $_POST["dlvtime"][$cb], $venno, $_POST["currency"][$cb], '0', $_POST["last_request"][$cb]);                            
+                        }else{
+                            if($_POST['change_request'][$cb]=='1'){
+                                if($_POST['price'][$cb] > $_POST['last_price'][$cb]){
+                                    $q=true;
+                                    $r=true;                                    
+                                }else{
+                                    $q=$this->ec_penawaran_vnd_test->saveDetail($_POST["matno"][$cb], $_POST["plant"][$cb], $_POST["price"][$cb], $_POST["dlvtime"][$cb], $venno, $_POST["currency"][$cb], '1', $_POST["last_request"][$cb]);   
+                                }                                
+                            }else{                           
+                                $q=$this->ec_penawaran_vnd_test->saveDetail($_POST["matno"][$cb], $_POST["plant"][$cb], $_POST["price"][$cb], $_POST["dlvtime"][$cb], $venno, $_POST["currency"][$cb], '0', $_POST["last_request"][$cb]);
+                            }
+                        }                                                
+                    }                    
+                    if($q) {
+                        if($r){
+                            $pesan.="Harga hanya bisa di update turun dari harga sebelumnya";
+                        }else{
+                            $pesan .= "Berhasil menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
+                        }                            
+                    } else {
+                            $pesan .= "Gagal menyimpan data untuk matno = \"".$_POST["nama_material"][$cb]."\" &amp; plant = \"".$_POST["desc"][$cb]."\"<br/>";
+                    }
 		}
 		
 		echo $pesan;

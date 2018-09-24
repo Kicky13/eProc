@@ -519,7 +519,7 @@ $(document).ready(function () {
             qtyInput = document.getElementsByClassName("qtyy");
             for (var i = 0; i < stokKonfirm.length; i++){
                 console.log(stokKonfirm[i].value + " " + qtyInput[i].value);
-                if (stokKonfirm[i].value - qtyInput[i].value){
+                if ((stokKonfirm[i].value - qtyInput[i].value) < 0){
                     minusStok++;
                 }
             }

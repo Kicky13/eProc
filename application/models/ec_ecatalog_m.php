@@ -1428,6 +1428,7 @@ class ec_ecatalog_m extends CI_Model
                                     EC_PL_PENAWARAN PEN 
                                 WHERE 
                                     MATNO ='" . $matno . "'
+                                    AND STATUS_ASSIGN='1'
                                 GROUP BY
                                     PEN.VENDORNO,
                                     PEN.MATNO
